@@ -7,6 +7,7 @@ import com.model.SignName;
 import com.service.common.SignNameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -17,7 +18,8 @@ import java.io.OutputStream;
 import java.util.List;
 
 @Controller
-public class SignNameAction extends QueryAction<SignName> {
+@RequestMapping("SignNameAction")
+public class SignNameController extends QueryAction<SignName> {
 
     /**
      *
@@ -38,6 +40,7 @@ public class SignNameAction extends QueryAction<SignName> {
         return "/jsp/sys/sysCode";
     }
 
+    @RequestMapping("uploadSignName.action")
     public void uploadSignName() {
         try {
             response.setContentType("text/plain");
@@ -157,6 +160,7 @@ public class SignNameAction extends QueryAction<SignName> {
         }
     }
 
+    @RequestMapping("reSize.action")
     public static void reSize(InputStream is, OutputStream os, int size, String format)
             throws IOException {
         BufferedImage prevImage = ImageIO.read(is);
@@ -175,6 +179,7 @@ public class SignNameAction extends QueryAction<SignName> {
         os.close();
     }
 
+    @RequestMapping("findSignNameByUserId.action")
     public void findSignNameByUserId() {
         if (CommonMethod.isNull(strUserId)) {
             jsonPrint("fail,用户ID不能为空！");

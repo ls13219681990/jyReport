@@ -21,7 +21,8 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-public class ReceivableAcDetailAction extends QueryAction<ReceivableInvoiceDetails> {
+@RequestMapping("receivableAcDetailAction")
+public class ReceivableAcDetailController extends QueryAction<ReceivableInvoiceDetails> {
 
     /**
      * 收款
@@ -49,6 +50,7 @@ public class ReceivableAcDetailAction extends QueryAction<ReceivableInvoiceDetai
         return "/jsp/sys/sysCode";
     }
 
+    @RequestMapping("saveReAcDetails.action")
     public void saveReAcDetails() {
         try {
             if (CommonMethod.isNull(strReAcDetail)) {
@@ -74,6 +76,7 @@ public class ReceivableAcDetailAction extends QueryAction<ReceivableInvoiceDetai
         }
     }
 
+    @RequestMapping("updateInvoiceDetails.action")
     public void updateInvoiceDetails() {
         try {
             if (CommonMethod.isNull(strReAcDetail)) {
@@ -95,6 +98,7 @@ public class ReceivableAcDetailAction extends QueryAction<ReceivableInvoiceDetai
     /**
      * 根据条件查找对应的收款记录
      */
+    @RequestMapping("findReAcDetail.action")
     public void findReAcDetail() {
         ReAccountDetailPage reAcPage = new ReAccountDetailPage();
         if (!CommonMethod.isNull(strReAcDetail)) {
@@ -110,6 +114,7 @@ public class ReceivableAcDetailAction extends QueryAction<ReceivableInvoiceDetai
     /**
      * 根据收款ID查找对应的发票记录
      */
+    @RequestMapping("findInDetail.action")
     public void findInDetail() {
         if (CommonMethod.isNull(strAccountDetailId)) {
             jsonPrint("fail,参数strAccountDetailId不能为空");
@@ -125,6 +130,7 @@ public class ReceivableAcDetailAction extends QueryAction<ReceivableInvoiceDetai
     /**
      * 收款作废
      */
+    @RequestMapping("receivablesInvalidation.action")
     public void receivablesInvalidation() {
         if (CommonMethod.isNull(strAccountDetailId)) {
             jsonPrint("fail,参数strAccountDetailId不能为空");
@@ -147,6 +153,7 @@ public class ReceivableAcDetailAction extends QueryAction<ReceivableInvoiceDetai
     /**
      * 根据条件查找对应的收款记录(作废)
      */
+    @RequestMapping("findReAcDetailInvalidation.action")
     public void findReAcDetailInvalidation() {
         ReAccountDetailPage reAcPage = new ReAccountDetailPage();
         if (!CommonMethod.isNull(strReAcDetail)) {

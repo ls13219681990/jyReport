@@ -5,7 +5,7 @@ import com.model.TwoDInfo;
 import org.springframework.stereotype.Controller;
 
 @Controller
-public class TwoDInfoAction extends QueryAction<TwoDInfo> {
+public class TwoDInfoController extends QueryAction<TwoDInfo> {
 
     /**
      *

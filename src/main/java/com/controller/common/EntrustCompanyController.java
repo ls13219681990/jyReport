@@ -10,11 +10,13 @@ import com.service.common.EntrustCompanyService;
 import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
 @Controller
-public class EntrustCompanyAction extends QueryAction<EntrustCompany> {
+@RequestMapping("EntrustCompanyAction")
+public class EntrustCompanyController extends QueryAction<EntrustCompany> {
 
     /**
      *
@@ -40,6 +42,7 @@ public class EntrustCompanyAction extends QueryAction<EntrustCompany> {
         return "/jsp/sys/sysCode";
     }
 
+    @RequestMapping("saveEntrustCompany.action")
     public void saveEntrustCompany() {
         try {
             if (CommonMethod.isNull(strEntrustCompany)) {
@@ -57,6 +60,7 @@ public class EntrustCompanyAction extends QueryAction<EntrustCompany> {
         }
     }
 
+    @RequestMapping("updateEntrustCompany.action")
     public void updateEntrustCompany() {
         try {
             if (CommonMethod.isNull(strEntrustCompany)) {
@@ -74,6 +78,7 @@ public class EntrustCompanyAction extends QueryAction<EntrustCompany> {
         }
     }
 
+    @RequestMapping("findEntrustCompany.action")
     public void findEntrustCompany() {
         List<EntrustCompany> ecList = entrustCompanyService.findEntrustCompany(strEntrustCompanyId, strEntrustCompanyName, strEntrustCompanyNo);
         CommonJsonConfig jsonConfig = new CommonJsonConfig();
@@ -81,6 +86,7 @@ public class EntrustCompanyAction extends QueryAction<EntrustCompany> {
         jsonPrint(jsonArr);
     }
 
+    @RequestMapping("saveEntrustAdvanceMoney.action")
     public void saveEntrustAdvanceMoney() {
         try {
             if (CommonMethod.isNull(strEntrustCompanyId) || CommonMethod.isNull(strAdvanceMoney)) {
@@ -98,6 +104,7 @@ public class EntrustCompanyAction extends QueryAction<EntrustCompany> {
         }
     }
 
+    @RequestMapping("findEntrustAdvanceMoney.action")
     public void findEntrustAdvanceMoney() {
         if (CommonMethod.isNull(strEntrustCompanyId)) {
             jsonPrint("fail,参数strEntrustCompanyId不能为空");

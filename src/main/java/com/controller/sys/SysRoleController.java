@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 
 @Controller
-public class SysRoleAction extends QueryAction<SysRole> {
+@RequestMapping("SysRoleAction")
+public class SysRoleController extends QueryAction<SysRole> {
 
     /**
      *
@@ -33,6 +34,7 @@ public class SysRoleAction extends QueryAction<SysRole> {
         return "/jsp/sys/sysCode";
     }
 
+    @RequestMapping("saveSysRole.action")
     public void saveSysRole() {
         try {
             if (CommonMethod.isNull(strRole)) {
@@ -50,6 +52,7 @@ public class SysRoleAction extends QueryAction<SysRole> {
         }
     }
 
+    @RequestMapping("updateSysRole.action")
     public void updateSysRole() {
         try {
             if (CommonMethod.isNull(strRole)) {
@@ -67,6 +70,7 @@ public class SysRoleAction extends QueryAction<SysRole> {
         }
     }
 
+    @RequestMapping("findSysRole.action")
     public void findSysRole() {
         List<SysRole> sysRoleList = sysRoleService.findSysRole();
         CommonJsonConfig jsonConfig = new CommonJsonConfig();
@@ -77,6 +81,7 @@ public class SysRoleAction extends QueryAction<SysRole> {
     /**
      * 获取有效的角色数据
      */
+    @RequestMapping("findSysRoleValid.action")
     public void findSysRoleValid() {
         List<SysRole> sysRoleList = sysRoleService.findSysRoleValid();
         CommonJsonConfig jsonConfig = new CommonJsonConfig();

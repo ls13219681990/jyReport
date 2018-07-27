@@ -10,11 +10,13 @@ import com.service.common.TestParameterService;
 import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
 @Controller
-public class TestParameterAction extends QueryAction<TestParameter> {
+@RequestMapping("testParameterAction")
+public class TestParameterController extends QueryAction<TestParameter> {
 
     /**
      *
@@ -59,6 +61,7 @@ public class TestParameterAction extends QueryAction<TestParameter> {
         }
     }
 
+    @RequestMapping("updateTeParameter.action")
     public void updateTeParameter() {
         try {
             if (CommonMethod.isNull(strTestParameter)) {
@@ -76,6 +79,7 @@ public class TestParameterAction extends QueryAction<TestParameter> {
         }
     }
 
+    @RequestMapping("updateReportSn.action")
     public void updateReportSn() {
         try {
             if (CommonMethod.isNull(strBaseSampleId) || CommonMethod.isNull(strReportSn)) {
@@ -93,6 +97,7 @@ public class TestParameterAction extends QueryAction<TestParameter> {
         }
     }
 
+    @RequestMapping("uploadReport.action")
     public void uploadReport() {
         System.out.println("------------------------------文件上传开始");
 		/*try {
@@ -203,7 +208,7 @@ public class TestParameterAction extends QueryAction<TestParameter> {
 		}*/
     }
 
-
+    @RequestMapping("findTeParameter.action")
     public void findTeParameter() {
         List<TestParameter> teParameterList = testParameterService.findTeParameter(strBaseSampleId);
         CommonJsonConfig jsonConfig = new CommonJsonConfig();
@@ -211,6 +216,7 @@ public class TestParameterAction extends QueryAction<TestParameter> {
         jsonPrint(jsonArr);
     }
 
+    @RequestMapping("findAllParameter.action")
     public void findAllParameter() {
 
         if (CommonMethod.isNull(strDepartmentId) || CommonMethod.isNull(strDepartmentId)) {

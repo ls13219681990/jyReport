@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 
 @Controller
-public class SysUserAction extends QueryAction<SysUser> {
+@RequestMapping("sysUserAction")
+public class SysUserController extends QueryAction<SysUser> {
 
     /**
      *
@@ -38,6 +39,7 @@ public class SysUserAction extends QueryAction<SysUser> {
         return "/jsp/sys/sysCode";
     }
 
+    @RequestMapping("saveSysUser.action")
     public void saveSysUser() {
         try {
             if (CommonMethod.isNull(strUser)) {
@@ -55,6 +57,7 @@ public class SysUserAction extends QueryAction<SysUser> {
         }
     }
 
+    @RequestMapping("updateSysUser.action")
     public void updateSysUser() {
         try {
             if (CommonMethod.isNull(strUser)) {
@@ -72,6 +75,7 @@ public class SysUserAction extends QueryAction<SysUser> {
         }
     }
 
+    @RequestMapping("updateSysPassword.action")
     public void updateSysPassword() {
         try {
 //			if(CommonMethod.isNull(oldPassword)){
@@ -93,6 +97,7 @@ public class SysUserAction extends QueryAction<SysUser> {
         }
     }
 
+    @RequestMapping("resetSysPassword.action")
     public void resetSysPassword() {
         try {
             if (CommonMethod.isNull(getUserId())) {
@@ -110,6 +115,7 @@ public class SysUserAction extends QueryAction<SysUser> {
         }
     }
 
+    @RequestMapping("findSysUser.action")
     public void findSysUser() {
         List<UserRolePage> sysUserList = sysUserService.findSysUser();
         CommonJsonConfig jsonConfig = new CommonJsonConfig();
@@ -120,6 +126,7 @@ public class SysUserAction extends QueryAction<SysUser> {
     /**
      * 获取有效的用户数据
      */
+    @RequestMapping("findSysUserValid.action")
     public void findSysUserValid() {
         List<UserRolePage> sysUserList = sysUserService.findSysUserValid();
         CommonJsonConfig jsonConfig = new CommonJsonConfig();

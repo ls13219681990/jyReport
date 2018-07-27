@@ -11,6 +11,7 @@ import com.model.SysUser;
 import com.service.sys.SysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
@@ -20,7 +21,8 @@ import java.util.List;
  * @author acer
  */
 @Controller
-public class LoginAction extends QueryAction<SysUser> {
+@RequestMapping("LoginAction")
+public class LoginController extends QueryAction<SysUser> {
     /**
      *
      */
@@ -39,6 +41,7 @@ public class LoginAction extends QueryAction<SysUser> {
      * @return
      * @throws Exception
      */
+    @RequestMapping("login.action")
     public void login() throws Exception {
         try {
             SysUser sUser = new SysUser();
@@ -71,6 +74,7 @@ public class LoginAction extends QueryAction<SysUser> {
         }
     }
 
+    @RequestMapping("logOut.action")
     public void logOut() {
 		/*if(ActionContext.getContext()!=null && ActionContext.getContext().getSession()!=null){
 			ActionContext.getContext().getSession().clear();

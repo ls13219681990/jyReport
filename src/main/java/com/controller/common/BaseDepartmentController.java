@@ -9,6 +9,7 @@ import com.service.common.BaseDepartmentService;
 import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
@@ -19,7 +20,8 @@ import java.util.List;
  */
 
 @Controller
-public class BaseDepartmentAction extends QueryAction<BaseDepartment> {
+@RequestMapping("baseDepartmentAction")
+public class BaseDepartmentController extends QueryAction<BaseDepartment> {
 
     /**
      *
@@ -40,7 +42,7 @@ public class BaseDepartmentAction extends QueryAction<BaseDepartment> {
         return "/jsp/sys/sysCode";
     }
 
-
+    @RequestMapping("saveDepartment.action")
     public void saveDepartment() {
         try {
             if (CommonMethod.isNull(strBaseDepartment)) {
@@ -58,6 +60,7 @@ public class BaseDepartmentAction extends QueryAction<BaseDepartment> {
         }
     }
 
+    @RequestMapping("updateDepartment.action")
     public void updateDepartment() {
         try {
             if (CommonMethod.isNull(strBaseDepartment)) {
@@ -75,6 +78,7 @@ public class BaseDepartmentAction extends QueryAction<BaseDepartment> {
         }
     }
 
+    @RequestMapping("findDepartment.action")
     public void findDepartment() {
         List<BaseDepartment> departmentList = baseDepartmentService.findDepartment(strIsManagement);
         CommonJsonConfig jsonConfig = new CommonJsonConfig();

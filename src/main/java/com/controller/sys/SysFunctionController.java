@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 
 @Controller
-public class SysFunctionAction extends QueryAction<SysFunction> {
+@RequestMapping("sysFunctionAction")
+public class SysFunctionController extends QueryAction<SysFunction> {
 
     /**
      *
@@ -33,6 +34,7 @@ public class SysFunctionAction extends QueryAction<SysFunction> {
         return "/jsp/sys/sysCode";
     }
 
+    @RequestMapping("saveFunction.action")
     public void saveFunction() {
         try {
             if (CommonMethod.isNull(strFunction)) {
@@ -50,6 +52,7 @@ public class SysFunctionAction extends QueryAction<SysFunction> {
         }
     }
 
+    @RequestMapping("updateFunction.action")
     public void updateFunction() {
         try {
             if (CommonMethod.isNull(strFunction)) {
@@ -67,6 +70,7 @@ public class SysFunctionAction extends QueryAction<SysFunction> {
         }
     }
 
+    @RequestMapping("findFunction.action")
     public void findFunction() {
         List<SysFunction> sysFunctionList = sysFunctionService.findFunction();
         CommonJsonConfig jsonConfig = new CommonJsonConfig();
@@ -77,6 +81,7 @@ public class SysFunctionAction extends QueryAction<SysFunction> {
     /**
      * 获取有效的功能数据
      */
+    @RequestMapping("findFunctionValid.action")
     public void findFunctionValid() {
         List<SysFunction> sysFunctionList = sysFunctionService.findFunctionValid();
         CommonJsonConfig jsonConfig = new CommonJsonConfig();

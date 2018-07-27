@@ -13,12 +13,14 @@ import net.sf.json.JSONArray;
 import net.sf.json.util.JSONUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Collection;
 import java.util.List;
 
 @Controller
-public class CapitalAccountAction extends QueryAction<CapitalAccount> {
+@RequestMapping("capitalAccountAction")
+public class CapitalAccountController extends QueryAction<CapitalAccount> {
 
     /**
      *
@@ -42,6 +44,7 @@ public class CapitalAccountAction extends QueryAction<CapitalAccount> {
 
 
     @SuppressWarnings("unchecked")
+    @RequestMapping("saveCapitalAccount.action")
     public void saveCapitalAccount() {
         try {
             if (CommonMethod.isNull(strCapitalAccount)) {
@@ -67,6 +70,7 @@ public class CapitalAccountAction extends QueryAction<CapitalAccount> {
     /**
      * 根据资金账号ID增加联系人和电话
      */
+    @RequestMapping("saveCapitalAccountLinkmp.action")
     public void saveCapitalAccountLinkmp() {
         try {
             if (CommonMethod.isNull(strCapitalAccount)) {
@@ -89,6 +93,7 @@ public class CapitalAccountAction extends QueryAction<CapitalAccount> {
     }
 
     @SuppressWarnings("unchecked")
+    @RequestMapping("updateCapitalAccount.action")
     public void updateCapitalAccount() {
         try {
             if (CommonMethod.isNull(strCapitalAccount)) {
@@ -118,6 +123,7 @@ public class CapitalAccountAction extends QueryAction<CapitalAccount> {
      * 导入资金账号表
      */
     @SuppressWarnings("unchecked")
+    @RequestMapping("saveCapitalAccountTable.action")
     public void saveCapitalAccountTable() {
         try {
             if (CommonMethod.isNull(strCapitalAccount)) {
@@ -141,12 +147,13 @@ public class CapitalAccountAction extends QueryAction<CapitalAccount> {
         }
     }
 
-
+    @RequestMapping("findNewCaCode.action")
     public void findNewCaCode() {
         String newCaCode = capitalAccountService.findNewCaCode();
         jsonPrint(newCaCode);
     }
 
+    @RequestMapping("findCapitalAccount.action")
     public void findCapitalAccount() {
         CapitalAccountPage ca = new CapitalAccountPage();
         if (!CommonMethod.isNull(strCapitalAccount)) {
@@ -161,6 +168,7 @@ public class CapitalAccountAction extends QueryAction<CapitalAccount> {
     /**
      * 委托时，查找资金账号信息
      */
+    @RequestMapping("findEntrustCapitalAccount.action")
     public void findEntrustCapitalAccount() {
         CapitalAccountPage ca = new CapitalAccountPage();
         if (!CommonMethod.isNull(strCapitalAccount)) {
@@ -185,6 +193,7 @@ public class CapitalAccountAction extends QueryAction<CapitalAccount> {
     /**
      * 委托时
      */
+    @RequestMapping("findEntrustLinkInfo.action")
     public void findEntrustLinkInfo() {
         if (CommonMethod.isNull(capitalAccountId)) {
             jsonPrint("fail,参数capitalAccountId不能为空");

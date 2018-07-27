@@ -8,7 +8,7 @@ import org.springframework.stereotype.Controller;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
-public abstract class BaseAction {
+public abstract class BaseController {
     private final static HttpServletRequest REQUEST = null;
 
     static {
@@ -23,7 +23,7 @@ public abstract class BaseAction {
     private Integer userId;
     private String type = "";
 
-    public BaseAction() {
+    public BaseController() {
 		/*Map session = ActionContext.getContext().getSession();
 		if(session != null){
 			userId = (Integer)session.get("userId");

@@ -9,11 +9,13 @@ import com.service.common.SupervisionUnitService;
 import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
 @Controller
-public class SupervisionUnitAction extends QueryAction<SupervisionUnit> {
+@RequestMapping("supervisionUnitAction")
+public class SupervisionController extends QueryAction<SupervisionUnit> {
 
     /**
      *
@@ -38,6 +40,7 @@ public class SupervisionUnitAction extends QueryAction<SupervisionUnit> {
         return "/jsp/sys/sysCode";
     }
 
+    @RequestMapping("saveSupervisionUnit.action")
     public void saveSupervisionUnit() {
         try {
             if (CommonMethod.isNull(strSupervisionUnit)) {
@@ -55,6 +58,7 @@ public class SupervisionUnitAction extends QueryAction<SupervisionUnit> {
         }
     }
 
+    @RequestMapping("updateSupervisionUnit.action")
     public void updateSupervisionUnit() {
         try {
             if (CommonMethod.isNull(strSupervisionUnit)) {
@@ -72,6 +76,7 @@ public class SupervisionUnitAction extends QueryAction<SupervisionUnit> {
         }
     }
 
+    @RequestMapping("findSupervisionUnit.action")
     public void findSupervisionUnit() {
         List<SupervisionUnit> suList = supervisionUnitService.findSupervisionUnit(strSupervisionUnitId, strSupervisionUnitName, strWitnesses);
         CommonJsonConfig jsonConfig = new CommonJsonConfig();
@@ -79,6 +84,7 @@ public class SupervisionUnitAction extends QueryAction<SupervisionUnit> {
         jsonPrint(jsonArr);
     }
 
+    @RequestMapping("findSupervisionUnitName.action")
     public void findSupervisionUnitName() {
         if (CommonMethod.isNull(strSupervisionUnitId)) {
             jsonPrint("fail,参数strSupervisionUnitId不能为空");

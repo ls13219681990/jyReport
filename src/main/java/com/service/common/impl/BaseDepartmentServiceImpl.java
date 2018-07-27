@@ -3,6 +3,8 @@ package com.service.common.impl;
 
 import com.common.BusinessException;
 import com.common.CommonMethod;
+import com.controller.common.JsonPager;
+import com.dao.common.BaseDao;
 import com.dao.common.BaseDepartmentDao;
 import com.model.BaseDepartment;
 import com.service.common.BaseDepartmentService;
@@ -15,7 +17,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Service("baseDepartmentService")
-public abstract class BaseDepartmentServiceImpl extends BaseServiceImpl<BaseDepartment> implements
+public class BaseDepartmentServiceImpl extends BaseServiceImpl<BaseDepartment> implements
         BaseDepartmentService {
 
     @Autowired
@@ -76,4 +78,13 @@ public abstract class BaseDepartmentServiceImpl extends BaseServiceImpl<BaseDepa
     }
 
 
+    @Override
+    protected void initBaseDAO(BaseDao<BaseDepartment> baseDao) {
+
+    }
+
+    @Override
+    public JsonPager<BaseDepartment> findJsonPageByCriteria(JsonPager<BaseDepartment> jp, BaseDepartment baseDepartment) {
+        return null;
+    }
 }

@@ -22,7 +22,8 @@ import java.util.Map;
  * @category 委托
  */
 @Controller
-public class EntrustDetailsAction extends QueryAction<EntrustDetails> {
+@RequestMapping("entrustDetailAction")
+public class EntrustDetailsController extends QueryAction<EntrustDetails> {
 
     /**
      *
@@ -62,6 +63,7 @@ public class EntrustDetailsAction extends QueryAction<EntrustDetails> {
     }
 
     @SuppressWarnings({"rawtypes", "unused"})
+    @RequestMapping("saveEDetailReport.action")
     public void saveEDetailReport() {
         try {
 
@@ -94,6 +96,7 @@ public class EntrustDetailsAction extends QueryAction<EntrustDetails> {
     }
 
     @SuppressWarnings({"rawtypes", "unused"})
+    @RequestMapping("updateEDetailReport.action")
     public void updateEDetailReport() {
         try {
             //HttpServletRequest request = ServletActionContext.getRequest();

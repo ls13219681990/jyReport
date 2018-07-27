@@ -4,8 +4,8 @@ import com.common.BusinessException;
 import com.common.CommonMethod;
 import com.common.QueryAction;
 import com.common.jsonProcessor.CommonJsonConfig;
-import com.model.SysUserRole;
-import com.service.sys.SysUserRoleService;
+import com.model.SysRoleFunction;
+import com.service.sys.SysRoleFunctionService;
 import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,36 +14,38 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 
 @Controller
-public class SysUserRoleAction extends QueryAction<SysUserRole> {
+@RequestMapping("SysRoleFunctionAction")
+public class SysRoleFunctionController extends QueryAction<SysRoleFunction> {
 
     /**
      *
      */
     private static final long serialVersionUID = 1L;
 
-    private String strUserRole = "";
+    private String strRoleFunction = "";
     //角色ID
     private String strRoleId = "";
-    //用户ID
-    private String strUserId = "";
+    //功能ID
+    private String strFunctionId = "";
 
     @Autowired
-    private SysUserRoleService sysUserRoleService;
+    private SysRoleFunctionService sysRoleFunctionService;
 
-    /*@Action(value = "/sysUserRoleAction", results = {
+    /*@Action(value = "/sysRoleFunctionAction", results = {
             @Result(name = QUERY, location = "/jsp/sys/sysCode.html") })*/
-    @RequestMapping(value = "/aaaaaaabaseDepartmentAction")
+    @RequestMapping(value = "/zxcxzcbaseDepartmentAction")
     public String jumpSys() {
         return "/jsp/sys/sysCode";
     }
 
-    public void saveSysUserRole() {
+    @RequestMapping("saveSysRoleFunction.action")
+    public void saveSysRoleFunction() {
         try {
-            if (CommonMethod.isNull(strUserRole) || CommonMethod.isNull(strUserId)) {
+            if (CommonMethod.isNull(strRoleFunction) || CommonMethod.isNull(strRoleId)) {
                 jsonPrint("fail,参数不能为空");
                 return;
             }
-            sysUserRoleService.saveSysUserRole(getColl(strUserRole), strUserId);
+            sysRoleFunctionService.saveSysRoleFunction(getColl(strRoleFunction), strRoleId);
             jsonPrint("true");
         } catch (BusinessException e) {
             e.printStackTrace();
@@ -54,23 +56,25 @@ public class SysUserRoleAction extends QueryAction<SysUserRole> {
         }
     }
 
-    public void findRoleByUser() {
-        if (CommonMethod.isNull(strUserId)) {
-            jsonPrint("fail,参数strUserId不能为空");
+    @RequestMapping("findFunctionByRole.action")
+    public void findFunctionByRole() {
+        if (CommonMethod.isNull(strRoleId)) {
+            jsonPrint("fail,参数strRoleId不能为空");
             return;
         }
-        List<SysUserRole> sysRoleFunctionList = sysUserRoleService.findRoleByUser(strUserId);
+        List<SysRoleFunction> sysRoleFunctionList = sysRoleFunctionService.findFunctionByRole(strRoleId);
         CommonJsonConfig jsonConfig = new CommonJsonConfig();
         JSONArray jsonArr = JSONArray.fromObject(sysRoleFunctionList, jsonConfig);
         jsonPrint(jsonArr);
     }
 
-    public void findRoleUsed() {
-        if (CommonMethod.isNull(strRoleId)) {
-            jsonPrint("fail,参数strRoleId不能为空");
+    @RequestMapping("findFuncitonUsed.action")
+    public void findFuncitonUsed() {
+        if (CommonMethod.isNull(strFunctionId)) {
+            jsonPrint("fail,参数strFunctionId不能为空");
             return;
         }
-        List<SysUserRole> sysRoleFunctionList = sysUserRoleService.findRoleUsed(strRoleId);
+        List<SysRoleFunction> sysRoleFunctionList = sysRoleFunctionService.findFuncitonUsed(strFunctionId);
         if (sysRoleFunctionList != null && sysRoleFunctionList.size() > 0) {
             jsonPrint("true");
         } else {
@@ -78,12 +82,12 @@ public class SysUserRoleAction extends QueryAction<SysUserRole> {
         }
     }
 
-    public String getStrUserRole() {
-        return strUserRole;
+    public String getStrRoleFunction() {
+        return strRoleFunction;
     }
 
-    public void setStrUserRole(String strUserRole) {
-        this.strUserRole = strUserRole;
+    public void setStrRoleFunction(String strRoleFunction) {
+        this.strRoleFunction = strRoleFunction;
     }
 
     public String getStrRoleId() {
@@ -94,11 +98,11 @@ public class SysUserRoleAction extends QueryAction<SysUserRole> {
         this.strRoleId = strRoleId;
     }
 
-    public String getStrUserId() {
-        return strUserId;
+    public String getStrFunctionId() {
+        return strFunctionId;
     }
 
-    public void setStrUserId(String strUserId) {
-        this.strUserId = strUserId;
+    public void setStrFunctionId(String strFunctionId) {
+        this.strFunctionId = strFunctionId;
     }
 }

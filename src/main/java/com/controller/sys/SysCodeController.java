@@ -10,12 +10,13 @@ import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
 @Controller
-@RequestMapping("/sys")
-public class SysCodeAction extends QueryAction<SysCode> {
+@RequestMapping("/SysCodeAction")
+public class SysCodeController extends QueryAction<SysCode> {
 
     /**
      *
@@ -36,6 +37,7 @@ public class SysCodeAction extends QueryAction<SysCode> {
         return "/jsp/sys/sysCode";
     }
 
+    @RequestMapping("saveCode.action")
     public void saveCode() {
         try {
             if (CommonMethod.isNull(strCode)) {
@@ -54,6 +56,7 @@ public class SysCodeAction extends QueryAction<SysCode> {
         }
     }
 
+    @RequestMapping("updateCode.action")
     public void updateCode() {
         try {
             if (CommonMethod.isNull(strCode)) {
@@ -71,14 +74,17 @@ public class SysCodeAction extends QueryAction<SysCode> {
         }
     }
 
-    @RequestMapping("/findAll")
-    public void findcode() {
-        List<SysCode> sysCodeList = sysCodeService.findSysCodes();
+    @RequestMapping("/findcode.action")
+    @ResponseBody
+    public String findcode() {
+        /*List<SysCode> sysCodeList = sysCodeService.findSysCodes();
         CommonJsonConfig jsonConfig = new CommonJsonConfig();
         JSONArray jsonArr = JSONArray.fromObject(sysCodeList, jsonConfig);
-        jsonPrint(jsonArr);
+        jsonPrint(jsonArr);*/
+        return "hahahah";
     }
 
+    @RequestMapping("findPitchOncode.action")
     public void findPitchOncode() {
         if (CommonMethod.isNull(codeRelation)) {
             jsonPrint("fail,参数codeRelation不能为空");

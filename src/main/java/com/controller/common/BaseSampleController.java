@@ -16,6 +16,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -23,7 +24,8 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-public class BaseSampleAction extends QueryAction<BaseSample> {
+//@RequestMapping(value = "baseSampleAction")
+public class BaseSampleController extends QueryAction<BaseSample> {
     private final static HttpServletRequest REQUEST = null;
     /**
      *
@@ -57,7 +59,7 @@ public class BaseSampleAction extends QueryAction<BaseSample> {
         return "/jsp/sys/sysCode";
     }
 
-
+    @RequestMapping("saveSample.action")
     public void saveSample() {
         try {
             if (CommonMethod.isNull(strBaseSample)) {
@@ -76,6 +78,7 @@ public class BaseSampleAction extends QueryAction<BaseSample> {
     }
 
     @SuppressWarnings("rawtypes")
+    @RequestMapping("updateSample.action")
     public void updateSample() {
         try {
             String updateFlag = "";
@@ -109,6 +112,7 @@ public class BaseSampleAction extends QueryAction<BaseSample> {
         }
     }
 
+    @RequestMapping("findSample.action")
     public void findSample() {
         List<BaseSamplePage> sampleList = baseSampleService.findSample(strDepartmentId);
         CommonJsonConfig jsonConfig = new CommonJsonConfig();
@@ -116,6 +120,7 @@ public class BaseSampleAction extends QueryAction<BaseSample> {
         jsonPrint(jsonArr);
     }
 
+    @RequestMapping("findTemplateLocation.action")
     public void findTemplateLocation() {
         List<TemplateLocationPage> tLocationList = templateLocationService.findTLocationPageList(strTemplateInfoId);
         CommonJsonConfig jsonConfig = new CommonJsonConfig();
@@ -126,6 +131,7 @@ public class BaseSampleAction extends QueryAction<BaseSample> {
     /**
      * 保存模板（根据客户2017年4月10日要求将模板保存从参数表迁移到样品）
      */
+    @RequestMapping("uploadSampleReport.action")
     public void uploadSampleReport() {
         System.out.println("------------------------------文件上传开始");
 		/*try {
@@ -238,6 +244,7 @@ public class BaseSampleAction extends QueryAction<BaseSample> {
     /**
      * 保存日志（根据客户2017年5月10日要求增加日志保存功能）
      */
+    @RequestMapping("saveReportLogs.action")
     public void saveReportLogs() {
         System.out.println("------------------------------日志上传开始");
 		/*try {
@@ -316,6 +323,7 @@ public class BaseSampleAction extends QueryAction<BaseSample> {
 		}*/
     }
 
+    @RequestMapping("saveTemplateInfo.action")
     public void saveTemplateInfo() {
         try {
             if (CommonMethod.isNull(strTemplateInfo)) {
@@ -339,6 +347,7 @@ public class BaseSampleAction extends QueryAction<BaseSample> {
     }
 
     @SuppressWarnings("rawtypes")
+    @RequestMapping("updateTemplateInfo.action")
     public void updateTemplateInfo() {
         try {
             String updateFlag = "";
@@ -372,6 +381,7 @@ public class BaseSampleAction extends QueryAction<BaseSample> {
         }
     }
 
+    @RequestMapping("deleteTemplateInfo.action")
     public void deleteTemplateInfo() {
         try {
             if (CommonMethod.isNull(strTemplateInfo)) {
@@ -394,6 +404,7 @@ public class BaseSampleAction extends QueryAction<BaseSample> {
         }
     }
 
+    @RequestMapping("findTemplateInfo.action")
     public void findTemplateInfo() {
         List<TemplateInfoPage> tInfoList = templateInfoService.findTInfoPageList(strBaseSampleId);
         CommonJsonConfig jsonConfig = new CommonJsonConfig();

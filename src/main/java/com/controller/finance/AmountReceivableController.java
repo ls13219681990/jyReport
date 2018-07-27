@@ -18,7 +18,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Controller
-public class AmountReceivableAction extends QueryAction<AmountReceivable> {
+public class AmountReceivableController extends QueryAction<AmountReceivable> {
 
     /**
      *

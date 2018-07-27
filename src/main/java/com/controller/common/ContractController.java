@@ -12,12 +12,14 @@ import net.sf.json.JSONArray;
 import net.sf.json.util.JSONUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Collection;
 import java.util.List;
 
 @Controller
-public class ContractAction extends QueryAction<Agreement> {
+@RequestMapping("contractAction")
+public class ContractController extends QueryAction<Agreement> {
 
     /**
      *
@@ -39,6 +41,7 @@ public class ContractAction extends QueryAction<Agreement> {
     }
 
     @SuppressWarnings("unchecked")
+    @RequestMapping("saveContract.action")
     public void saveContract() {
         try {
             if (CommonMethod.isNull(strContract)) {
@@ -61,6 +64,7 @@ public class ContractAction extends QueryAction<Agreement> {
     }
 
     @SuppressWarnings("unchecked")
+    @RequestMapping("updateContract.action")
     public void updateContract() {
         try {
             if (CommonMethod.isNull(strContract)) {
@@ -85,6 +89,7 @@ public class ContractAction extends QueryAction<Agreement> {
     /**
      * 根据合同ID查询统计合同报告
      */
+    @RequestMapping("findContract.action")
     public void findContract() {
         ContractPage ca = new ContractPage();
         if (!CommonMethod.isNull(strContract)) {
@@ -99,6 +104,7 @@ public class ContractAction extends QueryAction<Agreement> {
     /**
      * 根据合同ID查询合同报告不统计
      */
+    @RequestMapping("findContractById.action")
     public void findContractById() {
         ContractPage ca = new ContractPage();
         if (!CommonMethod.isNull(strContract)) {

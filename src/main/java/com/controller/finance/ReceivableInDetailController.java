@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 
 @Controller
-public class ReceivableInDetailAction extends QueryAction<ReceivableInvoiceDetails> {
+@RequestMapping("receivableInDetailAction")
+public class ReceivableInDetailController extends QueryAction<ReceivableInvoiceDetails> {
 
     /**
      * 收款发票关系
@@ -40,6 +41,7 @@ public class ReceivableInDetailAction extends QueryAction<ReceivableInvoiceDetai
     /**
      * 保存发票与收款的关系
      */
+    @RequestMapping("saveReInDetails.action")
     public void saveReInDetails() {
         try {
             if (CommonMethod.isNull(strReInDetail) || CommonMethod.isNull(strInvoiceDetailId)) {
@@ -60,6 +62,7 @@ public class ReceivableInDetailAction extends QueryAction<ReceivableInvoiceDetai
     /**
      * 保存收款与发票的关系
      */
+    @RequestMapping("saveReAcDetails.action")
     public void saveReAcDetails() {
         try {
             if (CommonMethod.isNull(strReInDetail) || CommonMethod.isNull(strAccountDetailId)) {
@@ -80,6 +83,7 @@ public class ReceivableInDetailAction extends QueryAction<ReceivableInvoiceDetai
     /**
      * 根据票据ID查找对应的收款记录
      */
+    @RequestMapping("findReInDetails.action")
     public void findReInDetails() {
         if (CommonMethod.isNull(strInvoiceDetailId)) {
             jsonPrint("fail,参数strInvoiceDetailId不能为空");
@@ -94,6 +98,7 @@ public class ReceivableInDetailAction extends QueryAction<ReceivableInvoiceDetai
     /**
      * 根据收款ID查找对应的票据记录
      */
+    @RequestMapping("findReAcDetails.action")
     public void findReAcDetails() {
         if (CommonMethod.isNull(strAccountDetailId)) {
             jsonPrint("fail,参数strAccountDetailId不能为空");

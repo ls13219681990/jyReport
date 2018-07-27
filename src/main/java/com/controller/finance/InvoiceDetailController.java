@@ -20,7 +20,8 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-public class InvoiceDetailAction extends QueryAction<InvoiceDetails> {
+@RequestMapping("InvoiceDetailAction")
+public class InvoiceDetailController extends QueryAction<InvoiceDetails> {
 
     /**
      * 发票
@@ -47,6 +48,7 @@ public class InvoiceDetailAction extends QueryAction<InvoiceDetails> {
         return "/jsp/sys/sysCode";
     }
 
+    @RequestMapping("saveInvoiceDetails.action")
     public void saveInvoiceDetails() {
         try {
             if (CommonMethod.isNull(strInvoiceDetail)) {
@@ -72,6 +74,7 @@ public class InvoiceDetailAction extends QueryAction<InvoiceDetails> {
         }
     }
 
+    @RequestMapping("updateInvoiceDetails.action")
     public void updateInvoiceDetails() {
         try {
             if (CommonMethod.isNull(strInvoiceDetail)) {
@@ -93,6 +96,7 @@ public class InvoiceDetailAction extends QueryAction<InvoiceDetails> {
     /**
      * 根据条件查找对应的发票记录
      */
+    @RequestMapping("findInvoiceDetail.action")
     public void findInvoiceDetail() {
         InvoiceDetailPage idPage = new InvoiceDetailPage();
         if (!CommonMethod.isNull(strInvoiceDetail)) {
@@ -108,6 +112,7 @@ public class InvoiceDetailAction extends QueryAction<InvoiceDetails> {
     /**
      * 根据发票ID查找对应的收款记录
      */
+    @RequestMapping("findReAcDetail.action")
     public void findReAcDetail() {
         if (CommonMethod.isNull(strInvoiceDetailId)) {
             jsonPrint("fail,参数strInvoiceDetailId不能为空");
@@ -123,6 +128,7 @@ public class InvoiceDetailAction extends QueryAction<InvoiceDetails> {
     /**
      * 发票作废
      */
+    @RequestMapping("invoiceInvalidation.action")
     public void invoiceInvalidation() {
         if (CommonMethod.isNull(strInvoiceDetailId)) {
             jsonPrint("fail,参数strInvoiceDetailId不能为空");
@@ -147,6 +153,7 @@ public class InvoiceDetailAction extends QueryAction<InvoiceDetails> {
     /**
      * 根据条件查找对应的发票记录（作废）
      */
+    @RequestMapping("findInvoiceDetailInvalidation.action")
     public void findInvoiceDetailInvalidation() {
         InvoiceDetailPage idPage = new InvoiceDetailPage();
         if (!CommonMethod.isNull(strInvoiceDetail)) {

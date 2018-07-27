@@ -12,12 +12,14 @@ import net.sf.json.JSONArray;
 import net.sf.json.util.JSONUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Collection;
 import java.util.List;
 
 @Controller
-public class CapitalAccountDetailAction extends QueryAction<CapitalAccountDetail> {
+@RequestMapping("capitalAccountDetailAction")
+public class CapitalAccountDetailController extends QueryAction<CapitalAccountDetail> {
 
     /**
      *
@@ -44,6 +46,7 @@ public class CapitalAccountDetailAction extends QueryAction<CapitalAccountDetail
      * 导入资金账号明细表
      */
     @SuppressWarnings("unchecked")
+    @RequestMapping("saveCADetailTable.action")
     public void saveCADetailTable() {
         try {
             if (CommonMethod.isNull(strCADetail)) {
@@ -64,6 +67,7 @@ public class CapitalAccountDetailAction extends QueryAction<CapitalAccountDetail
         }
     }
 
+    @RequestMapping("findCADetailList.action")
     public void findCADetailList() {
         if (CommonMethod.isNull(strCapitalAccountId)) {
             jsonPrint("fail,参数strCapitalAccountId不能为空");
@@ -75,6 +79,7 @@ public class CapitalAccountDetailAction extends QueryAction<CapitalAccountDetail
         jsonPrint(jsonArr);
     }
 
+    @RequestMapping("findCADetailListAll.action")
     public void findCADetailListAll() {
         if (CommonMethod.isNull(contractId)) {
             jsonPrint("fail,参数contractId不能为空");
@@ -86,6 +91,7 @@ public class CapitalAccountDetailAction extends QueryAction<CapitalAccountDetail
         jsonPrint(jsonArr);
     }
 
+    @RequestMapping("saveCADetailListAll.action")
     public void saveCADetailListAll() {
         if (CommonMethod.isNull(contractId)) {
             jsonPrint("fail,参数contractId不能为空");

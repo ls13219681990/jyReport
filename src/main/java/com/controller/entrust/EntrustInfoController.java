@@ -26,7 +26,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 @Controller
-public class EntrustInfoAction extends QueryAction<EntrustInfo> {
+@RequestMapping("entrustInfoAction")
+public class EntrustInfoController extends QueryAction<EntrustInfo> {
 
     /**
      *
@@ -111,6 +112,7 @@ public class EntrustInfoAction extends QueryAction<EntrustInfo> {
         return "/jsp/sys/sysCode";
     }
 
+    @RequestMapping("findIsEntrust.action")
     public void findIsEntrust() {
         List<EntrustInfo> eiList = entrustInfoService.findIsEntrust(
                 strECompanyId, strProjectId, strSUnitId);
@@ -124,6 +126,7 @@ public class EntrustInfoAction extends QueryAction<EntrustInfo> {
     /**
      * 委托时，获取检测明细的价格
      */
+    @RequestMapping("findEntrustMDetail.action")
     public void findEntrustMDetail() {
         if (CommonMethod.isNull(strEntrustMDetail)) {
             jsonPrint("fail,参数strEntrustMDetail不能为空");
@@ -178,6 +181,7 @@ public class EntrustInfoAction extends QueryAction<EntrustInfo> {
     }
 
     @SuppressWarnings({"rawtypes", "unused"})
+    @RequestMapping("saveEntrustInfo.action")
     public void saveEntrustInfo() {
         try {
             //HttpServletRequest request = ServletActionContext.getRequest();
@@ -232,6 +236,7 @@ public class EntrustInfoAction extends QueryAction<EntrustInfo> {
         }
     }
 
+    @RequestMapping("updateEntrustInfoBySn.action")
     public void updateEntrustInfoBySn() {
         try {
             if (CommonMethod.isNull(strEntrustInfo)) {
@@ -258,6 +263,7 @@ public class EntrustInfoAction extends QueryAction<EntrustInfo> {
         }
     }
 
+    @RequestMapping("updateEntrustInfo.action")
     public void updateEntrustInfo() {
         try {
             if (CommonMethod.isNull(strEntrustInfo)) {
@@ -290,6 +296,7 @@ public class EntrustInfoAction extends QueryAction<EntrustInfo> {
     }
 
     @SuppressWarnings({"rawtypes", "unused"})
+    @RequestMapping("updateEntrustMDetail.action")
     public void updateEntrustMDetail() {
         try {
             //HttpServletRequest request = ServletActionContext.getRequest();
@@ -323,6 +330,7 @@ public class EntrustInfoAction extends QueryAction<EntrustInfo> {
     }
 
     @SuppressWarnings({"rawtypes", "unused"})
+    @RequestMapping("saveEntrustMDetail.action")
     public void saveEntrustMDetail() {
         try {
             //HttpServletRequest request = ServletActionContext.getRequest();
@@ -358,6 +366,7 @@ public class EntrustInfoAction extends QueryAction<EntrustInfo> {
     /**
      * 根据委托条件，查询委托信息
      */
+    @RequestMapping("findEntrustInfoByCondition.action")
     public void findEntrustInfoByCondition() {
         EntrustSavePage esPage = new EntrustSavePage();
         if (!CommonMethod.isNull(strEntrustInfo)) {
@@ -375,6 +384,7 @@ public class EntrustInfoAction extends QueryAction<EntrustInfo> {
     /**
      * 根据委托条件，查询委托信息
      */
+    @RequestMapping("findEntrustInfoByConditionByAll.action")
     public void findEntrustInfoByConditionByAll() {
         EntrustSavePage esPage = new EntrustSavePage();
         if (!CommonMethod.isNull(strEntrustInfo)) {
@@ -394,6 +404,7 @@ public class EntrustInfoAction extends QueryAction<EntrustInfo> {
     /**
      * 根据委托ID，查询委托金额明细信息
      */
+    @RequestMapping("findEntrustDetailInfoById.action")
     public void findEntrustDetailInfoById() {
         if (CommonMethod.isNull(strEntrustId)) {
             jsonPrint("fail,委托ID不能为空");
@@ -409,6 +420,7 @@ public class EntrustInfoAction extends QueryAction<EntrustInfo> {
     /**
      * 根据委托明细ID，查询委托信息
      */
+    @RequestMapping("showERDetailInfoById.action")
     public void showERDetailInfoById() {
         if (CommonMethod.isNull(entrustDetailId)) {
             jsonPrint("fail,参数entrustDetailId不能为空");
@@ -428,6 +440,7 @@ public class EntrustInfoAction extends QueryAction<EntrustInfo> {
     /**
      * 根据委托ID，查询委托明细信息(报告：委托室用)
      */
+    @RequestMapping("findERDetailInfoById.action")
     public void findERDetailInfoById() {
         if (CommonMethod.isNull(strEntrustInfo)) {
             jsonPrint("fail,参数strEntrustInfo不能为空");
@@ -446,6 +459,7 @@ public class EntrustInfoAction extends QueryAction<EntrustInfo> {
     /**
      * 根据委托信息，查询委托明细信息(报告：检测科室用)
      */
+    @RequestMapping("findERDetailInfo.action")
     public void findERDetailInfo() {
         if (CommonMethod.isNull(strEntrustInfo)) {
             jsonPrint("fail,参数strEntrustInfo不能为空");
@@ -464,6 +478,7 @@ public class EntrustInfoAction extends QueryAction<EntrustInfo> {
     /**
      * 查询委托传送单信息
      */
+    @RequestMapping("findEntrustEfSheet.action")
     public void findEntrustEfSheet() {
         if (CommonMethod.isNull(strEntrustId)) {
             jsonPrint("fail,参数strEntrustId不能为空");
@@ -479,6 +494,7 @@ public class EntrustInfoAction extends QueryAction<EntrustInfo> {
     /**
      * 查询检测传送单信息
      */
+    @RequestMapping("findTestEfSheet.action")
     public void findTestEfSheet() {
         if (CommonMethod.isNull(strEntrustId)) {
             jsonPrint("fail,参数strEntrustId不能为空");
@@ -494,6 +510,7 @@ public class EntrustInfoAction extends QueryAction<EntrustInfo> {
     /**
      * 根据委托记录ID修改委托记录状态
      */
+    @RequestMapping("updateEntrustStatus.action")
     public void updateEntrustStatus() {
         try {
             if (CommonMethod.isNull(strEntrustId)) {
@@ -518,6 +535,7 @@ public class EntrustInfoAction extends QueryAction<EntrustInfo> {
      *
      * @return
      */
+    @RequestMapping("findProjectMoney.action")
     public void findProjectMoney() {
         ProjectMoneyPage pMoneyPage = new ProjectMoneyPage();
         if (!CommonMethod.isNull(strProjectMoney)) {
@@ -537,6 +555,7 @@ public class EntrustInfoAction extends QueryAction<EntrustInfo> {
      *
      * @return
      */
+    @RequestMapping("findProjectTestMoney.action")
     public void findProjectTestMoney() {
         if (CommonMethod.isNull(strProjectId)) {
             jsonPrint("fail,参数strProjectId不能为空");
@@ -554,6 +573,7 @@ public class EntrustInfoAction extends QueryAction<EntrustInfo> {
      * (报告：各科室批量审核批准用)
      */
     @SuppressWarnings({"unchecked", "unused", "rawtypes"})
+    @RequestMapping("saveAllReportStatus.action")
     public void saveAllReportStatus() {
         try {
             //HttpServletRequest request = ServletActionContext.getRequest();
@@ -587,6 +607,7 @@ public class EntrustInfoAction extends QueryAction<EntrustInfo> {
      * (报告：判断各科室批量审核批准是否有未通过的)
      */
     @SuppressWarnings({"unchecked", "unused", "rawtypes"})
+    @RequestMapping("ifAllReportStatus.action")
     public void ifAllReportStatus() {
         try {
             if (CommonMethod.isNull(strEntrustInfo)) {
@@ -617,6 +638,7 @@ public class EntrustInfoAction extends QueryAction<EntrustInfo> {
     /**
      * 根据委托ID，查询委托明细信息(报告：各科室审核批准用)
      */
+    @RequestMapping("findDepartmentDetailInfo.action")
     public void findDepartmentDetailInfo() {
         if (CommonMethod.isNull(strEntrustInfo)) {
             jsonPrint("fail,参数strEntrustInfo不能为空");
@@ -638,6 +660,7 @@ public class EntrustInfoAction extends QueryAction<EntrustInfo> {
     /**
      * 根据委托ID，查询委托明细信息(报告：各科室录入时用)
      */
+    @RequestMapping("findDepartmentDetailInputInfo.action")
     public void findDepartmentDetailInputInfo() {
         if (CommonMethod.isNull(strEntrustInfo)) {
             jsonPrint("fail,参数strEntrustInfo不能为空");
@@ -659,6 +682,7 @@ public class EntrustInfoAction extends QueryAction<EntrustInfo> {
      *
      * @return
      */
+    @RequestMapping("findOutputValueCount.action")
     public void findOutputValueCount() {
         if (CommonMethod.isNull(strOutputValueYear)) {
             jsonPrint("fail,参数strOutputValueYear不能为空");
@@ -675,6 +699,7 @@ public class EntrustInfoAction extends QueryAction<EntrustInfo> {
     /**
      * 根据部门返回报告列表
      */
+    @RequestMapping("findDepartmentReportInfo.action")
     public void findDepartmentReportInfo() {
         List<TestReportInfoPage> findDepartmentReportInfo = entrustInfoService
                 .findDepartmentReportInfo(pageNo, pageSize, departmentId,
@@ -692,7 +717,7 @@ public class EntrustInfoAction extends QueryAction<EntrustInfo> {
     /**
      * 应收款统计
      */
-
+    @RequestMapping("findreceivablesStatistics.action")
     public void findreceivablesStatistics() {
         List<AgreementPage> findReceivablesStatistics = entrustInfoService
                 .findReceivablesStatistics(pageNo, pageSize, accountType, contractNo, entrustCompanyName, projectName);
@@ -705,7 +730,7 @@ public class EntrustInfoAction extends QueryAction<EntrustInfo> {
     /**
      * 委托流水统计
      */
-
+    @RequestMapping("findentrustWaterAccountStatistics.action")
     public void findentrustWaterAccountStatistics() {
         System.out.println("进方法" + CommonMethod.getDate());
         List<WaterAccountStatisticsPage> findentrustWaterAccountStatistics = entrustInfoService
@@ -725,6 +750,7 @@ public class EntrustInfoAction extends QueryAction<EntrustInfo> {
     /**
      * 编辑报告列表sampleReport对象数据
      */
+    @RequestMapping("sampleReportList.action")
     public void sampleReportList() {
         if (CommonMethod.isNull(strEntrustDetail)) {
             jsonPrint("fail,参数strEntrustDetail不能为空");

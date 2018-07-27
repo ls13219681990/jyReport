@@ -9,11 +9,13 @@ import com.service.common.ProjectInfoService;
 import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
 @Controller
-public class ProjectInfoAction extends QueryAction<ProjectInfo> {
+@RequestMapping("ProjectInfoAction")
+public class ProjectInfoController extends QueryAction<ProjectInfo> {
 
     /**
      *
@@ -35,6 +37,7 @@ public class ProjectInfoAction extends QueryAction<ProjectInfo> {
         return "/jsp/sys/sysCode";
     }
 
+    @RequestMapping("saveProjectInfo.action")
     public void saveProjectInfo() {
         try {
             if (CommonMethod.isNull(strProjectInfo)) {
@@ -53,6 +56,7 @@ public class ProjectInfoAction extends QueryAction<ProjectInfo> {
         }
     }
 
+    @RequestMapping("updateProjectInfo.action")
     public void updateProjectInfo() {
         try {
             if (CommonMethod.isNull(strProjectInfo)) {
@@ -71,6 +75,7 @@ public class ProjectInfoAction extends QueryAction<ProjectInfo> {
         }
     }
 
+    @RequestMapping("findProjectInfo.action")
     public void findProjectInfo() {
         List<ProjectInfo> piList = projectInfoService.findProjectInfo(strProjectId, strProjectName);
         CommonJsonConfig jsonConfig = new CommonJsonConfig();

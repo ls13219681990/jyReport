@@ -27,7 +27,8 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-public class TestReportInfoAction extends QueryAction<TestReportInfo> {
+@RequestMapping("testReportInfoAction")
+public class TestReportInfoController extends QueryAction<TestReportInfo> {
 
     /**
      *
@@ -79,6 +80,7 @@ public class TestReportInfoAction extends QueryAction<TestReportInfo> {
         return "/jsp/sys/sysCode";
     }
 
+    @RequestMapping("findReportInfo.action")
     public void findReportInfo() {
         List<TestReportInfoPage> triPageList = testReportInfoService
                 .findReportInfo(strEDetailId, strStatus);
@@ -90,6 +92,7 @@ public class TestReportInfoAction extends QueryAction<TestReportInfo> {
     /***
      * 查询报告头部内容
      */
+    @RequestMapping("findReportTitleInfo.action")
     public void findReportTitleInfo() {
         if (CommonMethod.isNull(strReportId)) {
             jsonPrint("fail,参数strReportId不能为空");
@@ -105,6 +108,7 @@ public class TestReportInfoAction extends QueryAction<TestReportInfo> {
     /***
      * 打回报告修改报告状态
      */
+    @RequestMapping("updateTestReportInfoByStatus.action")
     public void updateTestReportInfoByStatus() {
 
         try {
@@ -134,6 +138,7 @@ public class TestReportInfoAction extends QueryAction<TestReportInfo> {
      * 根据样品编号组合保存报告数据
      */
     @SuppressWarnings("rawtypes")
+    @RequestMapping("saveSampleReportInfo.action")
     public void saveSampleReportInfo() {
         try {
             if (CommonMethod.isNull(strTReportInfo)) {
@@ -165,6 +170,7 @@ public class TestReportInfoAction extends QueryAction<TestReportInfo> {
     /***
      * 修改报告数据
      */
+    @RequestMapping("updateTestReportInfo.action")
     public void updateTestReportInfo() {
         try {
             if (CommonMethod.isNull(strTReportInfo)) {
@@ -189,6 +195,7 @@ public class TestReportInfoAction extends QueryAction<TestReportInfo> {
      * 修改样品报告关系
      */
     @SuppressWarnings("rawtypes")
+    @RequestMapping("updateSampleReportByReportId.action")
     public void updateSampleReportByReportId() {
         try {
             if (CommonMethod.isNull(strTReportInfo)) {
@@ -221,6 +228,7 @@ public class TestReportInfoAction extends QueryAction<TestReportInfo> {
      * 修改样品数据
      */
     @SuppressWarnings("rawtypes")
+    @RequestMapping("updateSampleReportInfo.action")
     public void updateSampleReportInfo() {
         try {
             if (CommonMethod.isNull(strTReportInfo)) {
@@ -248,6 +256,7 @@ public class TestReportInfoAction extends QueryAction<TestReportInfo> {
         }
     }
 
+    @RequestMapping("saveTReportInfo.action")
     public void saveTReportInfo() {
 		/*try {
 			if (CommonMethod.isNull(strTReportInfo)) {
@@ -378,6 +387,7 @@ public class TestReportInfoAction extends QueryAction<TestReportInfo> {
 		}*/
     }
 
+    @RequestMapping("updateTReportInfo.action")
     public void updateTReportInfo() {
 		/*try {
 			if (CommonMethod.isNull(strTReportInfo)) {
@@ -509,6 +519,7 @@ public class TestReportInfoAction extends QueryAction<TestReportInfo> {
      * 批量批准或者审核或者发放
      */
     @SuppressWarnings("unchecked")
+    @RequestMapping("saveAllReportApAndAu.action")
     public void saveAllReportApAndAu() {
         try {
             if (CommonMethod.isNull(strTReportInfo)) {
@@ -537,6 +548,7 @@ public class TestReportInfoAction extends QueryAction<TestReportInfo> {
      * 批量批准或者审核或者发放 新版使用 以前的使用出错 05-09
      */
     @SuppressWarnings("unchecked")
+    @RequestMapping("saveReportPrintInfo.action")
     public void saveReportPrintInfo() {
         try {
             if (CommonMethod.isNull(reportId)) {
@@ -571,6 +583,7 @@ public class TestReportInfoAction extends QueryAction<TestReportInfo> {
      * 修改报告打印次数
      */
     @SuppressWarnings("unchecked")
+    @RequestMapping("saveReportPrintNum.action")
     public void saveReportPrintNum() {
         try {
             if (CommonMethod.isNull(strTReportInfo)) {
@@ -596,6 +609,7 @@ public class TestReportInfoAction extends QueryAction<TestReportInfo> {
         }
     }
 
+    @RequestMapping("findByTwoDInfoId.action")
     public void findByTwoDInfoId() {
         try {
             TwoDInfo tdInfo = twoDInfoService.findById(strTwoDInfoId);
@@ -676,6 +690,7 @@ public class TestReportInfoAction extends QueryAction<TestReportInfo> {
     /**
      * 查询报告编号是否重复
      */
+    @RequestMapping("findReportNumber.action")
     public void findReportNumber() {
         if (CommonMethod.isNull(reportNumber)) {
             jsonPrint("fail,参数reportNumber不能为空");
@@ -693,6 +708,7 @@ public class TestReportInfoAction extends QueryAction<TestReportInfo> {
     /**
      * 报告列表样品报告关系表数据
      */
+    @RequestMapping("sampleReportList.action")
     public void sampleReportList() {
         TestReportInfoPage tesPage = (TestReportInfoPage) toBean(
                 strTReportInfo, TestReportInfoPage.class);
@@ -708,6 +724,7 @@ public class TestReportInfoAction extends QueryAction<TestReportInfo> {
     /**
      * 快速发报告
      */
+    @RequestMapping("fastReleaseReport.action")
     public void fastReleaseReport() {
 /*
 		TestReportInfoPage triPage = (TestReportInfoPage) toBean(
@@ -828,6 +845,7 @@ public class TestReportInfoAction extends QueryAction<TestReportInfo> {
     /**
      * 修改报告
      */
+    @RequestMapping("updateReport.action")
     public void updateReport() {/*
 		TestReportInfoPage triPage = (TestReportInfoPage) toBean(
 				strTReportInfo, TestReportInfoPage.class);
@@ -967,6 +985,7 @@ public class TestReportInfoAction extends QueryAction<TestReportInfo> {
     /**
      * 修改报告
      */
+    @RequestMapping("twoInfo.action")
     public void twoInfo() {
 
         TestReportInfoPage triPage = (TestReportInfoPage) toBean(
