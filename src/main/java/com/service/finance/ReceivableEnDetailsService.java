@@ -1,6 +1,6 @@
 package com.service.finance;
 
-import com.common.service.BaseService;
+import com.service.common.BaseService;
 import com.dao.page.InvoiceDetailPage;
 import com.dao.page.ReAccountDetailPage;
 import com.model.ReceivableEntrustDetails;
@@ -21,7 +21,7 @@ public interface ReceivableEnDetailsService extends BaseService<ReceivableEntrus
     /**
      * 根据发票ID查找对应的委托数据
      *
-     * @param strAccountDetailId
+     * @param //strAccountDetailId
      * @return
      */
     public List<ReceivableEntrustDetails> findReInDetails(String strInvoiceDetailId);

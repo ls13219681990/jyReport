@@ -17,7 +17,7 @@
             <ref bean="sessionFactory"/>
         </property>
     </bean>
-
+    <!--dddd -->
     <!-- 开启注解事务-->
     <tx:annotation-driven transaction-manager="transactionManager"/>
 

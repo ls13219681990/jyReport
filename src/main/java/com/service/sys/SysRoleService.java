@@ -1,6 +1,6 @@
 package com.service.sys;
 
-import com.common.service.BaseService;
+import com.service.common.BaseService;
 import com.model.SysRole;
 
 import java.util.Collection;

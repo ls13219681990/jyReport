@@ -44,7 +44,7 @@ public class ReceivableAcDetailAction extends QueryAction<ReceivableInvoiceDetai
     /*@SuppressWarnings("rawtypes")
     @Action(value = "/receivableAcDetailAction", results = {
             @Result(name = QUERY, location = "/jsp/sys/sysCode.html") })*/
-    @RequestMapping(value = "/baseDepartmentAction")
+    @RequestMapping(value = "/aqbaseDepartmentAction")
     public String jumpSys() {
         return "/jsp/sys/sysCode";
     }

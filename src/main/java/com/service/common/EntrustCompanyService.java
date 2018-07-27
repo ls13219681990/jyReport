@@ -1,6 +1,5 @@
 package com.service.common;
 
-import com.common.service.BaseService;
 import com.dao.page.AdvanceMoneyPage;
 import com.model.EntrustCompany;
 

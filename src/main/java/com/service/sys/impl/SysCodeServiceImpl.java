@@ -1,9 +1,9 @@
 package com.service.sys.impl;
 
 import com.common.CommonMethod;
-import com.common.action.JsonPager;
-import com.common.dao.BaseDao;
-import com.common.service.BaseServiceImpl;
+import com.controller.common.JsonPager;
+import com.dao.common.BaseDao;
+import com.service.common.impl.BaseServiceImpl;
 import com.dao.sys.SysCodeDao;
 import com.model.SysCode;
 import com.service.sys.SysCodeService;

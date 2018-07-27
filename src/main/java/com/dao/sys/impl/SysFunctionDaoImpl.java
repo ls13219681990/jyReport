@@ -1,9 +1,9 @@
 package com.dao.sys.impl;
 
-import com.common.action.EasyPager;
-import com.common.action.JsonPager;
-import com.common.action.PaginationSupport;
-import com.common.dao.BaseDaoImpl;
+import com.controller.common.EasyPager;
+import com.controller.common.JsonPager;
+import com.controller.common.PaginationSupport;
+import com.dao.common.impl.BaseDaoImpl;
 import com.dao.sys.SysFunctionDao;
 import com.model.SysFunction;
 import org.hibernate.criterion.DetachedCriteria;

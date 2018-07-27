@@ -9,7 +9,7 @@
  * 创建时间:2011-11-16 下午09:25:56
  *******************************************************************
  */
-package com.common.action;
+package com.controller.common;
 
 import java.util.List;
 

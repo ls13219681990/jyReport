@@ -1,6 +1,6 @@
 package com.dao.entrust;
 
-import com.common.dao.BaseDao;
+import com.dao.common.BaseDao;
 import com.model.EntrustDetails;
 
 public interface EntrustDetailDao extends BaseDao<EntrustDetails> {

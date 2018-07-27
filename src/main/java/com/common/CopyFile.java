@@ -1,17 +1,9 @@
 package com.common;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.*;
 
 
 public class CopyFile {
@@ -92,6 +84,8 @@ public class CopyFile {
     }
 
     public static void main(String[] args) {
+
+
         String a = "D:\\apache-tomcat-7.0.29\\webapps\\reportManage\\report\\2B01713617A74124978F8A517C61E1AB\1C085EDEF3104334B61CF2E9EA9BC2F9\2018-05-24\02F99E.xlsx";
         String b = "D:\\apache-tomcat-7.0.29\\webapps\\reportManage\\report\\2B01713617A74124978F8A517C61E1AB\1C085EDEF3104334B61CF2E9EA9BC2F9\2018-05-24\1.xlsx";
         CopyFile.copyeExcel(a, b);

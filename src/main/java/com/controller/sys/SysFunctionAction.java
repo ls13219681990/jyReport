@@ -28,7 +28,7 @@ public class SysFunctionAction extends QueryAction<SysFunction> {
 
     /*@Action(value = "/sysFunctionAction", results = {
             @Result(name = QUERY, location = "/jsp/sys/sysCode.html") })*/
-    @RequestMapping(value = "/baseDepartmentAction")
+    @RequestMapping(value = "/abaseDepartmentAction")
     public String jumpSys() {
         return "/jsp/sys/sysCode";
     }

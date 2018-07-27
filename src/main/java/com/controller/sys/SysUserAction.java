@@ -33,7 +33,7 @@ public class SysUserAction extends QueryAction<SysUser> {
 
     /*@Action(value = "/sysUserAction", results = {
             @Result(name = QUERY, location = "/jsp/sys/sysCode.html") })*/
-    @RequestMapping(value = "/baseDepartmentAction")
+    @RequestMapping(value = "/asdbaseDepartmentAction")
     public String jumpSys() {
         return "/jsp/sys/sysCode";
     }

@@ -1,9 +1,9 @@
 package com.service.entrust.impl;
 
 import com.common.*;
-import com.common.action.JsonPager;
-import com.common.dao.BaseDao;
-import com.common.service.BaseServiceImpl;
+import com.controller.common.JsonPager;
+import com.dao.common.BaseDao;
+import com.service.common.impl.BaseServiceImpl;
 import com.dao.common.BaseSampleDao;
 import com.dao.common.SupervisionUnitDao;
 import com.dao.common.TemplateInfoDao;

@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="jyReport:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="xxx.war">
+      <element id="artifact" artifact-name="jyReport:war exploded" />
+    </root>
+  </artifact>
+</component>

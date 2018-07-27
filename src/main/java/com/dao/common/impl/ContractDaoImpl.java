@@ -1,10 +1,9 @@
 package com.dao.common.impl;
 
 import com.common.CommonMethod;
-import com.common.action.EasyPager;
-import com.common.action.JsonPager;
-import com.common.action.PaginationSupport;
-import com.common.dao.BaseDaoImpl;
+import com.controller.common.EasyPager;
+import com.controller.common.JsonPager;
+import com.controller.common.PaginationSupport;
 import com.dao.common.ContractDao;
 import com.model.Agreement;
 import com.dao.page.ContractPage;

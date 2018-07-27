@@ -1,6 +1,6 @@
 package com.service.entrust;
 
-import com.common.service.BaseService;
+import com.service.common.BaseService;
 import com.dao.page.ReportTemplateInfoPage;
 import com.dao.page.SampleReportRelationPage;
 import com.dao.page.TestReportInfoPage;

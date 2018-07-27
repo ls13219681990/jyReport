@@ -1,6 +1,5 @@
 package com.service.common;
 
-import com.common.service.BaseService;
 import com.dao.page.CapitalAccountDetailPage;
 import com.model.CapitalAccountDetail;
 

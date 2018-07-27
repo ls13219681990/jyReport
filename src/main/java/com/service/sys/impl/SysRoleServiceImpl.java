@@ -1,10 +1,10 @@
 package com.service.sys.impl;
 
 import com.common.CommonMethod;
-import com.common.action.JsonPager;
-import com.common.action.PaginationSupport;
-import com.common.dao.BaseDao;
-import com.common.service.BaseServiceImpl;
+import com.controller.common.JsonPager;
+import com.controller.common.PaginationSupport;
+import com.dao.common.BaseDao;
+import com.service.common.impl.BaseServiceImpl;
 import com.dao.sys.SysRoleDao;
 import com.model.SysRole;
 import com.service.sys.SysRoleService;

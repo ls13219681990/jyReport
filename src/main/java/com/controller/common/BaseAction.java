@@ -1,12 +1,13 @@
-package com.common.action;
+package com.controller.common;
 
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.converters.SqlDateConverter;
 import org.apache.commons.beanutils.converters.SqlTimestampConverter;
+import org.springframework.stereotype.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 
-
+@Controller
 public abstract class BaseAction {
     private final static HttpServletRequest REQUEST = null;
 

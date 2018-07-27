@@ -106,7 +106,7 @@ public class EntrustInfoAction extends QueryAction<EntrustInfo> {
     private CapitalAccountDetailService capitalAccountDetailService;
 
     //@Action(value = "/entrustInfoAction", results = { @Result(name = QUERY, location = "/jsp/sys/sysCode.html") })
-    @RequestMapping(value = "/baseDepartmentAction")
+    @RequestMapping(value = "/aaaaaqbaseDepartmentAction")
     public String jumpSys() {
         return "/jsp/sys/sysCode";
     }

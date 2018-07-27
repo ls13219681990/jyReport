@@ -34,7 +34,7 @@ public class ReceivableEnDetailAction extends QueryAction<ReceivableEntrustDetai
 
     /*@Action(value = "/receivableEnDetailAction", results = {
             @Result(name = QUERY, location = "/jsp/sys/sysCode.html") })*/
-    @RequestMapping(value = "/baseDepartmentAction")
+    @RequestMapping(value = "/aabaseDepartmentAction")
     public String jumpSys() {
         return "/jsp/sys/sysCode";
     }

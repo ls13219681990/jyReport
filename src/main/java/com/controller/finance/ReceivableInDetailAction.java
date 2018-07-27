@@ -32,7 +32,7 @@ public class ReceivableInDetailAction extends QueryAction<ReceivableInvoiceDetai
 
     /*@Action(value = "/receivableInDetailAction", results = {
             @Result(name = QUERY, location = "/jsp/sys/sysCode.html") })*/
-    @RequestMapping(value = "/baseDepartmentAction")
+    @RequestMapping(value = "/zxcabaseDepartmentAction")
     public String jumpSys() {
         return "/jsp/sys/sysCode";
     }

@@ -1,6 +1,5 @@
 package com.dao.common;
 
-import com.common.dao.BaseDao;
 import com.model.Agreement;
 import com.dao.page.ContractPage;
 

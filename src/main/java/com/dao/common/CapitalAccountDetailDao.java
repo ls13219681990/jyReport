@@ -2,7 +2,6 @@ package com.dao.common;
 
 import java.util.List;
 
-import com.common.dao.BaseDao;
 import com.model.CapitalAccountDetail;
 import com.dao.page.CapitalAccountDetailPage;
 

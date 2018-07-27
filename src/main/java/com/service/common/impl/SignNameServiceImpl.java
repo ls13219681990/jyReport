@@ -1,8 +1,7 @@
 package com.service.common.impl;
 
-import com.common.action.JsonPager;
-import com.common.dao.BaseDao;
-import com.common.service.BaseServiceImpl;
+import com.controller.common.JsonPager;
+import com.dao.common.BaseDao;
 import com.model.SignName;
 import com.service.common.SignNameService;
 import org.springframework.stereotype.Service;

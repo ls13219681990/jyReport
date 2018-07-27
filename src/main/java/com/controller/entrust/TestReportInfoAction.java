@@ -74,7 +74,7 @@ public class TestReportInfoAction extends QueryAction<TestReportInfo> {
 
     //@Action(value = "/testReportInfoAction", results = { @Result(name = QUERY, location = "/jsp/sys/sysCode.html") })
 
-    @RequestMapping(value = "/baseDepartmentAction")
+    @RequestMapping(value = "/zxaqebaseDepartmentAction")
     public String jumpSys() {
         return "/jsp/sys/sysCode";
     }

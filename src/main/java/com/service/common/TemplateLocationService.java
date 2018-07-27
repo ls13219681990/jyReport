@@ -1,6 +1,5 @@
 package com.service.common;
 
-import com.common.service.BaseService;
 import com.dao.page.TemplateLocationPage;
 import com.model.TemplateLocation;
 

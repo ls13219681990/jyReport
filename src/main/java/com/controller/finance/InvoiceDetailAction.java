@@ -42,7 +42,7 @@ public class InvoiceDetailAction extends QueryAction<InvoiceDetails> {
     /*@SuppressWarnings("rawtypes")
     @Action(value = "/invoiceDetailAction", results = {
             @Result(name = QUERY, location = "/jsp/sys/sysCode.html") })*/
-    @RequestMapping(value = "/baseDepartmentAction")
+    @RequestMapping(value = "/asdsadsabaseDepartmentAction")
     public String jumpSys() {
         return "/jsp/sys/sysCode";
     }

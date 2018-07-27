@@ -1,6 +1,5 @@
 package com.dao.common.impl;
 
-import com.common.dao.BaseDaoImpl;
 import com.dao.common.SupervisionUnitDao;
 import com.model.SupervisionUnit;
 import org.springframework.stereotype.Repository;

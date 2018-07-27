@@ -1,4 +1,4 @@
-package com.common.dao;
+package com.dao.common.impl;
 
 /*import com.casit.czy.taglib.JsonA;
 import com.casit.czy.taglib.JsonE;
@@ -6,6 +6,7 @@ import com.casit.czy.taglib.JsonO;
 import com.casit.czy.taglib.Recursion;*/
 
 import com.common.CommonMethod;
+import com.dao.common.JsonDao;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.hibernate.HibernateException;
@@ -307,12 +308,12 @@ public class JsonDaoImpl extends HibernateDaoSupport implements JsonDao {
     /**
      * 获取树
      *
-     * @param sql      sql语句
-     * @param parcol   父ID字段名
-     * @param idcol    ID字段名
-     * @param unquoted 不加引号数据
+     * @param //sql      sql语句
+     * @param //parcol   父ID字段名
+     * @param //idcol    ID字段名
+     * @param //unquoted 不加引号数据
      * @return
-     * @throws JsonE
+     * @throws //JsonE
      */
 	/*public String getJsonTree(String sql,String parcol,String idcol,String unquoted)
 	{

@@ -1,8 +1,9 @@
-package com.common.dao;
+package com.dao.common.impl;
 
-import com.common.action.EasyPager;
-import com.common.action.JsonPager;
-import com.common.action.PaginationSupport;
+import com.controller.common.EasyPager;
+import com.controller.common.JsonPager;
+import com.controller.common.PaginationSupport;
+import com.dao.common.BaseDao;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -16,7 +17,6 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import java.lang.reflect.ParameterizedType;
 import java.sql.SQLException;
 import java.util.List;
-
 public class BaseDaoImpl<T> extends HibernateDaoSupport implements BaseDao<T> {
     private Class<T> persistentClass;
 

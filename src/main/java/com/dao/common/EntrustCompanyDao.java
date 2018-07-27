@@ -1,6 +1,5 @@
 package com.dao.common;
 
-import com.common.dao.BaseDao;
 import com.model.EntrustCompany;
 import com.dao.page.AdvanceMoneyPage;
 

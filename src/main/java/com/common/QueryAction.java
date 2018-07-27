@@ -1,11 +1,11 @@
 package com.common;
 
-import com.common.action.EasyPager;
-import com.common.action.JsonPager;
-import com.common.action.PaginationSupport;
-import com.common.dao.BaseBean;
 import com.common.jsonProcessor.CommonJsonConfig;
 import com.common.jsonProcessor.TimestampMorpher;
+import com.controller.common.EasyPager;
+import com.controller.common.JsonPager;
+import com.controller.common.PaginationSupport;
+import com.model.BaseBean;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.util.JSONUtils;
@@ -257,8 +257,8 @@ public abstract class QueryAction<T> {
     /**
      * 通过javabean转化为jsonobj并输出,形成json形如:'{user.name:1,user.code:2}'
      *
-     * @param obj      javabean实体
-     * @param beanname 要生成的json中的key的前缀
+     * @param //obj      javabean实体
+     * @param //beanname 要生成的json中的key的前缀
      */
     public void jsonPrint(HashMap<String, Object> map) {
         CommonJsonConfig jsonConfig = new CommonJsonConfig();
@@ -360,8 +360,8 @@ public abstract class QueryAction<T> {
     /**
      * 通过表名和字段名，获取编码集合JSONArray
      *
-     * @param tableName  表名，和数据库一致
-     * @param columnName 列名，和数据库一致
+     * @param //tableName  表名，和数据库一致
+     * @param //columnName 列名，和数据库一致
      * @return
      */
     public void getSelectJson() {

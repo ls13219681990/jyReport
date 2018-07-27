@@ -2,9 +2,9 @@ package com.service.entrust.impl;
 
 import com.common.BusinessException;
 import com.common.CommonMethod;
-import com.common.action.JsonPager;
-import com.common.dao.BaseDao;
-import com.common.service.BaseServiceImpl;
+import com.controller.common.JsonPager;
+import com.dao.common.BaseDao;
+import com.service.common.impl.BaseServiceImpl;
 import com.dao.common.BaseSampleDao;
 import com.dao.common.TestParameterDao;
 import com.dao.entrust.*;
@@ -461,7 +461,7 @@ public class EntrustDetailServiceImpl extends BaseServiceImpl<EntrustDetails> im
         String ruleNo = ruleU.substring(0, sPlace - 1);
 
         Long sn = runningNumService.getNextNum(ruleNo, 1);
-        String sz = "";
+        String sz = null;
 
         String year = CommonMethod.getCurrentYear();
 

@@ -3,7 +3,6 @@ package com.service.common.impl;
 
 import com.common.BusinessException;
 import com.common.CommonMethod;
-import com.common.service.BaseServiceImpl;
 import com.dao.common.BaseDepartmentDao;
 import com.model.BaseDepartment;
 import com.service.common.BaseDepartmentService;

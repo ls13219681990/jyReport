@@ -1,19 +1,19 @@
-package com.common.dao;
+package com.dao.common;
 
-import java.util.List;
-
-import com.common.action.EasyPager;
-import com.common.action.JsonPager;
-import com.common.action.PaginationSupport;
+import com.controller.common.EasyPager;
+import com.controller.common.JsonPager;
+import com.controller.common.PaginationSupport;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
+
+import java.util.List;
 
 
 public interface BaseDao<T> {
     /**
      * 根据主键查找
      *
-     * @param t 含有主键值的实体对象
+     * @param //t 含有主键值的实体对象
      * @return 实体对象
      */
     public T findById(Long id);
@@ -21,14 +21,14 @@ public interface BaseDao<T> {
     /**
      * 根据主键查找
      *
-     * @param t 含有主键值的实体对象
+     * @param //t 含有主键值的实体对象
      * @return 实体对象
      */
     public T findById(String id);
 
     /**
-     * @param 实体对象
-     * @param 翻页参数
+     * @param //实体对象
+     * @param //翻页参数
      * @return
      */
     public PaginationSupport<T> findPageByCriteria(PaginationSupport<T> ps, Order order,

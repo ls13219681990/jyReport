@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 
 @Controller
+@RequestMapping("/sys")
 public class SysCodeAction extends QueryAction<SysCode> {
 
     /**
@@ -30,7 +31,7 @@ public class SysCodeAction extends QueryAction<SysCode> {
 
     /*@Action(value = "/sysCodeAction", results = {
             @Result(name = QUERY, location = "/jsp/sys/sysCode.html") })*/
-    @RequestMapping(value = "/baseDepartmentAction")
+    @RequestMapping(value = "/aaabaseDepartmentAction")
     public String jumpSys() {
         return "/jsp/sys/sysCode";
     }
@@ -70,6 +71,7 @@ public class SysCodeAction extends QueryAction<SysCode> {
         }
     }
 
+    @RequestMapping("/findAll")
     public void findcode() {
         List<SysCode> sysCodeList = sysCodeService.findSysCodes();
         CommonJsonConfig jsonConfig = new CommonJsonConfig();

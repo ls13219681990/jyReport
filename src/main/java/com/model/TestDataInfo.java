@@ -1,6 +1,5 @@
 package com.model;
 
-import com.common.dao.BaseBean;
 
 import javax.persistence.*;
 

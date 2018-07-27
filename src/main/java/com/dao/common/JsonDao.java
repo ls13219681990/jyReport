@@ -1,4 +1,4 @@
-package com.common.dao;
+package com.dao.common;
 
 /*import com.casit.czy.taglib.JsonA;
 import com.casit.czy.taglib.JsonE;
@@ -60,12 +60,12 @@ public interface JsonDao {
     /**
      * 获取树
      *
-     * @param sql      sql语句
-     * @param parcol   父ID字段名
-     * @param idcol    ID字段名
-     * @param unquoted 不加引号数据
+     * @param //sql      sql语句
+     * @param //parcol   父ID字段名
+     * @param //idcol    ID字段名
+     * @param //unquoted 不加引号数据
      * @return
-     * @throws JsonE
+     * @throws //JsonE
      */
     //public String getJsonTree(String sql, String parcol, String idcol, String unquoted) throws JsonE;
     public boolean isHaveRole(final String actionName, final Integer userId);

@@ -1,9 +1,9 @@
 package com.dao.finance.impl;
 
-import com.common.action.EasyPager;
-import com.common.action.JsonPager;
-import com.common.action.PaginationSupport;
-import com.common.dao.BaseDaoImpl;
+import com.controller.common.EasyPager;
+import com.controller.common.JsonPager;
+import com.controller.common.PaginationSupport;
+import com.dao.common.impl.BaseDaoImpl;
 import com.dao.finance.ReceivableInDetailsDao;
 import com.model.ReceivableInvoiceDetails;
 import org.hibernate.HibernateException;

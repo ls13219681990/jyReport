@@ -1,4 +1,4 @@
-package com.common.action;
+package com.controller.common;
 
 import java.util.ArrayList;
 import java.util.List;

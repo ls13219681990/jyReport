@@ -1,4 +1,4 @@
-package com.common.action;
+package com.controller.common;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

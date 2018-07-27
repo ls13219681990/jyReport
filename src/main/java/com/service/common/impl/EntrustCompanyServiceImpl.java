@@ -2,9 +2,8 @@ package com.service.common.impl;
 
 import com.common.BusinessException;
 import com.common.CommonMethod;
-import com.common.action.JsonPager;
-import com.common.dao.BaseDao;
-import com.common.service.BaseServiceImpl;
+import com.controller.common.JsonPager;
+import com.dao.common.BaseDao;
 import com.dao.common.EntrustCompanyDao;
 import com.dao.finance.EntrustAdvanceDao;
 import com.dao.page.AdvanceMoneyPage;
@@ -146,7 +145,7 @@ public class EntrustCompanyServiceImpl extends BaseServiceImpl<EntrustCompany> i
     }
 
     private String findEntrustCompanyNo() {
-        String entrustCompanyNo = "";
+        String entrustCompanyNo = null;
         String maxEntrustCompanyNo = entrustCompanyDao.findMaxEntrustCompanyNo();
         if ("0".equals(maxEntrustCompanyNo)) {
             entrustCompanyNo = "1";

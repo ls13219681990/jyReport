@@ -1,7 +1,7 @@
-package com.common.service;
+package com.service.common;
 
-import com.common.action.JsonPager;
-import com.common.action.PaginationSupport;
+import com.controller.common.JsonPager;
+import com.controller.common.PaginationSupport;
 import org.hibernate.criterion.DetachedCriteria;
 
 import java.util.List;
@@ -10,8 +10,8 @@ import java.util.List;
 public interface BaseService<T> {
 
     /**
-     * @param 实体对象
-     * @param 翻页参数
+     * @param //实体对象
+     * @param //翻页参数
      * @return
      * @throws Exception
      */
@@ -47,14 +47,14 @@ public interface BaseService<T> {
     /**
      * 根据对象IDS删除
      *
-     * @param t 实体对象
+     * @param //t 实体对象
      */
     public void deletes(String[] IDS);
 
     /**
      * 根据主键查找
      *
-     * @param t 含有主键值的实体对象
+     * @param //t 含有主键值的实体对象
      * @return 实体对象
      */
     public T findById(Long id);
@@ -62,7 +62,7 @@ public interface BaseService<T> {
     /**
      * 根据主键查找
      *
-     * @param t 含有主键值的实体对象
+     * @param //t 含有主键值的实体对象
      * @return 实体对象
      */
     public T findById(String id);

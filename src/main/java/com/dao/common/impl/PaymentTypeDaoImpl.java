@@ -1,9 +1,8 @@
 package com.dao.common.impl;
 
-import com.common.action.EasyPager;
-import com.common.action.JsonPager;
-import com.common.action.PaginationSupport;
-import com.common.dao.BaseDaoImpl;
+import com.controller.common.EasyPager;
+import com.controller.common.JsonPager;
+import com.controller.common.PaginationSupport;
 import com.dao.common.PaymentTypeDao;
 import com.model.PaymentType;
 import org.hibernate.criterion.DetachedCriteria;

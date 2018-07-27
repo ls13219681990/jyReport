@@ -1,6 +1,5 @@
 package com.dao.common;
 
-import com.common.dao.BaseDao;
 import com.dao.page.CapitalAccountPage;
 import com.model.CapitalAccount;
 

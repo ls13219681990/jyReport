@@ -1,9 +1,11 @@
-package com.common.service;
+package com.service.common.impl;
 
 import com.common.CusSession;
-import com.common.action.PaginationSupport;
-import com.common.dao.BaseDao;
+import com.controller.common.PaginationSupport;
+import com.dao.common.BaseDao;
+import com.service.common.BaseService;
 import org.hibernate.criterion.DetachedCriteria;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -12,6 +14,7 @@ import java.util.List;
  * @param <T>
  * @author Administrator
  */
+@Service("BaseService")
 public abstract class BaseServiceImpl<T> implements BaseService<T> {
     private BaseDao<T> baseDao;
 

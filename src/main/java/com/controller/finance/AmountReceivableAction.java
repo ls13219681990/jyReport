@@ -32,7 +32,7 @@ public class AmountReceivableAction extends QueryAction<AmountReceivable> {
 
     /*@Action(value = "/amountReceivableAction", results = {
             @Result(name = QUERY, location = "/jsp/sys/sysCode.html") })*/
-    @RequestMapping(value = "/baseDepartmentAction")
+    @RequestMapping(value = "/hhbaseDepartmentAction")
     public String jumpSys() {
         return "/jsp/sys/sysCode";
     }

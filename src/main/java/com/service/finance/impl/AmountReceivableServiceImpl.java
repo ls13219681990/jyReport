@@ -2,9 +2,9 @@ package com.service.finance.impl;
 
 import com.common.BusinessException;
 import com.common.CommonMethod;
-import com.common.action.JsonPager;
-import com.common.dao.BaseDao;
-import com.common.service.BaseServiceImpl;
+import com.controller.common.JsonPager;
+import com.dao.common.BaseDao;
+import com.service.common.impl.BaseServiceImpl;
 import com.dao.common.EntrustCompanyDao;
 import com.dao.common.ProjectInfoDao;
 import com.dao.finance.AmountReceivableDao;
@@ -63,7 +63,7 @@ public class AmountReceivableServiceImpl extends BaseServiceImpl<AmountReceivabl
     public void saveAmReceivableTable(Collection<AmReceivablePage> coll, String userId) {
         for (AmReceivablePage cap : coll) {
             //委托单位ID
-            String eCompanyId = "";
+            String eCompanyId = null;
             List<EntrustCompany> ecList = entrustCompanyDao.findByProperty("entrustCompanyName", cap.getEntrustCompanyName());
             if (ecList != null && ecList.size() > 0) {
                 eCompanyId = ecList.get(0).getEntrustCompanyId();

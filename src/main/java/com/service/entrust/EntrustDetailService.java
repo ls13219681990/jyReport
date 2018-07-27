@@ -1,6 +1,6 @@
 package com.service.entrust;
 
-import com.common.service.BaseService;
+import com.service.common.BaseService;
 import com.dao.page.EntrustSavePage;
 import com.model.EntrustDetails;
 import com.model.SampleReport;

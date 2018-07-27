@@ -47,7 +47,7 @@ public class EntrustDetailsAction extends QueryAction<EntrustDetails> {
 
     /*@Action(value = "/entrustDetailAction", results = {
             @Result(name = QUERY, location = "/jsp/sys/sysCode.html") })*/
-    @RequestMapping(value = "/baseDepartmentAction")
+    @RequestMapping(value = "/ccccbaseDepartmentAction")
     public String jumpSys() {
         return "/jsp/sys/sysCode";
     }

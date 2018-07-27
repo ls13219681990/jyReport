@@ -1,6 +1,6 @@
 package com.service.finance;
 
-import com.common.service.BaseService;
+import com.service.common.BaseService;
 import com.model.ReceivableInvoiceDetails;
 
 import java.util.Collection;
