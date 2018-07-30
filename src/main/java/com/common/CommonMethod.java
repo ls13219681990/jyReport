@@ -269,7 +269,7 @@ public class CommonMethod {
     /**
      * yyyy-MM-dd HH:mm:ss method 将字符串类型的日期转换为一个Date（java.sql.Date）
      *
-     * @param dateString 需要转换为Date的字符串
+     * @param //dateString 需要转换为Date的字符串
      * @return dataTime Date
      */
     public final static Date string2Date(String s) {
@@ -719,8 +719,8 @@ public class CommonMethod {
     /**
      * 获取时间段中间的所有日期
      *
-     * @param phones
-     * @param content
+     * @param //phones
+     * @param //content
      */
     public static List<Timestamp> getTimeStampList(Timestamp startT, Timestamp endT) {
 
@@ -917,9 +917,9 @@ public class CommonMethod {
     /**
      * 验证时间段是否交叉
      *
-     * @param startDate开始时间
-     * @param endDate结束时间
-     * @param oldTimes已有的时间段List<Map<>>,[{startDate= , endDate= },{startDate= , endDate= }]
+     * @param //startDate开始时间
+     * @param //endDate结束时间
+     * @param //oldTimes已有的时间段List<Map<>>,[{startDate= , endDate= },{startDate= , endDate= }]
      * @return 交叉的时间段{startDate= , endDate= }，如没有交叉则返回null;
      */
     public static Map CrossValidationPeriod(Timestamp startDate, Timestamp endDate, List oldTimes) {

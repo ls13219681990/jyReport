@@ -3,6 +3,7 @@ package com.controller.entrust;
 import com.common.BusinessException;
 import com.common.CommonMethod;
 import com.common.QueryAction;
+import com.common.UuidUtil;
 import com.common.jsonProcessor.CommonJsonConfig;
 import com.common.jsonProcessor.TimestampMorpher;
 import com.dao.page.ReportTemplateInfoPage;
@@ -20,7 +21,14 @@ import net.sf.json.util.JSONUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +41,10 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
     /**
      *
      */
+
+    @Autowired
+    private HttpServletRequest request;
+
     private static final long serialVersionUID = 1L;
     // 委托明细ID
     private String strEDetailId = "";
@@ -257,8 +269,8 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
     }
 
     @RequestMapping("saveTReportInfo.action")
-    public void saveTReportInfo() {
-		/*try {
+    public void saveTReportInfo(@RequestParam MultipartFile[] template) {
+        try {
 			if (CommonMethod.isNull(strTReportInfo)) {
 				jsonPrint("fail,参数strTReportInfo不能为空");
 				return;
@@ -295,16 +307,9 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
 			// 样品数据
 			BaseSample bs = baseSampleService.findById(ed.getSampleId());
 
-			HttpServletRequest request = ServletActionContext.getRequest();
-
-			MultiPartRequestWrapper multipartRequest = (MultiPartRequestWrapper) request;
-			String[] fileNames = multipartRequest.getFileNames("file");
-			File[] reportFiles = multipartRequest.getFiles("file");
-
-			for (int i = 0; i < reportFiles.length; i++) {
-				File reportFile = reportFiles[i];// 报告文件
-				String fileName = fileNames[i];// 报告名称
-				String[] names = fileName.split("\\.");
+            for (MultipartFile sample : template) {
+                File reportFile = (File) sample;
+                String[] names = sample.getName().split("\\.");
 
 				boolean gs = false;
 				String hz = "";
@@ -327,8 +332,7 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
 					String realAdd = "report" + "/" + bs.getDepartmentId()
 							+ "/" + ed.getSampleId() + "/"
 							+ CommonMethod.getCurrentDate();
-					String savePath = ServletActionContext.getServletContext()
-							.getRealPath("/" + realAdd);
+                    String savePath = request.getSession().getServletContext().getRealPath("/") + realAdd;
 					File newFile = new File(savePath.toString());
 					if ((!newFile.exists()) && (!newFile.isDirectory())) {
 						newFile.mkdirs();
@@ -384,12 +388,12 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
 		} catch (Exception e) {
 			e.printStackTrace();
 			jsonPrint("error:异常：" + e.getMessage());
-		}*/
+        }
     }
 
     @RequestMapping("updateTReportInfo.action")
-    public void updateTReportInfo() {
-		/*try {
+    public void updateTReportInfo(@RequestParam MultipartFile[] template) {
+        try {
 			if (CommonMethod.isNull(strTReportInfo)) {
 				jsonPrint("fail,参数strTReportInfo不能为空");
 				return;
@@ -401,11 +405,10 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
 				jsonPrint("fail,报告ID不能为空");
 				return;
 			}
-			*//*
-         * if(CommonMethod.isNull(triPage.getEntrustDetailId())){
-         * jsonPrint("fail,委托报告明细ID不能为空"); return; }
-         *//*
-
+            if (CommonMethod.isNull(triPage.getEntrustDetailId())) {
+                jsonPrint("fail,委托报告明细ID不能为空");
+                return;
+            }
 			// 报告数据
 			TestReportInfo tri = testReportInfoService.findById(triPage
 					.getReportId());
@@ -418,16 +421,9 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
 			// 样品数据
 			BaseSample bs = baseSampleService.findById(ed.getSampleId());
 
-			HttpServletRequest request = ServletActionContext.getRequest();
-
-			MultiPartRequestWrapper multipartRequest = (MultiPartRequestWrapper) request;
-			String[] fileNames = multipartRequest.getFileNames("file");
-			File[] reportFiles = multipartRequest.getFiles("file");
-
-			for (int i = 0; i < reportFiles.length; i++) {
-				File reportFile = reportFiles[i];// 报告文件
-				String fileName = fileNames[i];// 报告名称
-				String[] names = fileName.split("\\.");
+            for (MultipartFile sample : template) {
+                File reportFile = (File) sample;
+                String[] names = sample.getName().split("\\.");
 
 				boolean gs = false;
 				String hz = "";
@@ -451,8 +447,7 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
 					String realAdd = "report" + "/" + bs.getDepartmentId()
 							+ "/" + ed.getSampleId() + "/"
 							+ CommonMethod.getCurrentDate();
-					String savePath = ServletActionContext.getServletContext()
-							.getRealPath("/" + realAdd);
+                    String savePath = request.getSession().getServletContext().getRealPath("/") + realAdd;
 					File newFile = new File(savePath.toString());
 					if ((!newFile.exists()) && (!newFile.isDirectory())) {
 						newFile.mkdirs();
@@ -512,7 +507,7 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
 		} catch (Exception e) {
 			e.printStackTrace();
 			jsonPrint("error:" + e.getMessage());
-		}*/
+        }
     }
 
     /**
@@ -725,8 +720,8 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
      * 快速发报告
      */
     @RequestMapping("fastReleaseReport.action")
-    public void fastReleaseReport() {
-/*
+    public void fastReleaseReport(@RequestParam MultipartFile[] template) {
+
 		TestReportInfoPage triPage = (TestReportInfoPage) toBean(
 				strTReportInfo, TestReportInfoPage.class);
 
@@ -742,17 +737,11 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
 		// 样品数据
 		BaseSample bs = baseSampleService.findById(ed.getSampleId());
 
-		HttpServletRequest request = ServletActionContext.getRequest();
 
-		MultiPartRequestWrapper multipartRequest = (MultiPartRequestWrapper) request;
-		String[] fileNames = multipartRequest.getFileNames("file");
-		File[] reportFiles = multipartRequest.getFiles("file");
+        for (MultipartFile sample : template) {
 
-		for (int i = 0; i < reportFiles.length; i++) {
-			File reportFile = reportFiles[i];// 报告文件
-			String fileName = fileNames[i];// 报告名称
-			String[] names = fileName.split("\\.");
-
+            File reportFile = (File) sample;
+            String[] names = sample.getName().split("\\.");
 			boolean gs = false;
 			String hz = "";
 			if (names.length > 1) {
@@ -774,8 +763,7 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
 				String realAdd = "report" + "/" + bs.getDepartmentId() + "/"
 						+ ed.getSampleId() + "/"
 						+ CommonMethod.getCurrentDate();
-				String savePath = ServletActionContext.getServletContext()
-						.getRealPath("/" + realAdd);
+                String savePath = request.getSession().getServletContext().getRealPath("/") + realAdd;
 				File newFile = new File(savePath.toString());
 				if ((!newFile.exists()) && (!newFile.isDirectory())) {
 					newFile.mkdirs();
@@ -839,14 +827,14 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
 				}
 			}
 		}
-		testReportInfoService.update(tri);*/
+        testReportInfoService.update(tri);
     }
 
     /**
      * 修改报告
      */
     @RequestMapping("updateReport.action")
-    public void updateReport() {/*
+    public void updateReport(@RequestParam MultipartFile[] template) {
 		TestReportInfoPage triPage = (TestReportInfoPage) toBean(
 				strTReportInfo, TestReportInfoPage.class);
 		// 报告数据
@@ -867,16 +855,10 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
 		// 样品数据
 		BaseSample bs = baseSampleService.findById(ed.getSampleId());
 
-		HttpServletRequest request = ServletActionContext.getRequest();
 
-		MultiPartRequestWrapper multipartRequest = (MultiPartRequestWrapper) request;
-		String[] fileNames = multipartRequest.getFileNames("file");
-		File[] reportFiles = multipartRequest.getFiles("file");
-
-		for (int i = 0; i < reportFiles.length; i++) {
-			File reportFile = reportFiles[i];// 报告文件
-			String fileName = fileNames[i];// 报告名称
-			String[] names = fileName.split("\\.");
+        for (MultipartFile sample : template) {
+            File reportFile = (File) sample;
+            String[] names = sample.getName().split("\\.");
 
 			boolean gs = false;
 			String hz = "";
@@ -899,19 +881,27 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
 				String realAdd = "report" + "/" + bs.getDepartmentId() + "/"
 						+ ed.getSampleId() + "/"
 						+ CommonMethod.getCurrentDate();
-				String savePath = ServletActionContext.getServletContext()
-						.getRealPath("/" + realAdd);
+                String savePath = request.getSession().getServletContext().getRealPath("/") + realAdd;
 				File newFile = new File(savePath.toString());
 				if ((!newFile.exists()) && (!newFile.isDirectory())) {
 					newFile.mkdirs();
 				}
-				*//*
-     * if(!CommonMethod.isNull(tri.getReportPath())){ boolean
-     * isSuccess =true; File oldFile = new
-     * File(tri.getReportPath()); if(oldFile.exists()){ isSuccess =
-     * oldFile.delete(); } if(!isSuccess){ throw new
-     * BusinessException("文件上传失败！",""); } }
-     *//*
+
+                if (!CommonMethod.isNull(tri.getReportPath())) {
+                    boolean
+                            isSuccess = true;
+                    File oldFile = new
+                            File(tri.getReportPath());
+                    if (oldFile.exists()) {
+                        isSuccess =
+                                oldFile.delete();
+                    }
+                    if (!isSuccess) {
+                        throw new
+                                BusinessException("文件上传失败！", "");
+                    }
+                }
+                //*
 				String newFileName = CommonMethod.getNewKey();
 				out = new FileOutputStream(savePath.toString() + "\\"
 						+ newFileName + "." + hz);
@@ -979,7 +969,7 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
 			List<TestReportInfo> report = testReportInfoService.findByProperty(
 					"sourcesReportId", triPage.getReportId());
 			testReportInfoService.update(tri2);
-		}*/
+        }
     }
 
     /**

@@ -11,7 +11,9 @@
     <version>1.0-SNAPSHOT</version>
     <name>Shop Maven Webapp</name>
     <url>http://maven.apache.org</url>
-
+    <properties>
+        <jackson.version>2.5.4</jackson.version>
+    </properties>
     <dependencies>
 
         <!-- spring -->
@@ -229,6 +231,17 @@
             <version>2.0.5</version>
         </dependency>
 
+        <!--JSON -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
 
     </dependencies>
 

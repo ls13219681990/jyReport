@@ -8,13 +8,14 @@ import com.service.common.SignNameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.List;
 
 @Controller
@@ -24,6 +25,9 @@ public class SignNameController extends QueryAction<SignName> {
     /**
      *
      */
+	@Autowired
+	private HttpServletRequest request;
+
     private static final long serialVersionUID = 1L;
 
     private String strSignName = "";
@@ -41,7 +45,7 @@ public class SignNameController extends QueryAction<SignName> {
     }
 
     @RequestMapping("uploadSignName.action")
-    public void uploadSignName() {
+	public void uploadSignName(@RequestParam MultipartFile[] template) {
         try {
             response.setContentType("text/plain");
             response.setCharacterEncoding("UTF-8");
@@ -49,20 +53,12 @@ public class SignNameController extends QueryAction<SignName> {
             if (CommonMethod.isNull(strUserId)) {
                 throw new BusinessException("fail,参数strUserId不能为空！", "");
             }
-			/*HttpServletRequest request = ServletActionContext.getRequest();
-			
-			MultiPartRequestWrapper multipartRequest = (MultiPartRequestWrapper) request;
-			String[] fileNames = multipartRequest.getFileNames("file");
-			File[] reportFiles = multipartRequest.getFiles("file");
-
-		    for(int i=0;i<reportFiles.length;i++)*//*{
-		    	File reportFile =  reportFiles[i];
-		    	String fileName = fileNames[i];
-		    	String[] names = fileName.split("\\.");
-		    	
-//		    	if(reportFile.length()>(1024 * 1024)){//文件大于1M
-//					throw new BusinessException("模板文件太大，不能上传！","");
-//				}
+			for (MultipartFile sample : template) {
+				File reportFile = (File) sample;
+				String[] names = sample.getName().split("\\.");
+				if (reportFile.length() > (1024 * 1024)) {//文件大于1M
+					throw new BusinessException("模板文件太大，不能上传！", "");
+				}
 		    	boolean gs = false;
 		    	String hz = "";
 				if(names.length>1){
@@ -93,7 +89,7 @@ public class SignNameController extends QueryAction<SignName> {
 				    	singName = (SignName)ls.get(0);
 				    }
 				    boolean isSuccess =false;
-				    String path = ServletActionContext.getServletContext().getRealPath("");
+					String path = request.getSession().getServletContext().getRealPath("");
 				    String saveFileName = strUserId+ "." +hz;
 				    if (singName.getPath() != null){
 				    	String filePath = path + "/" + singName.getPath();
@@ -113,12 +109,11 @@ public class SignNameController extends QueryAction<SignName> {
 				    
 				    if (isSuccess){
 				    	String realAdd = "signName"+"/"+strUserId;
-				    	String savePath = ServletActionContext.getServletContext().getRealPath("/"+realAdd);
+						String savePath = request.getSession().getServletContext().getRealPath("/") + realAdd;
 						File newfile = new File(savePath.toString());
 						if((!newfile.exists()) && (!newfile.isDirectory())){
 							newfile.mkdirs(); 
 						}
-
 						reSize(new FileInputStream(reportFile), new FileOutputStream(new File(savePath, saveFileName)), 50, "png");
 
 						singName.setUserId(strUserId);
@@ -149,7 +144,7 @@ public class SignNameController extends QueryAction<SignName> {
 						out.close();
 					}
 				}
-		    }*/
+			}
             jsonPrint("fail:签名上传失败！");
         } catch (BusinessException e) {
             e.printStackTrace();

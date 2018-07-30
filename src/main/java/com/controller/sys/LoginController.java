@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
 /**
@@ -75,10 +76,15 @@ public class LoginController extends QueryAction<SysUser> {
     }
 
     @RequestMapping("logOut.action")
-    public void logOut() {
+    public void logOut(HttpServletRequest request) {
 		/*if(ActionContext.getContext()!=null && ActionContext.getContext().getSession()!=null){
 			ActionContext.getContext().getSession().clear();
 		}*/
+        Enumeration<String> em = request.getSession().getAttributeNames();
+        while (em.hasMoreElements()) {
+            request.getSession().removeAttribute(em.nextElement().toString());
+        }
+        request.getSession().invalidate();
         jsonPrint("true");
     }
 

@@ -19,7 +19,12 @@
     </context:component-scan>
 
     <!-- 默认注解映射的支持 -->
-    <mvc:annotation-driven/>
+    <mvc:annotation-driven>
+        <mvc:message-converters>
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter"/>
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
 
     <!-- 将在 SpringMVC 上下文中定义一个 – DefaultServletHttpRequestHandler，它会对进入 DispatcherServlet
            的 请求进行筛查，如果发现是没有经过映射的请求，就将该请求交由 WEB 应用服务器默认的 Servlet 处理，

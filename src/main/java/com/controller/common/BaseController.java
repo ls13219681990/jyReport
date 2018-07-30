@@ -8,7 +8,7 @@ import org.springframework.stereotype.Controller;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
-public abstract class BaseController {
+public class BaseController {
     private final static HttpServletRequest REQUEST = null;
 
     static {
@@ -16,6 +16,7 @@ public abstract class BaseController {
         ConvertUtils.register(new SqlTimestampConverter(null), java.sql.Timestamp.class);
     }
 
+    HttpServletRequest request;
     /**
      *
      */
@@ -24,9 +25,11 @@ public abstract class BaseController {
     private String type = "";
 
     public BaseController() {
-		/*Map session = ActionContext.getContext().getSession();
+      /*  HttpSession session1 = request.getSession();
+        //session1.getAttribute("userId")
+      //  Map session = ActionContext.getContext().getSession();
 		if(session != null){
-			userId = (Integer)session.get("userId");
+			userId = (Integer) session1.getAttribute("userId");
 		}*/
     }
 

@@ -76,12 +76,11 @@ public class SysCodeController extends QueryAction<SysCode> {
 
     @RequestMapping("/findcode.action")
     @ResponseBody
-    public String findcode() {
-        /*List<SysCode> sysCodeList = sysCodeService.findSysCodes();
+    public void findcode() {
+        List<SysCode> sysCodeList = sysCodeService.findSysCodes();
         CommonJsonConfig jsonConfig = new CommonJsonConfig();
         JSONArray jsonArr = JSONArray.fromObject(sysCodeList, jsonConfig);
-        jsonPrint(jsonArr);*/
-        return "hahahah";
+        jsonPrint(jsonArr);
     }
 
     @RequestMapping("findPitchOncode.action")

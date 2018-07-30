@@ -4,13 +4,20 @@ import com.common.BusinessException;
 import com.common.CommonMethod;
 import com.common.QueryAction;
 import com.common.jsonProcessor.CommonJsonConfig;
+import com.dao.page.SampleReportPage;
+import com.dao.page.TestReportInfoPage;
 import com.model.BaseDepartment;
+import com.model.EntrustInfo;
 import com.service.common.BaseDepartmentService;
 import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -41,6 +48,33 @@ public class BaseDepartmentController extends QueryAction<BaseDepartment> {
     public String jumpSys() {
         return "/jsp/sys/sysCode";
     }
+
+    @RequestMapping("test")
+    @ResponseBody
+    public TestReportInfoPage sasveDepartment() {
+        try {
+            int a = 1;
+            int b = 0 / 0;
+            String time = "2011-11-1 17:00:00";
+            SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date d = f.parse(time);
+        } catch (Exception e) {
+
+        }
+        EntrustInfo s = new EntrustInfo();
+        List<EntrustInfo> ed = new ArrayList<EntrustInfo>();
+        ed.add(s);
+        TestReportInfoPage a = new TestReportInfoPage();
+        List<SampleReportPage> sampleReportList = a.getSampleReportList();
+        SampleReportPage d = new SampleReportPage();
+        sampleReportList.add(d);
+        a.setSampleReportList(sampleReportList);
+        return a;
+    }
+
+
+
+
 
     @RequestMapping("saveDepartment.action")
     public void saveDepartment() {

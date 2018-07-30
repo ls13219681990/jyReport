@@ -4,6 +4,7 @@ import com.common.BusinessException;
 import com.common.CommonMethod;
 import com.common.QueryAction;
 import com.common.jsonProcessor.CommonJsonConfig;
+import com.model.BaseSample;
 import com.model.TestParameter;
 import com.service.common.BaseSampleService;
 import com.service.common.TestParameterService;
@@ -11,7 +12,13 @@ import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.List;
 
 @Controller
@@ -21,6 +28,10 @@ public class TestParameterController extends QueryAction<TestParameter> {
     /**
      *
      */
+    @Autowired
+    private HttpServletRequest request;
+
+
     private static final long serialVersionUID = 1L;
 
     private String strTestParameter = "";
@@ -98,25 +109,21 @@ public class TestParameterController extends QueryAction<TestParameter> {
     }
 
     @RequestMapping("uploadReport.action")
-    public void uploadReport() {
+    public void uploadReport(@RequestParam MultipartFile[] template) {
         System.out.println("------------------------------文件上传开始");
-		/*try {
+        try {
 			response.setContentType("text/plain");
 		    response.setCharacterEncoding("UTF-8");
 		    
 		    if(CommonMethod.isNull(strTestParameterId)){
 		    	throw new BusinessException("fail,参数strTestParameterId不能为空！","");
 			}
-			HttpServletRequest request = ServletActionContext.getRequest();
-			
-			MultiPartRequestWrapper multipartRequest = (MultiPartRequestWrapper) request;
-			String[] fileNames = multipartRequest.getFileNames("file");
-			File[] reportFiles = multipartRequest.getFiles("file");
 
-		    for(int i=0;i<reportFiles.length;i++){
-		    	File reportFile =  reportFiles[i];
-		    	String fileName = fileNames[i];
-		    	String[] names = fileName.split("\\.");
+
+            for (MultipartFile sample : template) {
+                File reportFile = (File) sample;
+                String[] names = sample.getName().split("\\.");
+
 		    	
 		    	if(reportFile.length()>(1024 * 1024)){//文件大于1M
 					throw new BusinessException("模板文件太大，不能上传！","");
@@ -143,7 +150,7 @@ public class TestParameterController extends QueryAction<TestParameter> {
 					//样品数据
 					BaseSample bs = baseSampleService.findById(tp.getSampleId());
 					String realAdd = "upload"+"/"+bs.getDepartmentId()+"/"+tp.getSampleId();
-					String savePath = ServletActionContext.getServletContext().getRealPath("/"+realAdd);
+                    String savePath = request.getSession().getServletContext().getRealPath("/") + realAdd;
 					System.out.println("------------------------------文件保存路径:"+savePath);
 					File newFile = new File(savePath.toString());
 					if((!newFile.exists()) && (!newFile.isDirectory())){
@@ -199,13 +206,13 @@ public class TestParameterController extends QueryAction<TestParameter> {
 
 		    }
 			jsonPrint("true");
-		}*//*catch (BusinessException e) {
+        } catch (BusinessException e) {
 			e.printStackTrace();
 			jsonPrint("fail:"+e.getMessage());
 		}catch (Exception e) {
 			e.printStackTrace();
 			jsonPrint("error:"+e.getMessage());
-		}*/
+        }
     }
 
     @RequestMapping("findTeParameter.action")
