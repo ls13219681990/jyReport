@@ -3,19 +3,18 @@ package com.controller.common;
 import com.common.BusinessException;
 import com.common.CommonMethod;
 import com.common.QueryAction;
-import com.common.jsonProcessor.CommonJsonConfig;
 import com.dao.page.AdvanceMoneyPage;
 import com.model.EntrustCompany;
 import com.service.common.EntrustCompanyService;
-import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
 @Controller
-@RequestMapping("EntrustCompanyAction")
+@RequestMapping("entrustCompanyAction")
 public class EntrustCompanyController extends QueryAction<EntrustCompany> {
 
     /**
@@ -23,7 +22,7 @@ public class EntrustCompanyController extends QueryAction<EntrustCompany> {
      */
     private static final long serialVersionUID = 1L;
 
-    private String strEntrustCompany = "";
+ /*   private String strEntrustCompany = "";
 
     private String strEntrustCompanyId = "";//单位ID
 
@@ -31,7 +30,7 @@ public class EntrustCompanyController extends QueryAction<EntrustCompany> {
 
     private String strEntrustCompanyNo = "";//单位编号
 
-    private String strAdvanceMoney = "";//预收款充值金额
+    private String strAdvanceMoney = "";//预收款充值金额*/
 
     @Autowired
     private EntrustCompanyService entrustCompanyService;
@@ -43,80 +42,78 @@ public class EntrustCompanyController extends QueryAction<EntrustCompany> {
     }
 
     @RequestMapping("saveEntrustCompany.action")
-    public void saveEntrustCompany() {
+    @ResponseBody
+    public String saveEntrustCompany(String strEntrustCompany, String userId) {
+        String entrustCompanyId = null;
         try {
             if (CommonMethod.isNull(strEntrustCompany)) {
-                jsonPrint("fail,参数strEntrustCompany不能为空");
-                return;
+                throw new BusinessException("fail,参数strEntrustCompany不能为空");
             }
-            String entrustCompanyId = entrustCompanyService.saveEntrustCompany(getColl(strEntrustCompany), getUserId());
-            jsonPrint("true:" + entrustCompanyId);
+            entrustCompanyId = entrustCompanyService.saveEntrustCompany(getColl(strEntrustCompany), userId);
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true:" + entrustCompanyId;
     }
 
     @RequestMapping("updateEntrustCompany.action")
-    public void updateEntrustCompany() {
+    @ResponseBody
+    public String updateEntrustCompany(String strEntrustCompany, String userId) {
         try {
             if (CommonMethod.isNull(strEntrustCompany)) {
-                jsonPrint("fail,参数strEntrustCompany不能为空");
-                return;
+                throw new BusinessException("fail,参数strEntrustCompany不能为空");
             }
-            entrustCompanyService.updateEntrustCompany(getColl(strEntrustCompany), getUserId());
-            jsonPrint("true");
+            entrustCompanyService.updateEntrustCompany(getColl(strEntrustCompany), userId);
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     @RequestMapping("findEntrustCompany.action")
-    public void findEntrustCompany() {
+    @ResponseBody
+    public List<EntrustCompany> findEntrustCompany(String strEntrustCompanyId, String strEntrustCompanyName, String strEntrustCompanyNo) {
         List<EntrustCompany> ecList = entrustCompanyService.findEntrustCompany(strEntrustCompanyId, strEntrustCompanyName, strEntrustCompanyNo);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(ecList, jsonConfig);
-        jsonPrint(jsonArr);
+        return ecList;
     }
 
     @RequestMapping("saveEntrustAdvanceMoney.action")
-    public void saveEntrustAdvanceMoney() {
+    @ResponseBody
+    public String saveEntrustAdvanceMoney(String strEntrustCompanyId, String strAdvanceMoney, String userId) {
         try {
             if (CommonMethod.isNull(strEntrustCompanyId) || CommonMethod.isNull(strAdvanceMoney)) {
-                jsonPrint("fail,参数strEntrustCompanyId或者strAdvanceMoney不能为空");
-                return;
+                throw new BusinessException("fail,参数strEntrustCompanyId或者strAdvanceMoney不能为空");
             }
-            entrustCompanyService.saveEntrustAdvanceMoney(strEntrustCompanyId, strAdvanceMoney, getUserId());
-            jsonPrint("true");
+            entrustCompanyService.saveEntrustAdvanceMoney(strEntrustCompanyId, strAdvanceMoney, userId);
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     @RequestMapping("findEntrustAdvanceMoney.action")
-    public void findEntrustAdvanceMoney() {
+    @ResponseBody
+    public List<AdvanceMoneyPage> findEntrustAdvanceMoney(String strEntrustCompanyId) {
         if (CommonMethod.isNull(strEntrustCompanyId)) {
-            jsonPrint("fail,参数strEntrustCompanyId不能为空");
-            return;
+            throw new BusinessException("fail,参数strEntrustCompanyId不能为空");
         }
         List<AdvanceMoneyPage> amPageList = entrustCompanyService.findEntrustAdvanceMoney(strEntrustCompanyId);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(amPageList, jsonConfig);
-        jsonPrint(jsonArr);
+        return amPageList;
     }
 
-    public String getStrEntrustCompany() {
+    /*public String getStrEntrustCompany() {
         return strEntrustCompany;
     }
 
@@ -154,6 +151,6 @@ public class EntrustCompanyController extends QueryAction<EntrustCompany> {
 
     public void setStrAdvanceMoney(String strAdvanceMoney) {
         this.strAdvanceMoney = strAdvanceMoney;
-    }
+    }*/
 
 }

@@ -3,15 +3,14 @@ package com.controller.finance;
 import com.common.BusinessException;
 import com.common.CommonMethod;
 import com.common.QueryAction;
-import com.common.jsonProcessor.CommonJsonConfig;
 import com.dao.page.InvoiceDetailPage;
 import com.dao.page.ReAccountDetailPage;
 import com.model.ReceivableEntrustDetails;
 import com.service.finance.ReceivableEnDetailsService;
-import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
@@ -24,12 +23,12 @@ public class ReceivableEnDetailController extends QueryAction<ReceivableEntrustD
      */
     private static final long serialVersionUID = 1L;
 
-    private String strReEnDetail = "";
+    /* private String strReEnDetail = "";
 
-    private String strAccountDetailId = "";//收款明细ID
+     private String strAccountDetailId = "";//收款明细ID
 
-    private String strInvoiceDetailId = "";//发票明细ID
-
+     private String strInvoiceDetailId = "";//发票明细ID
+ */
     @Autowired
     private ReceivableEnDetailsService receivableEnDetailsService;
 
@@ -44,107 +43,99 @@ public class ReceivableEnDetailController extends QueryAction<ReceivableEntrustD
      * 保存收款与委托的关系
      */
     @RequestMapping("saveAcEnDetails.action")
-    public void saveAcEnDetails() {
+    @ResponseBody
+    public String saveAcEnDetails(String strReEnDetail, String strAccountDetailId, String userId) {
         try {
             if (CommonMethod.isNull(strReEnDetail) || CommonMethod.isNull(strAccountDetailId)) {
-                jsonPrint("fail,参数strReInDetail或者strAccountDetailId不能为空");
-                return;
+                throw new BusinessException("fail,参数strReInDetail或者strAccountDetailId不能为空");
             }
-            receivableEnDetailsService.saveAcEnDetails(getColl(strReEnDetail), strAccountDetailId, getUserId());
-            jsonPrint("true");
+            receivableEnDetailsService.saveAcEnDetails(getColl(strReEnDetail), strAccountDetailId, userId);
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     /**
      * 保存发票与委托的关系
      */
     @RequestMapping("saveInEnDetails.action")
-    public void saveInEnDetails() {
+    @ResponseBody
+    public String saveInEnDetails(String strReEnDetail, String strInvoiceDetailId, String userId) {
         try {
             if (CommonMethod.isNull(strReEnDetail) || CommonMethod.isNull(strInvoiceDetailId)) {
-                jsonPrint("fail,参数strReInDetail或者strInvoiceDetailId不能为空");
-                return;
+                throw new BusinessException("fail,参数strReInDetail或者strInvoiceDetailId不能为空");
             }
-            receivableEnDetailsService.saveInEnDetails(getColl(strReEnDetail), strInvoiceDetailId, getUserId());
-            jsonPrint("true");
+            receivableEnDetailsService.saveInEnDetails(getColl(strReEnDetail), strInvoiceDetailId, userId);
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     /**
      * 根据收款ID查找对应的委托记录
      */
     @RequestMapping("findReEnDetails.action")
-    public void findReEnDetails() {
+    @ResponseBody
+    public List<ReceivableEntrustDetails> findReEnDetails(String strAccountDetailId) {
         if (CommonMethod.isNull(strAccountDetailId)) {
-            jsonPrint("fail,参数strAccountDetailId不能为空");
-            return;
+            throw new BusinessException("fail,参数strAccountDetailId不能为空！", "");
         }
         List<ReceivableEntrustDetails> ReEnDetailsList = receivableEnDetailsService.findReEnDetails(strAccountDetailId);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(ReEnDetailsList, jsonConfig);
-        jsonPrint(jsonArr);
+        return ReEnDetailsList;
     }
 
     /**
      * 根据发票ID查找对应的委托记录
      */
     @RequestMapping("findReInDetails.action")
-    public void findReInDetails() {
+    @ResponseBody
+    public List<ReceivableEntrustDetails> findReInDetails(String strInvoiceDetailId) {
         if (CommonMethod.isNull(strInvoiceDetailId)) {
-            jsonPrint("fail,参数strInvoiceDetailId不能为空");
-            return;
+            throw new BusinessException("fail,参数strAccountDetailId不能为空！", "");
         }
         List<ReceivableEntrustDetails> ReEnDetailsList = receivableEnDetailsService.findReInDetails(strInvoiceDetailId);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(ReEnDetailsList, jsonConfig);
-        jsonPrint(jsonArr);
+        return ReEnDetailsList;
     }
 
     /**
      * 根据收款ID查找对应的发票记录
      */
     @RequestMapping("findInDetail.action")
-    public void findInDetail() {
+    @ResponseBody
+    public List<InvoiceDetailPage> findInDetail(String strAccountDetailId) {
         if (CommonMethod.isNull(strAccountDetailId)) {
-            jsonPrint("fail,参数strAccountDetailId不能为空");
-            return;
+            throw new BusinessException("fail,参数strAccountDetailId不能为空！", "");
         }
         List<ReceivableEntrustDetails> ReEnDetailsList = receivableEnDetailsService.findReEnDetails(strAccountDetailId);
         List<InvoiceDetailPage> iDetailPageList = receivableEnDetailsService.findInDetailPageList(ReEnDetailsList);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(iDetailPageList, jsonConfig);
-        jsonPrint(jsonArr);
+        return iDetailPageList;
     }
 
     /**
      * 根据发票ID查找对应的收款记录
      */
     @RequestMapping("findAcDetail.action")
-    public void findAcDetail() {
+    @ResponseBody
+    public List<ReAccountDetailPage> findAcDetail(String strInvoiceDetailId) {
         if (CommonMethod.isNull(strInvoiceDetailId)) {
-            jsonPrint("fail,参数strInvoiceDetailId不能为空");
-            return;
+            throw new BusinessException("fail,参数strAccountDetailId不能为空！", "");
         }
         List<ReceivableEntrustDetails> ReEnDetailsList = receivableEnDetailsService.findReInDetails(strInvoiceDetailId);
         List<ReAccountDetailPage> reAcDetailsList = receivableEnDetailsService.findAcDetailPageList(ReEnDetailsList);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(reAcDetailsList, jsonConfig);
-        jsonPrint(jsonArr);
+        return reAcDetailsList;
     }
 
-    public String getStrReEnDetail() {
+    /*public String getStrReEnDetail() {
         return strReEnDetail;
     }
 
@@ -166,5 +157,5 @@ public class ReceivableEnDetailController extends QueryAction<ReceivableEntrustD
 
     public void setStrInvoiceDetailId(String strInvoiceDetailId) {
         this.strInvoiceDetailId = strInvoiceDetailId;
-    }
+    }*/
 }

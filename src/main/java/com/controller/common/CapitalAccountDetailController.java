@@ -3,7 +3,6 @@ package com.controller.common;
 import com.common.BusinessException;
 import com.common.CommonMethod;
 import com.common.QueryAction;
-import com.common.jsonProcessor.CommonJsonConfig;
 import com.common.jsonProcessor.TimestampMorpher;
 import com.dao.page.CapitalAccountDetailPage;
 import com.model.CapitalAccountDetail;
@@ -13,6 +12,7 @@ import net.sf.json.util.JSONUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Collection;
 import java.util.List;
@@ -26,11 +26,11 @@ public class CapitalAccountDetailController extends QueryAction<CapitalAccountDe
      */
     private static final long serialVersionUID = 1L;
 
-    private String strCADetail = "";
+    /*private String strCADetail = "";
 
     private String strCapitalAccountId = "";
 
-    private String contractId;
+    private String contractId;*/
 
     @Autowired
     private CapitalAccountDetailService capitalAccountDetailService;
@@ -47,63 +47,57 @@ public class CapitalAccountDetailController extends QueryAction<CapitalAccountDe
      */
     @SuppressWarnings("unchecked")
     @RequestMapping("saveCADetailTable.action")
-    public void saveCADetailTable() {
+    @ResponseBody
+    public String saveCADetailTable(String strCADetail, String userId) {
         try {
             if (CommonMethod.isNull(strCADetail)) {
-                jsonPrint("fail,参数strCADetail不能为空");
-                return;
+                throw new BusinessException("fail,参数strCADetail不能为空");
             }
             String[] formats = {"yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd"};
             JSONUtils.getMorpherRegistry().registerMorpher(new TimestampMorpher(formats));
             Collection<CapitalAccountDetailPage> collPage = JSONArray.toCollection(JSONArray.fromObject(strCADetail), CapitalAccountDetailPage.class);
-            capitalAccountDetailService.saveCADetailTable(collPage, getUserId());
-            jsonPrint("true");
+            capitalAccountDetailService.saveCADetailTable(collPage, userId);
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     @RequestMapping("findCADetailList.action")
-    public void findCADetailList() {
+    @ResponseBody
+    public List<CapitalAccountDetailPage> findCADetailList(String strCapitalAccountId) {
         if (CommonMethod.isNull(strCapitalAccountId)) {
-            jsonPrint("fail,参数strCapitalAccountId不能为空");
-            return;
+            throw new BusinessException("fail,参数strCapitalAccountId不能为空");
         }
         List<CapitalAccountDetailPage> cadPageList = capitalAccountDetailService.findCADetailList(strCapitalAccountId);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(cadPageList, jsonConfig);
-        jsonPrint(jsonArr);
+        return cadPageList;
     }
 
     @RequestMapping("findCADetailListAll.action")
-    public void findCADetailListAll() {
+    @ResponseBody
+    public List<CapitalAccountDetailPage> findCADetailListAll(String contractId) {
         if (CommonMethod.isNull(contractId)) {
-            jsonPrint("fail,参数contractId不能为空");
-            return;
+            throw new BusinessException("fail,参数contractId不能为空");
         }
         List<CapitalAccountDetailPage> findCASampleDetailsAll = capitalAccountDetailService.findCASampleDetailsAll(contractId);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(findCASampleDetailsAll, jsonConfig);
-        jsonPrint(jsonArr);
+        return findCASampleDetailsAll;
     }
 
     @RequestMapping("saveCADetailListAll.action")
-    public void saveCADetailListAll() {
+    @ResponseBody
+    public List<CapitalAccountDetailPage> saveCADetailListAll(String contractId) {
         if (CommonMethod.isNull(contractId)) {
-            jsonPrint("fail,参数contractId不能为空");
-            return;
+            throw new BusinessException("fail,参数contractId不能为空");
         }
         List<CapitalAccountDetailPage> findCASampleDetailsAll = capitalAccountDetailService.findCASampleDetailsAll(contractId);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(findCASampleDetailsAll, jsonConfig);
-        jsonPrint(jsonArr);
+        return findCASampleDetailsAll;
     }
 
-    public String getStrCADetail() {
+    /*public String getStrCADetail() {
         return strCADetail;
     }
 
@@ -126,6 +120,6 @@ public class CapitalAccountDetailController extends QueryAction<CapitalAccountDe
 
     public void setContractId(String contractId) {
         this.contractId = contractId;
-    }
+    }*/
 
 }

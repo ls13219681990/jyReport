@@ -12,9 +12,12 @@ import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,7 +34,7 @@ public class EntrustDetailsController extends QueryAction<EntrustDetails> {
     private final static HttpServletRequest REQUEST = null;
 
     private static final long serialVersionUID = 1L;
-    //部门ID
+    /*//部门ID
     private String strDepartmentId = "";
     //样品ID
     private String strSampleId = "";
@@ -40,7 +43,7 @@ public class EntrustDetailsController extends QueryAction<EntrustDetails> {
     //委托明细（上委托）
     private String strEDetails = "";
     //委托ID
-    private String streEntrustId = "";
+    private String streEntrustId = "";*/
 
 
     @Autowired
@@ -53,18 +56,24 @@ public class EntrustDetailsController extends QueryAction<EntrustDetails> {
         return "/jsp/sys/sysCode";
     }
 
-    public void findIsEntrust() {
-//		List<EntrustDetails> edList = entrustDetailService.findIsEntrust(strDepartmentId, strSampleId,strTParameterId);
-//		if(edList!=null && edList.size()>0){//已经办理了委托
-//			jsonPrint("false");
-//		}else{
-        jsonPrint("true");
-//		}
+    @RequestMapping("findIsEntrust.action")
+    @ResponseBody
+    public String findIsEntrust(String strDepartmentId, String strSampleId, String strTParameterId) {
+        List<EntrustDetails> edList = entrustDetailService.findIsEntrust(strDepartmentId, strSampleId, strTParameterId);
+        List<String> reulst = new ArrayList<String>();
+        if (edList != null && edList.size() > 0) {//已经办理了委托
+            reulst.add("flase");
+            //jsonPrint("false");
+        } else {
+            reulst.add("true");
+        }
+        return reulst.get(0).toString();
     }
 
     @SuppressWarnings({"rawtypes", "unused"})
     @RequestMapping("saveEDetailReport.action")
-    public void saveEDetailReport() {
+    @ResponseBody
+    public String saveEDetailReport(String userId, String strEDetails) {
         try {
 
             Map parMap = REQUEST.getParameterMap();
@@ -72,8 +81,7 @@ public class EntrustDetailsController extends QueryAction<EntrustDetails> {
             Object eDetailsObj = parMap.get("strEDetails");
 
             if (CommonMethod.isNull(strEDetails)) {
-                jsonPrint("fail,参数strEDetails不能为空");
-                return;
+                throw new BusinessException("fail,参数strEDetails不能为空！", "");
             }
 
             Map<String, Class> classMap = new HashMap<String, Class>();
@@ -84,20 +92,22 @@ public class EntrustDetailsController extends QueryAction<EntrustDetails> {
             JSONObject pJsonObject = JSONObject.fromObject(strEDetails);
             esPage = (EntrustSavePage) JSONObject.toBean(pJsonObject, EntrustSavePage.class, classMap);
 
-            entrustDetailService.saveEDetailReport(esPage, getUserId());
-            jsonPrint("true");
+            entrustDetailService.saveEDetailReport(esPage, userId);
+
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     @SuppressWarnings({"rawtypes", "unused"})
     @RequestMapping("updateEDetailReport.action")
-    public void updateEDetailReport() {
+    @ResponseBody
+    public String updateEDetailReport(String userId, String strEDetails) {
         try {
             //HttpServletRequest request = ServletActionContext.getRequest();
             Map parMap = REQUEST.getParameterMap();
@@ -105,8 +115,7 @@ public class EntrustDetailsController extends QueryAction<EntrustDetails> {
             Object eDetailsObj = parMap.get("strEDetails");
 
             if (CommonMethod.isNull(strEDetails)) {
-                jsonPrint("fail,参数strEDetails不能为空");
-                return;
+                throw new BusinessException("fail,参数strEDetails不能为空！", "");
             }
             Map<String, Class> classMap = new HashMap<String, Class>();
             classMap.put("edReport", EntrustDetailReportPage.class);
@@ -116,18 +125,18 @@ public class EntrustDetailsController extends QueryAction<EntrustDetails> {
             JSONObject pJsonObject = JSONObject.fromObject(strEDetails);
             esPage = (EntrustSavePage) JSONObject.toBean(pJsonObject, EntrustSavePage.class, classMap);
 
-            entrustDetailService.updateEDetailReport(esPage, getUserId());
-            jsonPrint("true");
+            entrustDetailService.updateEDetailReport(esPage, userId);
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
-    public String getStrDepartmentId() {
+   /* public String getStrDepartmentId() {
         return strDepartmentId;
     }
 
@@ -165,6 +174,6 @@ public class EntrustDetailsController extends QueryAction<EntrustDetails> {
 
     public void setStreEntrustId(String streEntrustId) {
         this.streEntrustId = streEntrustId;
-    }
+    }*/
 
 }

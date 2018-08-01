@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
@@ -19,7 +20,7 @@ import java.io.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("SignNameAction")
+@RequestMapping("signNameAction")
 public class SignNameController extends QueryAction<SignName> {
 
     /**
@@ -30,9 +31,9 @@ public class SignNameController extends QueryAction<SignName> {
 
     private static final long serialVersionUID = 1L;
 
-    private String strSignName = "";
+   /* private String strSignName = "";
 
-    private String strUserId = "";
+    private String strUserId = "";*/
 
     @Autowired
     private SignNameService signNameService;
@@ -45,7 +46,8 @@ public class SignNameController extends QueryAction<SignName> {
     }
 
     @RequestMapping("uploadSignName.action")
-	public void uploadSignName(@RequestParam MultipartFile[] template) {
+	@ResponseBody
+	public String uploadSignName(@RequestParam MultipartFile[] template, String strUserId) {
         try {
             response.setContentType("text/plain");
             response.setCharacterEncoding("UTF-8");
@@ -106,13 +108,13 @@ public class SignNameController extends QueryAction<SignName> {
 				    else {
 				      isSuccess = true;
 				    }
-				    
+
 				    if (isSuccess){
 				    	String realAdd = "signName"+"/"+strUserId;
 						String savePath = request.getSession().getServletContext().getRealPath("/") + realAdd;
 						File newfile = new File(savePath.toString());
 						if((!newfile.exists()) && (!newfile.isDirectory())){
-							newfile.mkdirs(); 
+							newfile.mkdirs();
 						}
 						reSize(new FileInputStream(reportFile), new FileOutputStream(new File(savePath, saveFileName)), 50, "png");
 
@@ -126,7 +128,7 @@ public class SignNameController extends QueryAction<SignName> {
 				      } else {
 				    	  	signNameService.update(singName);
 				      }
-					  jsonPrint("true");
+						//	  return "true";
 				    }
 				}catch (Exception e) {
 					if (null != fis) {
@@ -145,17 +147,20 @@ public class SignNameController extends QueryAction<SignName> {
 					}
 				}
 			}
-            jsonPrint("fail:签名上传失败！");
+
+			//throw new BusinessException("fail:签名上传失败！");
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+			e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+			e.getMessage();
         }
+		return "true";
     }
 
     @RequestMapping("reSize.action")
+
     public static void reSize(InputStream is, OutputStream os, int size, String format)
             throws IOException {
         BufferedImage prevImage = ImageIO.read(is);
@@ -175,21 +180,22 @@ public class SignNameController extends QueryAction<SignName> {
     }
 
     @RequestMapping("findSignNameByUserId.action")
-    public void findSignNameByUserId() {
+	@ResponseBody
+	public SignName findSignNameByUserId(String strUserId) {
         if (CommonMethod.isNull(strUserId)) {
-            jsonPrint("fail,用户ID不能为空！");
-            return;
+			throw new BusinessException("fail,参数strUserId不能为空！", "");
         }
         SignName signName = new SignName();
         List<SignName> snList = this.signNameService.findByProperty("userId", strUserId);
         if (snList != null && snList.size() > 0) {
             signName = snList.get(0);
         }
-        jsonPrintOnlyProperty(signName);
+		return signName;
+		//jsonPrintOnlyProperty(signName);
     }
 
 
-    public String getStrSignName() {
+   /* public String getStrSignName() {
         return strSignName;
     }
 
@@ -204,5 +210,5 @@ public class SignNameController extends QueryAction<SignName> {
 
     public void setStrUserId(String strUserId) {
         this.strUserId = strUserId;
-    }
+    }*/
 }

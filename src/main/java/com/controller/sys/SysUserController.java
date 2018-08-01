@@ -3,14 +3,13 @@ package com.controller.sys;
 import com.common.BusinessException;
 import com.common.CommonMethod;
 import com.common.QueryAction;
-import com.common.jsonProcessor.CommonJsonConfig;
 import com.dao.page.UserRolePage;
 import com.model.SysUser;
 import com.service.sys.SysUserService;
-import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
@@ -23,11 +22,11 @@ public class SysUserController extends QueryAction<SysUser> {
      */
     private static final long serialVersionUID = 1L;
 
-    private String strUser = "";
+  /*  private String strUser = "";
 
     private String oldPassword = "";
 
-    private String newPassword = "";
+    private String newPassword = "";*/
 
     @Autowired
     private SysUserService sysUserService;
@@ -40,43 +39,44 @@ public class SysUserController extends QueryAction<SysUser> {
     }
 
     @RequestMapping("saveSysUser.action")
-    public void saveSysUser() {
+    @ResponseBody
+    public String saveSysUser(String strUser, String userId) {
         try {
             if (CommonMethod.isNull(strUser)) {
-                jsonPrint("fail,参数strUser不能为空");
-                return;
+                throw new BusinessException("fail,参数strUser不能为空！", "");
             }
-            sysUserService.saveSysUser(getColl(strUser), getUserId());
-            jsonPrint("true");
+            sysUserService.saveSysUser(getColl(strUser), userId);
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     @RequestMapping("updateSysUser.action")
-    public void updateSysUser() {
+    @ResponseBody
+    public String updateSysUser(String strUser, String userId) {
         try {
             if (CommonMethod.isNull(strUser)) {
-                jsonPrint("fail,参数strUser不能为空");
-                return;
+                throw new BusinessException("fail,参数strUser不能为空！", "");
             }
-            sysUserService.updateSysUser(getColl(strUser), getUserId());
-            jsonPrint("true");
+            sysUserService.updateSysUser(getColl(strUser), userId);
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     @RequestMapping("updateSysPassword.action")
-    public void updateSysPassword() {
+    @ResponseBody
+    public String updateSysPassword(String oldPassword, String newPassword, String userId) {
         try {
 //			if(CommonMethod.isNull(oldPassword)){
 //				jsonPrint("fail,参数oldPassword不能为空");
@@ -86,55 +86,53 @@ public class SysUserController extends QueryAction<SysUser> {
 //				jsonPrint("fail,参数newPassword不能为空");
 //				return;
 //			}
-            sysUserService.updateSysPassword(oldPassword, newPassword, getUserId());
-            jsonPrint("true");
+            sysUserService.updateSysPassword(oldPassword, newPassword, userId);
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     @RequestMapping("resetSysPassword.action")
-    public void resetSysPassword() {
+    @ResponseBody
+    public String resetSysPassword(String userId) {
         try {
-            if (CommonMethod.isNull(getUserId())) {
-                jsonPrint("fail,参数userId不能为空");
-                return;
+            if (CommonMethod.isNull(userId)) {
+                throw new BusinessException("fail,参数userId不能为空！", "");
             }
-            sysUserService.resetSysPassword(getUserId());
-            jsonPrint("true");
+            sysUserService.resetSysPassword(userId);
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     @RequestMapping("findSysUser.action")
-    public void findSysUser() {
+    @ResponseBody
+    public List<UserRolePage> findSysUser() {
         List<UserRolePage> sysUserList = sysUserService.findSysUser();
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(sysUserList, jsonConfig);
-        jsonPrint(jsonArr);
+        return sysUserList;
     }
 
     /**
      * 获取有效的用户数据
      */
     @RequestMapping("findSysUserValid.action")
-    public void findSysUserValid() {
+    @ResponseBody
+    public List<UserRolePage> findSysUserValid() {
         List<UserRolePage> sysUserList = sysUserService.findSysUserValid();
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(sysUserList, jsonConfig);
-        jsonPrint(jsonArr);
+        return sysUserList;
     }
 
-    public String getStrUser() {
+/*    public String getStrUser() {
         return strUser;
     }
 
@@ -156,5 +154,5 @@ public class SysUserController extends QueryAction<SysUser> {
 
     public void setNewPassword(String newPassword) {
         this.newPassword = newPassword;
-    }
+    }*/
 }

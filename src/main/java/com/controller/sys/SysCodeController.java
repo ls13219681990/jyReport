@@ -6,7 +6,6 @@ import com.common.QueryAction;
 import com.common.jsonProcessor.CommonJsonConfig;
 import com.model.SysCode;
 import com.service.sys.SysCodeService;
-import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.List;
 
 @Controller
-@RequestMapping("/SysCodeAction")
+@RequestMapping("/sysCodeAction")
 public class SysCodeController extends QueryAction<SysCode> {
 
     /**
@@ -23,9 +22,9 @@ public class SysCodeController extends QueryAction<SysCode> {
      */
     private static final long serialVersionUID = 1L;
 
-    private String strCode = "";
+   /* private String strCode = "";
 
-    private String codeRelation = "";
+    private String codeRelation = "";*/
 
     @Autowired
     private SysCodeService sysCodeService;
@@ -38,64 +37,61 @@ public class SysCodeController extends QueryAction<SysCode> {
     }
 
     @RequestMapping("saveCode.action")
-    public void saveCode() {
+    @ResponseBody
+    public String saveCode(String strCode) {
         try {
             if (CommonMethod.isNull(strCode)) {
-                jsonPrint("fail,参数strCode不能为空");
-                return;
+                throw new BusinessException("fail,参数strCode不能为空！", "");
             }
 //			SysCode s = (SysCode)toBean(strCode,SysCode.class);
             sysCodeService.saveCode(getColl(strCode));
-            jsonPrint("true");
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "ture";
     }
 
     @RequestMapping("updateCode.action")
-    public void updateCode() {
+    @ResponseBody
+    public String updateCode(String strCode) {
         try {
             if (CommonMethod.isNull(strCode)) {
-                jsonPrint("fail,参数strCode不能为空");
-                return;
+                throw new BusinessException("fail,参数strCode不能为空！", "");
             }
             sysCodeService.updateCode(getColl(strCode));
-            jsonPrint("true");
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
-    @RequestMapping("/findcode.action")
+    @RequestMapping("findcode.action")
     @ResponseBody
-    public void findcode() {
+    public CommonJsonConfig findcode() {
         List<SysCode> sysCodeList = sysCodeService.findSysCodes();
         CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(sysCodeList, jsonConfig);
-        jsonPrint(jsonArr);
+        return jsonConfig;
     }
 
     @RequestMapping("findPitchOncode.action")
-    public void findPitchOncode() {
+    @ResponseBody
+    public List<SysCode> findPitchOncode(String codeRelation) {
         if (CommonMethod.isNull(codeRelation)) {
-            jsonPrint("fail,参数codeRelation不能为空");
-            return;
+            throw new BusinessException("fail,参数codeRelation不能为空！", "");
         }
         List<SysCode> sysCodeList = sysCodeService.findPitchOncode(codeRelation);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(sysCodeList, jsonConfig);
-        jsonPrint(jsonArr);
+        return sysCodeList;
     }
 
-    public String getStrCode() {
+    /*public String getStrCode() {
         return strCode;
     }
 
@@ -109,6 +105,6 @@ public class SysCodeController extends QueryAction<SysCode> {
 
     public void setCodeRelation(String codeRelation) {
         this.codeRelation = codeRelation;
-    }
+    }*/
 
 }

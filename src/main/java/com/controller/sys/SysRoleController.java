@@ -3,18 +3,17 @@ package com.controller.sys;
 import com.common.BusinessException;
 import com.common.CommonMethod;
 import com.common.QueryAction;
-import com.common.jsonProcessor.CommonJsonConfig;
 import com.model.SysRole;
 import com.service.sys.SysRoleService;
-import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
 @Controller
-@RequestMapping("SysRoleAction")
+@RequestMapping("sysRoleAction")
 public class SysRoleController extends QueryAction<SysRole> {
 
     /**
@@ -22,7 +21,7 @@ public class SysRoleController extends QueryAction<SysRole> {
      */
     private static final long serialVersionUID = 1L;
 
-    private String strRole = "";
+    /* private String strRole = "";*/
 
     @Autowired
     private SysRoleService sysRoleService;
@@ -35,67 +34,65 @@ public class SysRoleController extends QueryAction<SysRole> {
     }
 
     @RequestMapping("saveSysRole.action")
-    public void saveSysRole() {
+    @ResponseBody
+    public String saveSysRole(String strRole, String userId) {
         try {
             if (CommonMethod.isNull(strRole)) {
-                jsonPrint("fail,参数strRole不能为空");
-                return;
+                throw new BusinessException("fail,参数strRole不能为空！", "");
             }
-            sysRoleService.saveSysRole(getColl(strRole), getUserId());
-            jsonPrint("true");
+            sysRoleService.saveSysRole(getColl(strRole), userId);
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     @RequestMapping("updateSysRole.action")
-    public void updateSysRole() {
+    @ResponseBody
+    public String updateSysRole(String strRole) {
         try {
             if (CommonMethod.isNull(strRole)) {
-                jsonPrint("fail,参数strRole不能为空");
-                return;
+                throw new BusinessException("fail,参数strRole不能为空！", "");
             }
             sysRoleService.updateSysRole(getColl(strRole));
-            jsonPrint("true");
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     @RequestMapping("findSysRole.action")
-    public void findSysRole() {
+    @ResponseBody
+    public List<SysRole> findSysRole() {
         List<SysRole> sysRoleList = sysRoleService.findSysRole();
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(sysRoleList, jsonConfig);
-        jsonPrint(jsonArr);
+        return sysRoleList;
     }
 
     /**
      * 获取有效的角色数据
      */
     @RequestMapping("findSysRoleValid.action")
-    public void findSysRoleValid() {
+    @ResponseBody
+    public List<SysRole> findSysRoleValid() {
         List<SysRole> sysRoleList = sysRoleService.findSysRoleValid();
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(sysRoleList, jsonConfig);
-        jsonPrint(jsonArr);
+        return sysRoleList;
     }
 
-    public String getStrRole() {
+   /* public String getStrRole() {
         return strRole;
     }
 
     public void setStrRole(String strRole) {
         this.strRole = strRole;
     }
-
+*/
 
 }

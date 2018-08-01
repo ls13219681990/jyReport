@@ -1,8 +1,8 @@
 package com.service.entrust;
 
-import com.service.common.BaseService;
 import com.dao.page.*;
 import com.model.EntrustInfo;
+import com.service.common.BaseService;
 
 import java.util.Collection;
 import java.util.List;

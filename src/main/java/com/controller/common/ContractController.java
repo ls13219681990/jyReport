@@ -3,7 +3,6 @@ package com.controller.common;
 import com.common.BusinessException;
 import com.common.CommonMethod;
 import com.common.QueryAction;
-import com.common.jsonProcessor.CommonJsonConfig;
 import com.common.jsonProcessor.TimestampMorpher;
 import com.dao.page.ContractPage;
 import com.model.Agreement;
@@ -13,6 +12,7 @@ import net.sf.json.util.JSONUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Collection;
 import java.util.List;
@@ -26,9 +26,9 @@ public class ContractController extends QueryAction<Agreement> {
      */
     private static final long serialVersionUID = 1L;
 
-    private String strContract = "";
+   /* private String strContract = "";
 
-    private String strSort = "";//排序规则  0：升序   1：降序
+    private String strSort = "";//排序规则  0：升序   1：降序*/
 
     @Autowired
     private ContractService contractService;
@@ -42,70 +42,70 @@ public class ContractController extends QueryAction<Agreement> {
 
     @SuppressWarnings("unchecked")
     @RequestMapping("saveContract.action")
-    public void saveContract() {
+    @ResponseBody
+    public String saveContract(String strContract, String userId) {
         try {
             if (CommonMethod.isNull(strContract)) {
-                jsonPrint("fail,参数strContract不能为空");
-                return;
+                throw new BusinessException("fail,参数strContract不能为空");
             }
             strContract = strContract.replace("OO", "#");
             String[] formats = {"yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd"};
             JSONUtils.getMorpherRegistry().registerMorpher(new TimestampMorpher(formats));
             Collection<ContractPage> collPage = JSONArray.toCollection(JSONArray.fromObject(strContract), ContractPage.class);
-            contractService.saveContract(collPage, getUserId());
-            jsonPrint("true");
+            contractService.saveContract(collPage, userId);
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "ture";
     }
 
     @SuppressWarnings("unchecked")
     @RequestMapping("updateContract.action")
-    public void updateContract() {
+    @ResponseBody
+    public String updateContract(String strContract, String userId) {
         try {
             if (CommonMethod.isNull(strContract)) {
-                jsonPrint("fail,参数strContract不能为空");
-                return;
+                throw new BusinessException("fail,参数strContract不能为空");
             }
             strContract = strContract.replace("OO", "#");
             String[] formats = {"yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd"};
             JSONUtils.getMorpherRegistry().registerMorpher(new TimestampMorpher(formats));
             Collection<ContractPage> collPage = JSONArray.toCollection(JSONArray.fromObject(strContract), ContractPage.class);
-            contractService.updateContract(collPage, getUserId());
-            jsonPrint("true");
+            contractService.updateContract(collPage, userId);
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     /**
      * 根据合同ID查询统计合同报告
      */
     @RequestMapping("findContract.action")
-    public void findContract() {
+    @ResponseBody
+    public List<ContractPage> findContract(String strContract, String strSort) {
         ContractPage ca = new ContractPage();
         if (!CommonMethod.isNull(strContract)) {
             ca = (ContractPage) toBean(strContract, ContractPage.class);
         }
         List<ContractPage> capList = contractService.findCaList(ca, strSort);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(capList, jsonConfig);
-        jsonPrint(jsonArr);
+        return capList;
     }
 
     /**
      * 根据合同ID查询合同报告不统计
      */
     @RequestMapping("findContractById.action")
-    public void findContractById() {
+    @ResponseBody
+    public List<ContractPage> findContractById(String strContract, String strSort) {
         ContractPage ca = new ContractPage();
         if (!CommonMethod.isNull(strContract)) {
             strContract = strContract.replace("OO", "#");
@@ -113,12 +113,10 @@ public class ContractController extends QueryAction<Agreement> {
             ca = (ContractPage) toBean(strContract, ContractPage.class);
         }
         List<ContractPage> capList = contractService.findCaListById(ca, strSort);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(capList, jsonConfig);
-        jsonPrint(jsonArr);
+        return capList;
     }
 
-    public String getStrContract() {
+    /*public String getStrContract() {
         return strContract;
     }
 
@@ -132,6 +130,6 @@ public class ContractController extends QueryAction<Agreement> {
 
     public void setStrSort(String strSort) {
         this.strSort = strSort;
-    }
+    }*/
 
 }

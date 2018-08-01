@@ -3,7 +3,6 @@ package com.controller.finance;
 import com.common.BusinessException;
 import com.common.CommonMethod;
 import com.common.QueryAction;
-import com.common.jsonProcessor.CommonJsonConfig;
 import com.common.jsonProcessor.TimestampMorpher;
 import com.dao.page.AmReceivablePage;
 import com.model.AmountReceivable;
@@ -13,11 +12,13 @@ import net.sf.json.util.JSONUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Collection;
 import java.util.List;
 
 @Controller
+@RequestMapping("amountReceivableAction")
 public class AmountReceivableController extends QueryAction<AmountReceivable> {
 
     /**
@@ -25,7 +26,7 @@ public class AmountReceivableController extends QueryAction<AmountReceivable> {
      */
     private static final long serialVersionUID = 1L;
 
-    private String strAmountReceivable = "";
+    /*private String strAmountReceivable = "";*/
 
     @Autowired
     private AmountReceivableService aReceivableService;
@@ -38,70 +39,75 @@ public class AmountReceivableController extends QueryAction<AmountReceivable> {
     }
 
     @SuppressWarnings("unchecked")
-    public void saveAmReceivable() {
+    @RequestMapping("saveAmReceivable.action")
+    @ResponseBody
+    public String saveAmReceivable(String strAmountReceivable, String userId) {
         try {
             if (CommonMethod.isNull(strAmountReceivable)) {
-                jsonPrint("fail,参数strAmountReceivable不能为空");
-                return;
+                throw new BusinessException("fail,参数strAmountReceivable不能为空！", "");
             }
             String[] formats = {"yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd"};
             JSONUtils.getMorpherRegistry().registerMorpher(new TimestampMorpher(formats));
             Collection<AmReceivablePage> collPage = JSONArray.toCollection(JSONArray.fromObject(strAmountReceivable), AmReceivablePage.class);
-            aReceivableService.saveAmReceivable(collPage, getUserId());
-            jsonPrint("true");
+            aReceivableService.saveAmReceivable(collPage, userId);
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     @SuppressWarnings("unchecked")
-    public void updateAmReceivable() {
+    @RequestMapping("updateAmReceivable.action")
+    @ResponseBody
+    public String updateAmReceivable(String strAmountReceivable, String userId) {
         try {
             if (CommonMethod.isNull(strAmountReceivable)) {
-                jsonPrint("fail,参数strAmountReceivable不能为空");
-                return;
+                throw new BusinessException("fail,参数strAmountReceivable不能为空！", "");
             }
             String[] formats = {"yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd"};
             JSONUtils.getMorpherRegistry().registerMorpher(new TimestampMorpher(formats));
             Collection<AmReceivablePage> collPage = JSONArray.toCollection(JSONArray.fromObject(strAmountReceivable), AmReceivablePage.class);
-            aReceivableService.updateAmReceivable(collPage, getUserId());
-            jsonPrint("true");
+            aReceivableService.updateAmReceivable(collPage, userId);
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     @SuppressWarnings("unchecked")
-    public void putInAmReceivable() {
+    @RequestMapping("putInAmReceivable.action")
+    @ResponseBody
+    public String putInAmReceivable(String strAmountReceivable, String userId) {
         try {
             if (CommonMethod.isNull(strAmountReceivable)) {
-                jsonPrint("fail,参数strAmountReceivable不能为空");
-                return;
+                throw new BusinessException("fail,参数strAmountReceivable不能为空！", "");
             }
             String[] formats = {"yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd"};
             JSONUtils.getMorpherRegistry().registerMorpher(new TimestampMorpher(formats));
             Collection<AmReceivablePage> collPage = JSONArray.toCollection(JSONArray.fromObject(strAmountReceivable), AmReceivablePage.class);
-            aReceivableService.saveAmReceivableTable(collPage, getUserId());
-            jsonPrint("true");
+            aReceivableService.saveAmReceivableTable(collPage, userId);
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     @SuppressWarnings("unchecked")
-    public void findAmReceivable() {
+    @RequestMapping("findAmReceivable.action")
+    @ResponseBody
+    public List<AmReceivablePage> findAmReceivable(String strAmountReceivable) {
         AmReceivablePage ar = new AmReceivablePage();
         if (!CommonMethod.isNull(strAmountReceivable)) {
             String[] formats = {"yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd"};
@@ -113,16 +119,14 @@ public class AmountReceivableController extends QueryAction<AmountReceivable> {
             }
         }
         List<AmReceivablePage> amList = aReceivableService.findAmReceivableList(ar);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(amList, jsonConfig);
-        jsonPrint(jsonArr);
+        return amList;
     }
 
-    public String getStrAmountReceivable() {
+    /*public String getStrAmountReceivable() {
         return strAmountReceivable;
     }
 
     public void setStrAmountReceivable(String strAmountReceivable) {
         this.strAmountReceivable = strAmountReceivable;
-    }
+    }*/
 }

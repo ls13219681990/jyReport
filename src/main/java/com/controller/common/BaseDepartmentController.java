@@ -3,21 +3,17 @@ package com.controller.common;
 import com.common.BusinessException;
 import com.common.CommonMethod;
 import com.common.QueryAction;
-import com.common.jsonProcessor.CommonJsonConfig;
 import com.dao.page.SampleReportPage;
 import com.dao.page.TestReportInfoPage;
 import com.model.BaseDepartment;
 import com.model.EntrustInfo;
 import com.service.common.BaseDepartmentService;
-import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -35,9 +31,9 @@ public class BaseDepartmentController extends QueryAction<BaseDepartment> {
      */
     private static final long serialVersionUID = 1L;
 
-    private String strBaseDepartment = "";
+    /*private String strBaseDepartment = "";
     //是否为经营部门参数
-    private String strIsManagement = "";
+    private String strIsManagement = "";*/
 
     @Autowired
     private BaseDepartmentService baseDepartmentService;
@@ -51,16 +47,13 @@ public class BaseDepartmentController extends QueryAction<BaseDepartment> {
 
     @RequestMapping("test")
     @ResponseBody
-    public TestReportInfoPage sasveDepartment() {
-        try {
-            int a = 1;
-            int b = 0 / 0;
-            String time = "2011-11-1 17:00:00";
-            SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Date d = f.parse(time);
-        } catch (Exception e) {
+    public TestReportInfoPage sasveDepartment(String strBaseDepartment) {
 
+        if (CommonMethod.isNull(strBaseDepartment)) {
+            throw new BusinessException("fail,参数strBaseDepartment不能为空");
         }
+        System.out.println("BaseDepartmentController.sasveDepartment");
+
         EntrustInfo s = new EntrustInfo();
         List<EntrustInfo> ed = new ArrayList<EntrustInfo>();
         ed.add(s);
@@ -73,54 +66,54 @@ public class BaseDepartmentController extends QueryAction<BaseDepartment> {
     }
 
 
-
-
-
     @RequestMapping("saveDepartment.action")
-    public void saveDepartment() {
+    @ResponseBody
+    public String saveDepartment(String strBaseDepartment, String userId) {
         try {
             if (CommonMethod.isNull(strBaseDepartment)) {
-                jsonPrint("fail,参数strBaseDepartment不能为空");
-                return;
+                throw new BusinessException("fail,参数strBaseDepartment不能为空");
+
             }
-            baseDepartmentService.saveDepartment(getColl(strBaseDepartment), getUserId());
-            jsonPrint("true");
+            baseDepartmentService.saveDepartment(getColl(strBaseDepartment), userId);
+
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     @RequestMapping("updateDepartment.action")
-    public void updateDepartment() {
+    @ResponseBody
+    public String updateDepartment(String strBaseDepartment, String userId) {
         try {
             if (CommonMethod.isNull(strBaseDepartment)) {
-                jsonPrint("fail,参数strBaseDepartment不能为空");
-                return;
+                throw new BusinessException("fail,参数strBaseDepartment不能为空");
+
             }
-            baseDepartmentService.updateDepartment(getColl(strBaseDepartment), getUserId());
-            jsonPrint("true");
+            baseDepartmentService.updateDepartment(getColl(strBaseDepartment), userId);
+
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     @RequestMapping("findDepartment.action")
-    public void findDepartment() {
+    @ResponseBody
+    public List<BaseDepartment> findDepartment(String strIsManagement) {
         List<BaseDepartment> departmentList = baseDepartmentService.findDepartment(strIsManagement);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(departmentList, jsonConfig);
-        jsonPrint(jsonArr);
+        return departmentList;
     }
 
-    public String getStrBaseDepartment() {
+   /* public String getStrBaseDepartment() {
         return strBaseDepartment;
     }
 
@@ -134,5 +127,5 @@ public class BaseDepartmentController extends QueryAction<BaseDepartment> {
 
     public void setStrIsManagement(String strIsManagement) {
         this.strIsManagement = strIsManagement;
-    }
+    }*/
 }

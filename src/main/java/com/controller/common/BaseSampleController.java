@@ -3,7 +3,6 @@ package com.controller.common;
 import com.common.BusinessException;
 import com.common.CommonMethod;
 import com.common.QueryAction;
-import com.common.jsonProcessor.CommonJsonConfig;
 import com.dao.page.BaseSamplePage;
 import com.dao.page.TemplateInfoPage;
 import com.dao.page.TemplateLocationPage;
@@ -13,12 +12,12 @@ import com.model.TemplateInfo;
 import com.service.common.BaseSampleService;
 import com.service.common.TemplateInfoService;
 import com.service.common.TemplateLocationService;
-import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,7 +40,7 @@ public class BaseSampleController extends QueryAction<BaseSample> {
     private HttpServletRequest request;
 
 
-    private static final long serialVersionUID = 1L;
+   /* private static final long serialVersionUID = 1L;
 
     private String strBaseSample = "";
 
@@ -55,7 +54,7 @@ public class BaseSampleController extends QueryAction<BaseSample> {
 
     private String strTemplateInfo = "";//模板信息对象
 
-    private String strTemplateInfoId = "";//模板信息ID
+    private String strTemplateInfoId = "";//模板信息ID*/
 
     @Autowired
     private BaseSampleService baseSampleService;
@@ -71,26 +70,28 @@ public class BaseSampleController extends QueryAction<BaseSample> {
     }
 
     @RequestMapping("saveSample.action")
-    public void saveSample() {
+    @ResponseBody
+    public String saveSample(String strBaseSample, String userId) {
         try {
             if (CommonMethod.isNull(strBaseSample)) {
-                jsonPrint("fail,参数strBaseSample不能为空");
-                return;
+                throw new BusinessException("fail,参数strBaseSample不能为空");
+
             }
-            baseSampleService.saveSample(getColl(strBaseSample), getUserId());
-            jsonPrint("true");
+            baseSampleService.saveSample(getColl(strBaseSample), userId);
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     @SuppressWarnings("rawtypes")
     @RequestMapping("updateSample.action")
-    public void updateSample() {
+    @ResponseBody
+    public String updateSample(String strBaseSample, String strTemplateLocation, String userId) {
         try {
             String updateFlag = "";
             BaseSample bs = new BaseSample();
@@ -100,7 +101,6 @@ public class BaseSampleController extends QueryAction<BaseSample> {
             } else {
                 updateFlag = "0";
             }
-
             TemplateLocationPage tLocation = new TemplateLocationPage();
             if (!CommonMethod.isNull(strTemplateLocation)) {
                 Map<String, Class> classMap = new HashMap<String, Class>();
@@ -112,46 +112,46 @@ public class BaseSampleController extends QueryAction<BaseSample> {
                 updateFlag = "1";
             }
 
-            baseSampleService.updateSample(bs, tLocation, getUserId(), updateFlag);
-            jsonPrint("true");
+            baseSampleService.updateSample(bs, tLocation, userId, updateFlag);
+
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "trun";
     }
 
     @RequestMapping("findSample.action")
-    public void findSample() {
+    @ResponseBody
+    public List<BaseSamplePage> findSample(String strDepartmentId) {
         List<BaseSamplePage> sampleList = baseSampleService.findSample(strDepartmentId);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(sampleList, jsonConfig);
-        jsonPrint(jsonArr);
+        return sampleList;
     }
 
     @RequestMapping("findTemplateLocation.action")
-    public void findTemplateLocation() {
+    @ResponseBody
+    public List<TemplateLocationPage> findTemplateLocation(String strTemplateInfoId) {
         List<TemplateLocationPage> tLocationList = templateLocationService.findTLocationPageList(strTemplateInfoId);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(tLocationList, jsonConfig);
-        jsonPrint(jsonArr);
+        return tLocationList;
     }
 
     /**
      * 保存模板（根据客户2017年4月10日要求将模板保存从参数表迁移到样品）
      */
     @RequestMapping("uploadSampleReport.action")
-    public void uploadSampleReport(@RequestParam MultipartFile[] template) {
+    @ResponseBody
+    public String uploadSampleReport(@RequestParam MultipartFile[] template, String strTemplateInfoId, String userId) {
         System.out.println("------------------------------文件上传开始");
         try {
-			response.setContentType("text/plain");
-		    response.setCharacterEncoding("UTF-8");
-		    
-		    if(CommonMethod.isNull(strTemplateInfoId)){
-		    	throw new BusinessException("fail,参数strTemplateInfoId不能为空！","");
-			}
+            response.setContentType("text/plain");
+            response.setCharacterEncoding("UTF-8");
+
+            if (CommonMethod.isNull(strTemplateInfoId)) {
+                throw new BusinessException("fail,参数strTemplateInfoId不能为空！", "");
+            }
 
             for (MultipartFile sample : template) {
                 if (sample.isEmpty()) {
@@ -215,7 +215,7 @@ public class BaseSampleController extends QueryAction<BaseSample> {
                         //模板名称
                         ti.setTemplateName(strTemplateInfoId + "." + hz);
                         //更新人
-                        ti.setInputer(getUserId());
+                        ti.setInputer(userId);
                         //更新时间
                         ti.setInputeTime(CommonMethod.getDate());
                         templateInfoService.update(ti);
@@ -239,14 +239,14 @@ public class BaseSampleController extends QueryAction<BaseSample> {
 
                 }
             }
-        jsonPrint("true");
         } catch (BusinessException e) {
-			e.printStackTrace();
-			jsonPrint("fail:"+e.getMessage());
-		}catch (Exception e) {
-			e.printStackTrace();
-			jsonPrint("error:"+e.getMessage());
+            e.printStackTrace();
+            jsonPrint("fail:" + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            jsonPrint("error:" + e.getMessage());
         }
+        return "true";
     }
 
 
@@ -254,7 +254,8 @@ public class BaseSampleController extends QueryAction<BaseSample> {
      * 保存日志（根据客户2017年5月10日要求增加日志保存功能）
      */
     @RequestMapping("saveReportLogs.action")
-    public void saveReportLogs(@RequestParam MultipartFile[] template) {
+    @ResponseBody
+    public String saveReportLogs(@RequestParam MultipartFile[] template, String strlogName) {
         System.out.println("------------------------------日志上传开始");
         try {
             for (MultipartFile sample : template) {
@@ -312,43 +313,48 @@ public class BaseSampleController extends QueryAction<BaseSample> {
                     }
                 }
             }
-            jsonPrint("true");
+
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
-
+        return "true";
     }
 
     @RequestMapping("saveTemplateInfo.action")
-    public void saveTemplateInfo() {
+    @ResponseBody
+    public String saveTemplateInfo(String userId, String strTemplateInfo) {
+        String templateInfoId = null;
         try {
             if (CommonMethod.isNull(strTemplateInfo)) {
-                jsonPrint("fail,参数strTemplateInfo不能为空");
-                return;
+                throw new BusinessException("fail,参数strTemplateInfo不能为空");
             }
 
             TemplateInfoPage esPage = new TemplateInfoPage();
             JSONObject pJsonObject = JSONObject.fromObject(strTemplateInfo);
             esPage = (TemplateInfoPage) JSONObject.toBean(pJsonObject, TemplateInfoPage.class);
 
-            String templateInfoId = baseSampleService.saveTemplateInfo(esPage, getUserId());
-            jsonPrint("true:" + templateInfoId);
+            templateInfoId = baseSampleService.saveTemplateInfo(esPage, userId);
+
+            //jsonPrint("true:" + templateInfoId);
+
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true" + templateInfoId;
     }
 
     @SuppressWarnings("rawtypes")
     @RequestMapping("updateTemplateInfo.action")
-    public void updateTemplateInfo() {
+    @ResponseBody
+    public String updateTemplateInfo(String strTemplateInfo, String strTemplateLocation, String userId) {
         try {
             String updateFlag = "";
             TemplateInfoPage esPage = new TemplateInfoPage();
@@ -370,49 +376,49 @@ public class BaseSampleController extends QueryAction<BaseSample> {
                 updateFlag = "1";
             }
 
-            baseSampleService.updateTemplateInfo(esPage, getUserId(), tLocation, updateFlag);
-            jsonPrint("true");
+            baseSampleService.updateTemplateInfo(esPage, userId, tLocation, updateFlag);
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     @RequestMapping("deleteTemplateInfo.action")
-    public void deleteTemplateInfo() {
+    @ResponseBody
+    public String deleteTemplateInfo(String strTemplateInfo, String userId) {
         try {
             if (CommonMethod.isNull(strTemplateInfo)) {
-                jsonPrint("fail,参数strTemplateInfo不能为空");
-                return;
+                throw new BusinessException("fail,参数strTemplateInfo不能为空");
             }
 
             TemplateInfoPage esPage = new TemplateInfoPage();
             JSONObject pJsonObject = JSONObject.fromObject(strTemplateInfo);
             esPage = (TemplateInfoPage) JSONObject.toBean(pJsonObject, TemplateInfoPage.class);
 
-            baseSampleService.deleteTemplateInfo(esPage, getUserId());
-            jsonPrint("true");
+            baseSampleService.deleteTemplateInfo(esPage, userId);
+
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     @RequestMapping("findTemplateInfo.action")
-    public void findTemplateInfo() {
+    @ResponseBody
+    public List<TemplateInfoPage> findTemplateInfo(String strBaseSampleId) {
         List<TemplateInfoPage> tInfoList = templateInfoService.findTInfoPageList(strBaseSampleId);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(tInfoList, jsonConfig);
-        jsonPrint(jsonArr);
+        return tInfoList;
     }
 
-    public String getStrBaseSample() {
+   /* public String getStrBaseSample() {
         return strBaseSample;
     }
 
@@ -466,5 +472,5 @@ public class BaseSampleController extends QueryAction<BaseSample> {
 
     public void setStrTemplateInfoId(String strTemplateInfoId) {
         this.strTemplateInfoId = strTemplateInfoId;
-    }
+    }*/
 }

@@ -3,7 +3,6 @@ package com.controller.entrust;
 import com.common.BusinessException;
 import com.common.CommonMethod;
 import com.common.QueryAction;
-import com.common.jsonProcessor.CommonJsonConfig;
 import com.common.jsonProcessor.TimestampMorpher;
 import com.dao.page.*;
 import com.model.CapitalAccountDetail;
@@ -21,6 +20,7 @@ import net.sf.json.util.JSONUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -35,7 +35,7 @@ public class EntrustInfoController extends QueryAction<EntrustInfo> {
     private final static HttpServletRequest REQUEST = null;
 
     private static final long serialVersionUID = 1L;
-    // 委托单位ID
+   /* // 委托单位ID
     private String strECompanyId = "";
     // 工程ID
     private String strProjectId = "";
@@ -91,7 +91,7 @@ public class EntrustInfoController extends QueryAction<EntrustInfo> {
 
 
     private String contractNo;//合同编号
-    private String accountType;//收费类型
+    private String accountType;//收费类型*/
 
 
     @Autowired
@@ -113,24 +113,27 @@ public class EntrustInfoController extends QueryAction<EntrustInfo> {
     }
 
     @RequestMapping("findIsEntrust.action")
-    public void findIsEntrust() {
+    @ResponseBody
+    public String findIsEntrust(String strECompanyId, String strProjectId, String strSUnitId) {
         List<EntrustInfo> eiList = entrustInfoService.findIsEntrust(
                 strECompanyId, strProjectId, strSUnitId);
+        List<String> reulst = new ArrayList<String>();
         if (eiList != null && eiList.size() > 0) {// 已经办理了委托
-            jsonPrint("false");
+            reulst.add("false");
         } else {
-            jsonPrint("true");
+            reulst.add("true");
         }
+        return reulst.get(0).toString();
     }
 
     /**
      * 委托时，获取检测明细的价格
      */
     @RequestMapping("findEntrustMDetail.action")
-    public void findEntrustMDetail() {
+    @ResponseBody
+    public List<EntrustParameterPage> findEntrustMDetail(String strEntrustMDetail) {
         if (CommonMethod.isNull(strEntrustMDetail)) {
-            jsonPrint("fail,参数strEntrustMDetail不能为空");
-            return;
+            throw new BusinessException("fail,参数strEntrustMDetail不能为空！", "");
         }
         List<EntrustParameterPage> eppList = new ArrayList<EntrustParameterPage>();
 
@@ -175,14 +178,14 @@ public class EntrustInfoController extends QueryAction<EntrustInfo> {
             }
         }
         eppList.add(epPage);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(eppList, jsonConfig);
-        jsonPrint(jsonArr);
+        return eppList;
     }
 
     @SuppressWarnings({"rawtypes", "unused"})
     @RequestMapping("saveEntrustInfo.action")
-    public void saveEntrustInfo() {
+    @ResponseBody
+    public String saveEntrustInfo(String userId, String strEntrustInfo) {
+        String entrustId = null;
         try {
             //HttpServletRequest request = ServletActionContext.getRequest();
             Map parMap = REQUEST.getParameterMap();
@@ -190,8 +193,7 @@ public class EntrustInfoController extends QueryAction<EntrustInfo> {
             Object eDetailsObj = parMap.get("strEntrustInfo");
 
             if (CommonMethod.isNull(strEntrustInfo)) {
-                jsonPrint("fail,参数strEntrustInfo不能为空");
-                return;
+                throw new BusinessException("fail,参数strEntrustInfo不能为空！", "");
             }
             strEntrustInfo = strEntrustInfo.replace("OO", "#");
 
@@ -204,44 +206,40 @@ public class EntrustInfoController extends QueryAction<EntrustInfo> {
             esPage = (EntrustSavePage) JSONObject.toBean(pJsonObject,
                     EntrustSavePage.class, classMap);
             if (CommonMethod.isNull(esPage.getEntrustType())) {
-                jsonPrint("fail,参数委托类型不能为空");
-                return;
+                throw new BusinessException("fail,参数委托类型不能为空");
             } else {
                 if ("00".equals(esPage.getEntrustType())
                         || "01".equals(esPage.getEntrustType())) {
                 } else {
-                    jsonPrint("fail,参数委托类型的值只能为00或者01");
-                    return;
+                    throw new BusinessException("fail,参数委托类型的值只能为00或者01");
                 }
             }
             // 委托单位不能为空
             if (CommonMethod.isNull(esPage.getEntrustCompanyId())) {
-                jsonPrint("fail,参数单位不能为空！");
-                return;
+                throw new BusinessException("fail,参数单位不能为空！");
             }
             // 工程不能为空
             if (CommonMethod.isNull(esPage.getProjectId())) {
-                jsonPrint("fail,工程不能为空！");
-                return;
+                throw new BusinessException("fail,工程不能为空！");
             }
-            String entrustId = entrustInfoService.saveEntrustInfo(esPage,
-                    getUserId());
-            jsonPrint("true:" + entrustId);
+            entrustId = entrustInfoService.saveEntrustInfo(esPage,
+                    userId);
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true:" + entrustId;
     }
 
     @RequestMapping("updateEntrustInfoBySn.action")
-    public void updateEntrustInfoBySn() {
+    @ResponseBody
+    public String updateEntrustInfoBySn(String userId, String strEntrustInfo) {
         try {
             if (CommonMethod.isNull(strEntrustInfo)) {
-                jsonPrint("fail,参数strEntrustInfo不能为空");
-                return;
+                throw new BusinessException("fail,参数strEntrustInfo不能为空！", "");
             }
             strEntrustInfo = strEntrustInfo.replace("OO", "#");
 
@@ -249,26 +247,25 @@ public class EntrustInfoController extends QueryAction<EntrustInfo> {
                     EntrustSavePage.class);
             // 委托单位不能为空
             if (CommonMethod.isNull(esPage.getInvalid())) {
-                jsonPrint("fail,作废失败,不能为空！");
-                return;
+                throw new BusinessException("fail,作废失败,不能为空！");
             }
-            entrustInfoService.updateEntrustInfoBySn(esPage, getUserId());
-            jsonPrint("true");
+            entrustInfoService.updateEntrustInfoBySn(esPage, userId);
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     @RequestMapping("updateEntrustInfo.action")
-    public void updateEntrustInfo() {
+    @ResponseBody
+    public String updateEntrustInfo(String userId, String strEntrustInfo) {
         try {
             if (CommonMethod.isNull(strEntrustInfo)) {
-                jsonPrint("fail,参数strEntrustInfo不能为空");
-                return;
+                throw new BusinessException("fail,参数strEntrustInfo不能为空！", "");
             }
             strEntrustInfo = strEntrustInfo.replace("OO", "#");
 
@@ -276,28 +273,27 @@ public class EntrustInfoController extends QueryAction<EntrustInfo> {
                     EntrustSavePage.class);
             // 委托单位不能为空
             if (CommonMethod.isNull(esPage.getEntrustCompanyId())) {
-                jsonPrint("fail,参数单位不能为空！");
-                return;
+                throw new BusinessException("fail,参数单位不能为空！");
             }
             // 工程不能为空
             if (CommonMethod.isNull(esPage.getProjectId())) {
-                jsonPrint("fail,工程不能为空！");
-                return;
+                throw new BusinessException("fail,工程不能为空！");
             }
-            entrustInfoService.updateEntrustInfo(esPage, getUserId());
-            jsonPrint("true");
+            entrustInfoService.updateEntrustInfo(esPage, userId);
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     @SuppressWarnings({"rawtypes", "unused"})
     @RequestMapping("updateEntrustMDetail.action")
-    public void updateEntrustMDetail() {
+    @ResponseBody
+    public String updateEntrustMDetail(String userId, String strEntrustInfo) {
         try {
             //HttpServletRequest request = ServletActionContext.getRequest();
             Map parMap = REQUEST.getParameterMap();
@@ -305,8 +301,7 @@ public class EntrustInfoController extends QueryAction<EntrustInfo> {
             Object eDetailsObj = parMap.get("strEntrustInfo");
 
             if (CommonMethod.isNull(strEntrustInfo)) {
-                jsonPrint("fail,参数strEntrustInfo不能为空");
-                return;
+                throw new BusinessException("fail,参数strEntrustInfo不能为空！", "");
             }
 
             Map<String, Class> classMap = new HashMap<String, Class>();
@@ -318,20 +313,21 @@ public class EntrustInfoController extends QueryAction<EntrustInfo> {
             esPage = (EntrustSavePage) JSONObject.toBean(pJsonObject,
                     EntrustSavePage.class, classMap);
 
-            entrustInfoService.updateEntrustMDetail(esPage, getUserId());
-            jsonPrint("true");
+            entrustInfoService.updateEntrustMDetail(esPage, userId);
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     @SuppressWarnings({"rawtypes", "unused"})
     @RequestMapping("saveEntrustMDetail.action")
-    public void saveEntrustMDetail() {
+    @ResponseBody
+    public String saveEntrustMDetail(String userId, String strEntrustInfo) {
         try {
             //HttpServletRequest request = ServletActionContext.getRequest();
             Map parMap = REQUEST.getParameterMap();
@@ -339,8 +335,7 @@ public class EntrustInfoController extends QueryAction<EntrustInfo> {
             Object eDetailsObj = parMap.get("strEntrustInfo");
 
             if (CommonMethod.isNull(strEntrustInfo)) {
-                jsonPrint("fail,参数strEntrustInfo不能为空");
-                return;
+                throw new BusinessException("fail,参数strEntrustInfo不能为空！", "");
             }
 
             Map<String, Class> classMap = new HashMap<String, Class>();
@@ -352,22 +347,23 @@ public class EntrustInfoController extends QueryAction<EntrustInfo> {
             esPage = (EntrustSavePage) JSONObject.toBean(pJsonObject,
                     EntrustSavePage.class, classMap);
 
-            entrustInfoService.saveEntrustMDetail(esPage, getUserId());
-            jsonPrint("true");
+            entrustInfoService.saveEntrustMDetail(esPage, userId);
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     /**
      * 根据委托条件，查询委托信息
      */
     @RequestMapping("findEntrustInfoByCondition.action")
-    public void findEntrustInfoByCondition() {
+    @ResponseBody
+    public List<EntrustSavePage> findEntrustInfoByCondition(String strEntrustInfo) {
         EntrustSavePage esPage = new EntrustSavePage();
         if (!CommonMethod.isNull(strEntrustInfo)) {
             strEntrustInfo = strEntrustInfo.replace("OO", "#");
@@ -376,16 +372,15 @@ public class EntrustInfoController extends QueryAction<EntrustInfo> {
         }
         List<EntrustSavePage> esPageList = entrustInfoService
                 .findEntrustInfoByCondition(esPage);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(esPageList, jsonConfig);
-        jsonPrint(jsonArr);
+        return esPageList;
     }
 
     /**
      * 根据委托条件，查询委托信息
      */
     @RequestMapping("findEntrustInfoByConditionByAll.action")
-    public void findEntrustInfoByConditionByAll() {
+    @ResponseBody
+    public List<EntrustSavePage> findEntrustInfoByConditionByAll(String strEntrustInfo) {
         EntrustSavePage esPage = new EntrustSavePage();
         if (!CommonMethod.isNull(strEntrustInfo)) {
             strEntrustInfo = strEntrustInfo.replace("OO", "#");
@@ -395,139 +390,127 @@ public class EntrustInfoController extends QueryAction<EntrustInfo> {
         // 根据工程ID,名称,委托编号查询工程下所有委托,根据委托查询所有委托明细
         List<EntrustSavePage> esPageList = entrustInfoService
                 .findEntrustInfoByConditionByAll(esPage);
+        return esPageList;
 
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(esPageList, jsonConfig);
-        jsonPrint(jsonArr);
     }
 
     /**
      * 根据委托ID，查询委托金额明细信息
      */
     @RequestMapping("findEntrustDetailInfoById.action")
-    public void findEntrustDetailInfoById() {
+    @ResponseBody
+    public List<EntrustSavePage> findEntrustDetailInfoById(String strEntrustId) {
         if (CommonMethod.isNull(strEntrustId)) {
-            jsonPrint("fail,委托ID不能为空");
-            return;
+            throw new BusinessException("fail,委托ID不能为空");
         }
         List<EntrustSavePage> esPageList = entrustInfoService
                 .findEntrustDetailInfoById(strEntrustId);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(esPageList, jsonConfig);
-        jsonPrint(jsonArr);
+        return esPageList;
     }
 
     /**
      * 根据委托明细ID，查询委托信息
      */
     @RequestMapping("showERDetailInfoById.action")
-    public void showERDetailInfoById() {
+    @ResponseBody
+    public EntrustInfo showERDetailInfoById(String entrustDetailId) {
+        EntrustInfo esPageList = new EntrustInfo();
         if (CommonMethod.isNull(entrustDetailId)) {
-            jsonPrint("fail,参数entrustDetailId不能为空");
-            return;
+            throw new BusinessException("fail,参数entrustDetailId不能为空！", "");
         }
         try {
-            EntrustInfo esPageList = entrustInfoService
+            esPageList = entrustInfoService
                     .findEntrust(entrustDetailId);
-            CommonJsonConfig jsonConfig = new CommonJsonConfig();
-            JSONArray jsonArr = JSONArray.fromObject(esPageList, jsonConfig);
-            jsonPrint(jsonArr);
         } catch (Exception e) {
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         }
+        return esPageList;
     }
 
     /**
      * 根据委托ID，查询委托明细信息(报告：委托室用)
      */
     @RequestMapping("findERDetailInfoById.action")
-    public void findERDetailInfoById() {
+    @ResponseBody
+    public List<EntrustSavePage> findERDetailInfoById(String strEntrustInfo) {
         if (CommonMethod.isNull(strEntrustInfo)) {
-            jsonPrint("fail,参数strEntrustInfo不能为空");
-            return;
+            throw new BusinessException("fail,参数strEntrustInfo不能为空！", "");
         }
         EntrustSavePage esPage = (EntrustSavePage) toBean(strEntrustInfo,
                 EntrustSavePage.class);
 
         List<EntrustSavePage> esPageList = entrustInfoService
                 .findERDetailInfoById(esPage);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(esPageList, jsonConfig);
-        jsonPrint(jsonArr);
+        return esPageList;
     }
 
     /**
      * 根据委托信息，查询委托明细信息(报告：检测科室用)
      */
     @RequestMapping("findERDetailInfo.action")
-    public void findERDetailInfo() {
+    @ResponseBody
+    public List<EntrustReportPage> findERDetailInfo(String strEntrustInfo) {
         if (CommonMethod.isNull(strEntrustInfo)) {
-            jsonPrint("fail,参数strEntrustInfo不能为空");
-            return;
+            throw new BusinessException("fail,参数strEntrustInfo不能为空！", "");
         }
         EntrustReportPage erPage = (EntrustReportPage) toBean(strEntrustInfo,
                 EntrustReportPage.class);
 
         List<EntrustReportPage> erPageList = entrustInfoService
                 .findERDetailInfo(erPage);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(erPageList, jsonConfig);
-        jsonPrint(jsonArr);
+        return erPageList;
     }
 
     /**
      * 查询委托传送单信息
      */
     @RequestMapping("findEntrustEfSheet.action")
-    public void findEntrustEfSheet() {
+    @ResponseBody
+    public List<EntrustTfSheetPage> findEntrustEfSheet(String strEntrustId) {
         if (CommonMethod.isNull(strEntrustId)) {
-            jsonPrint("fail,参数strEntrustId不能为空");
-            return;
+            throw new BusinessException("fail,参数strEntrustId不能为空！", "");
         }
         List<EntrustTfSheetPage> eTfSheetList = entrustInfoService
                 .findEntrustEfSheet(strEntrustId);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(eTfSheetList, jsonConfig);
-        jsonPrint(jsonArr);
+        return eTfSheetList;
     }
 
     /**
      * 查询检测传送单信息
      */
     @RequestMapping("findTestEfSheet.action")
-    public void findTestEfSheet() {
+    @ResponseBody
+    public List<TestTfSheetPage> findTestEfSheet(String strEntrustId) {
         if (CommonMethod.isNull(strEntrustId)) {
-            jsonPrint("fail,参数strEntrustId不能为空");
-            return;
+            throw new BusinessException("fail,参数strEntrustId不能为空！", "");
         }
         List<TestTfSheetPage> eTfSheetList = entrustInfoService
                 .findTestEfSheet(strEntrustId);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(eTfSheetList, jsonConfig);
-        jsonPrint(jsonArr);
+        return eTfSheetList;
     }
 
     /**
      * 根据委托记录ID修改委托记录状态
      */
+    @ResponseBody
     @RequestMapping("updateEntrustStatus.action")
-    public void updateEntrustStatus() {
+    public String updateEntrustStatus(String strEntrustId, String userId, String strEntrustStatus) {
         try {
             if (CommonMethod.isNull(strEntrustId)) {
-                jsonPrint("fail,参数strEntrustId不能为空");
-                return;
+                throw new BusinessException("fail,参数strEntrustId不能为空！", "");
             }
 
             entrustInfoService.updateEntrustStatus(strEntrustId,
-                    strEntrustStatus, getUserId());
-            jsonPrint("true");
+                    strEntrustStatus, userId);
+
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     /**
@@ -536,7 +519,8 @@ public class EntrustInfoController extends QueryAction<EntrustInfo> {
      * @return
      */
     @RequestMapping("findProjectMoney.action")
-    public void findProjectMoney() {
+    @ResponseBody
+    public List<ProjectMoneyPage> findProjectMoney(String strProjectMoney) {
         ProjectMoneyPage pMoneyPage = new ProjectMoneyPage();
         if (!CommonMethod.isNull(strProjectMoney)) {
             pMoneyPage = (ProjectMoneyPage) toBean(strProjectMoney,
@@ -545,9 +529,7 @@ public class EntrustInfoController extends QueryAction<EntrustInfo> {
 
         List<ProjectMoneyPage> pMoneyPageList = entrustInfoService
                 .findProjectMoney(pMoneyPage);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(pMoneyPageList, jsonConfig);
-        jsonPrint(jsonArr);
+        return pMoneyPageList;
     }
 
     /**
@@ -556,17 +538,15 @@ public class EntrustInfoController extends QueryAction<EntrustInfo> {
      * @return
      */
     @RequestMapping("findProjectTestMoney.action")
-    public void findProjectTestMoney() {
+    @ResponseBody
+    public List<ProjectTestMoneyPage> findProjectTestMoney(String strProjectId) {
         if (CommonMethod.isNull(strProjectId)) {
-            jsonPrint("fail,参数strProjectId不能为空");
-            return;
+            throw new BusinessException("fail,参数strProjectId不能为空！", "");
         }
 
         List<ProjectTestMoneyPage> ptmPageList = entrustInfoService
                 .findProjectTestMoney(strProjectId);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(ptmPageList, jsonConfig);
-        jsonPrint(jsonArr);
+        return ptmPageList;
     }
 
     /**
@@ -574,7 +554,8 @@ public class EntrustInfoController extends QueryAction<EntrustInfo> {
      */
     @SuppressWarnings({"unchecked", "unused", "rawtypes"})
     @RequestMapping("saveAllReportStatus.action")
-    public void saveAllReportStatus() {
+    @ResponseBody
+    public String saveAllReportStatus(String userId, String strEntrustInfo) {
         try {
             //HttpServletRequest request = ServletActionContext.getRequest();
             Map parMap = REQUEST.getParameterMap();
@@ -582,8 +563,7 @@ public class EntrustInfoController extends QueryAction<EntrustInfo> {
             Object eDetailsObj = parMap.get("strEntrustInfo");
 
             if (CommonMethod.isNull(strEntrustInfo)) {
-                jsonPrint("fail,参数strEntrustInfo不能为空");
-                return;
+                throw new BusinessException("fail,参数strEntrustInfo不能为空！", "");
             }
             String[] formats = {"yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd"};
             JSONUtils.getMorpherRegistry().registerMorpher(
@@ -592,15 +572,16 @@ public class EntrustInfoController extends QueryAction<EntrustInfo> {
                     JSONArray.fromObject(strEntrustInfo),
                     EntrustReportPage.class);
 
-            entrustInfoService.saveAllReportStatus(collPage, getUserId());
-            jsonPrint("true");
+            entrustInfoService.saveAllReportStatus(collPage, userId);
+
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     /**
@@ -608,11 +589,13 @@ public class EntrustInfoController extends QueryAction<EntrustInfo> {
      */
     @SuppressWarnings({"unchecked", "unused", "rawtypes"})
     @RequestMapping("ifAllReportStatus.action")
-    public void ifAllReportStatus() {
+    @ResponseBody
+    public List<String> ifAllReportStatus(String strEntrustInfo) {
+        List<String> map = new ArrayList<String>();
+
         try {
             if (CommonMethod.isNull(strEntrustInfo)) {
-                jsonPrint("fail,参数strEntrustInfo不能为空");
-                return;
+                throw new BusinessException("fail,参数strEntrustInfo不能为空！", "");
             }
             String[] formats = {"yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd"};
             JSONUtils.getMorpherRegistry().registerMorpher(
@@ -620,29 +603,25 @@ public class EntrustInfoController extends QueryAction<EntrustInfo> {
             Collection<EntrustReportPage> collPage = JSONArray.toCollection(
                     JSONArray.fromObject(strEntrustInfo),
                     EntrustReportPage.class);
-
-            List<String> map = entrustInfoService.ifAllReportStatus(collPage);
-
-            CommonJsonConfig jsonConfig = new CommonJsonConfig();
-            JSONArray jsonArr = JSONArray.fromObject(map, jsonConfig);
-            jsonPrint(jsonArr);
+            map = entrustInfoService.ifAllReportStatus(collPage);
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return map;
     }
 
     /**
      * 根据委托ID，查询委托明细信息(报告：各科室审核批准用)
      */
     @RequestMapping("findDepartmentDetailInfo.action")
-    public void findDepartmentDetailInfo() {
+    @ResponseBody
+    public List<EntrustReportPage> findDepartmentDetailInfo(String userId, String strEntrustInfo) {
         if (CommonMethod.isNull(strEntrustInfo)) {
-            jsonPrint("fail,参数strEntrustInfo不能为空");
-            return;
+            throw new BusinessException("fail,参数strEntrustInfo不能为空！", "");
         }
         strEntrustInfo = strEntrustInfo.replace("OO", "#");
         strEntrustInfo = strEntrustInfo.replace("PLUS", "+");
@@ -650,31 +629,27 @@ public class EntrustInfoController extends QueryAction<EntrustInfo> {
                 EntrustReportPage.class);
 
         List<EntrustReportPage> erPageList = entrustInfoService
-                .findDepartmentDetailInfo(erPage, getUserId());
+                .findDepartmentDetailInfo(erPage, userId);
+        return erPageList;
 
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(erPageList, jsonConfig);
-        jsonPrint(jsonArr);
     }
 
     /**
      * 根据委托ID，查询委托明细信息(报告：各科室录入时用)
      */
     @RequestMapping("findDepartmentDetailInputInfo.action")
-    public void findDepartmentDetailInputInfo() {
+    @ResponseBody
+    public List<EntrustReportPage> findDepartmentDetailInputInfo(String userId, String strEntrustInfo) {
         if (CommonMethod.isNull(strEntrustInfo)) {
-            jsonPrint("fail,参数strEntrustInfo不能为空");
-            return;
+            throw new BusinessException("fail,参数strEntrustInfo不能为空！", "");
         }
         EntrustReportPage erPage = (EntrustReportPage) toBean(strEntrustInfo,
                 EntrustReportPage.class);
 
         List<EntrustReportPage> erPageList = entrustInfoService
-                .findDepartmentDetailInputInfo(erPage, getUserId());
+                .findDepartmentDetailInputInfo(erPage, userId);
 
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(erPageList, jsonConfig);
-        jsonPrint(jsonArr);
+        return erPageList;
     }
 
     /**
@@ -683,89 +658,83 @@ public class EntrustInfoController extends QueryAction<EntrustInfo> {
      * @return
      */
     @RequestMapping("findOutputValueCount.action")
-    public void findOutputValueCount() {
+    @ResponseBody
+    public List<OutputValueCountPage> findOutputValueCount(String strOutputValueYear) {
         if (CommonMethod.isNull(strOutputValueYear)) {
-            jsonPrint("fail,参数strOutputValueYear不能为空");
-            return;
+            throw new BusinessException("fail,参数strOutputValueYear不能为空！", "");
         }
 
         List<OutputValueCountPage> ovcPageList = entrustInfoService
                 .findOutputValueCount(strOutputValueYear);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(ovcPageList, jsonConfig);
-        jsonPrint(jsonArr);
+        return ovcPageList;
     }
 
     /**
      * 根据部门返回报告列表
      */
     @RequestMapping("findDepartmentReportInfo.action")
-    public void findDepartmentReportInfo() {
+    @ResponseBody
+    public List<TestReportInfoPage> findDepartmentReportInfo(Integer pageNo, Integer pageSize, String departmentId, String userId, String entrustSn, String entrustCompanyName, String projectName, String startDate, String endDate, String inputTime, String entrustDate, String projectPart, String sampleAge, String reportStatus, String reportNo, String inputerName, String auditorName, String apprvoerName, String printUserName) {
         List<TestReportInfoPage> findDepartmentReportInfo = entrustInfoService
                 .findDepartmentReportInfo(pageNo, pageSize, departmentId,
-                        getUserId(), entrustSn, entrustCompanyName,
+                        userId, entrustSn, entrustCompanyName,
                         projectName, startDate, endDate, inputTime,
                         entrustDate, projectPart, sampleAge, reportStatus,
                         reportNo, inputerName, auditorName, apprvoerName,
                         printUserName);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(findDepartmentReportInfo,
-                jsonConfig);
-        jsonPrint(jsonArr);
+        return findDepartmentReportInfo;
     }
 
     /**
      * 应收款统计
      */
     @RequestMapping("findreceivablesStatistics.action")
-    public void findreceivablesStatistics() {
+    @ResponseBody
+    public List<AgreementPage> findreceivablesStatistics(Integer pageNo, Integer pageSize, String accountType, String contractNo, String entrustCompanyName, String projectName) {
         List<AgreementPage> findReceivablesStatistics = entrustInfoService
                 .findReceivablesStatistics(pageNo, pageSize, accountType, contractNo, entrustCompanyName, projectName);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(findReceivablesStatistics,
-                jsonConfig);
-        jsonPrint(jsonArr);
+        return findReceivablesStatistics;
     }
 
     /**
      * 委托流水统计
      */
     @RequestMapping("findentrustWaterAccountStatistics.action")
-    public void findentrustWaterAccountStatistics() {
-        System.out.println("进方法" + CommonMethod.getDate());
+    @ResponseBody
+    public List<WaterAccountStatisticsPage> findentrustWaterAccountStatistics(
+            Integer pageNo, Integer pageSize, String entrustSn,
+            String startDate, String endDate, String entrustDate,
+            String inputTime, String capitalAccountNo, String inputerName,
+            String entrustCompanyName, String projectName,
+            String entrustStatus, String accountKinds, String testDepartment,
+            String managmentDepartment, String acceptanceMan, String sampleName, String accountType) {
+
         List<WaterAccountStatisticsPage> findentrustWaterAccountStatistics = entrustInfoService
                 .findentrustWaterAccountStatistics(pageNo, pageSize, entrustSn, startDate, endDate, entrustDate
                         , inputTime, capitalAccountNo, inputerName, entrustCompanyName, projectName
                         , entrustStatus, accountKinds, testDepartment, managmentDepartment, acceptanceMan, sampleName, accountType);
-        System.out.println("处理完之后" + CommonMethod.getDate());
 
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
+        return findentrustWaterAccountStatistics;
 
-        JSONArray jsonArr = JSONArray.fromObject(
-                findentrustWaterAccountStatistics, jsonConfig);
-        jsonPrint(jsonArr);
-        System.out.println("返回结果" + CommonMethod.getDate());
+
     }
 
     /**
      * 编辑报告列表sampleReport对象数据
      */
     @RequestMapping("sampleReportList.action")
-    public void sampleReportList() {
+    @ResponseBody
+    public List<SampleReport> sampleReportList(String strEntrustDetail) {
         if (CommonMethod.isNull(strEntrustDetail)) {
-            jsonPrint("fail,参数strEntrustDetail不能为空");
-            return;
+            throw new BusinessException("fail,参数strEntrustDetail不能为空！", "");
         }
         List<SampleReport> SampleReporList = entrustDetailService.EntrustDetailsInfo(strEntrustDetail);
 
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(
-                SampleReporList, jsonConfig);
-        jsonPrint(jsonArr);
+        return SampleReporList;
     }
 
 
-    public String getStrECompanyId() {
+    /*public String getStrECompanyId() {
         return strECompanyId;
     }
 
@@ -1078,5 +1047,5 @@ public class EntrustInfoController extends QueryAction<EntrustInfo> {
         this.strEntrustDetail = strEntrustDetail;
     }
 
-
+*/
 }

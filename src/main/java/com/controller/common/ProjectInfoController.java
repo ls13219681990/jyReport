@@ -3,18 +3,17 @@ package com.controller.common;
 import com.common.BusinessException;
 import com.common.CommonMethod;
 import com.common.QueryAction;
-import com.common.jsonProcessor.CommonJsonConfig;
 import com.model.ProjectInfo;
 import com.service.common.ProjectInfoService;
-import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
 @Controller
-@RequestMapping("ProjectInfoAction")
+@RequestMapping("projectInfoAction")
 public class ProjectInfoController extends QueryAction<ProjectInfo> {
 
     /**
@@ -22,11 +21,11 @@ public class ProjectInfoController extends QueryAction<ProjectInfo> {
      */
     private static final long serialVersionUID = 1L;
 
-    private String strProjectInfo = "";
+    /*private String strProjectInfo = "";
 
     private String strProjectId = "";
 
-    private String strProjectName = "";
+    private String strProjectName = "";*/
 
     @Autowired
     private ProjectInfoService projectInfoService;
@@ -38,52 +37,52 @@ public class ProjectInfoController extends QueryAction<ProjectInfo> {
     }
 
     @RequestMapping("saveProjectInfo.action")
-    public void saveProjectInfo() {
+    @ResponseBody
+    public String saveProjectInfo(String strProjectInfo, String userId) {
+        String projectId = null;
         try {
             if (CommonMethod.isNull(strProjectInfo)) {
-                jsonPrint("fail,参数strProjectInfo不能为空");
-                return;
+                throw new BusinessException("fail,参数strProjectInfo不能为空");
             }
             strProjectInfo = strProjectInfo.replace("OO", "#");
-            String projectId = projectInfoService.saveProjectInfo(getColl(strProjectInfo), getUserId());
-            jsonPrint("true:" + projectId);
+            projectId = projectInfoService.saveProjectInfo(getColl(strProjectInfo), userId);
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true:" + projectId;
     }
 
     @RequestMapping("updateProjectInfo.action")
-    public void updateProjectInfo() {
+    @ResponseBody
+    public String updateProjectInfo(String strProjectInfo, String userId) {
         try {
             if (CommonMethod.isNull(strProjectInfo)) {
-                jsonPrint("fail,参数strProjectInfo不能为空");
-                return;
+                throw new BusinessException("fail,参数strProjectInfo不能为空");
             }
             strProjectInfo = strProjectInfo.replace("OO", "#");
-            projectInfoService.updateProjectInfo(getColl(strProjectInfo), getUserId());
-            jsonPrint("true");
+            projectInfoService.updateProjectInfo(getColl(strProjectInfo), userId);
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     @RequestMapping("findProjectInfo.action")
-    public void findProjectInfo() {
+    @ResponseBody
+    public List<ProjectInfo> findProjectInfo(String strProjectId, String strProjectName) {
         List<ProjectInfo> piList = projectInfoService.findProjectInfo(strProjectId, strProjectName);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(piList, jsonConfig);
-        jsonPrint(jsonArr);
+        return piList;
     }
 
-    public String getStrProjectInfo() {
+/*    public String getStrProjectInfo() {
         return strProjectInfo;
     }
 
@@ -105,6 +104,6 @@ public class ProjectInfoController extends QueryAction<ProjectInfo> {
 
     public void setStrProjectName(String strProjectName) {
         this.strProjectName = strProjectName;
-    }
+    }*/
 
 }

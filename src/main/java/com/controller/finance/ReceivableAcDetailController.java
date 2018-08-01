@@ -3,18 +3,17 @@ package com.controller.finance;
 import com.common.BusinessException;
 import com.common.CommonMethod;
 import com.common.QueryAction;
-import com.common.jsonProcessor.CommonJsonConfig;
 import com.dao.page.EntrustInfoPage;
 import com.dao.page.InvoiceDetailPage;
 import com.dao.page.ReAccountDetailPage;
 import com.model.ReceivableAccountDetails;
 import com.model.ReceivableInvoiceDetails;
 import com.service.finance.ReceivableAcDetailsService;
-import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,13 +28,13 @@ public class ReceivableAcDetailController extends QueryAction<ReceivableInvoiceD
      */
     private static final long serialVersionUID = 1L;
 
-    private String strReAcDetail = "";
+   /* private String strReAcDetail = "";
 
     private String strAccountDetailId = "";//收款明细ID
 
     private String strEntrustId = "";//委托ID
 
-    private String receivableState = "";
+    private String receivableState = "";*/
 
 
     @Autowired
@@ -51,11 +50,11 @@ public class ReceivableAcDetailController extends QueryAction<ReceivableInvoiceD
     }
 
     @RequestMapping("saveReAcDetails.action")
-    public void saveReAcDetails() {
+    @ResponseBody
+    public String saveReAcDetails(String strReAcDetail, String userId) {
         try {
             if (CommonMethod.isNull(strReAcDetail)) {
-                jsonPrint("fail,参数strReAcDetail不能为空");
-                return;
+                throw new BusinessException("fail,参数strReAcDetail不能为空！", "");
             }
 
             Map<String, Class> classMap = new HashMap<String, Class>();
@@ -65,80 +64,77 @@ public class ReceivableAcDetailController extends QueryAction<ReceivableInvoiceD
             JSONObject pJsonObject = JSONObject.fromObject(strReAcDetail);
             reAcDetailPage = (ReAccountDetailPage) JSONObject.toBean(pJsonObject, ReAccountDetailPage.class, classMap);
 
-            receivableAcDetailsService.saveReAcDetails(reAcDetailPage, getUserId());
-            jsonPrint("true");
+            receivableAcDetailsService.saveReAcDetails(reAcDetailPage, userId);
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     @RequestMapping("updateInvoiceDetails.action")
-    public void updateInvoiceDetails() {
+    @ResponseBody
+    public String updateInvoiceDetails(String strReAcDetail, String userId) {
         try {
             if (CommonMethod.isNull(strReAcDetail)) {
-                jsonPrint("fail,参数strReAcDetail不能为空");
-                return;
+                throw new BusinessException("fail,参数strReAcDetail不能为空！", "");
             }
             ReAccountDetailPage reAcDetailPage = (ReAccountDetailPage) toBean(strReAcDetail, ReAccountDetailPage.class);
-            receivableAcDetailsService.updateReAcDetails(reAcDetailPage, getUserId());
-            jsonPrint("true");
+            receivableAcDetailsService.updateReAcDetails(reAcDetailPage, userId);
+
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     /**
      * 根据条件查找对应的收款记录
      */
     @RequestMapping("findReAcDetail.action")
-    public void findReAcDetail() {
+    @ResponseBody
+    public List<ReAccountDetailPage> findReAcDetail(String strReAcDetail, String strEntrustId) {
         ReAccountDetailPage reAcPage = new ReAccountDetailPage();
         if (!CommonMethod.isNull(strReAcDetail)) {
             reAcPage = (ReAccountDetailPage) toBean(strReAcDetail, ReAccountDetailPage.class);
         }
 
         List<ReAccountDetailPage> reAcPageList = receivableAcDetailsService.findReAcDetail(reAcPage, strEntrustId);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(reAcPageList, jsonConfig);
-        jsonPrint(jsonArr);
+        return reAcPageList;
     }
 
     /**
      * 根据收款ID查找对应的发票记录
      */
     @RequestMapping("findInDetail.action")
-    public void findInDetail() {
+    @ResponseBody
+    public List<InvoiceDetailPage> findInDetail(String strAccountDetailId) {
         if (CommonMethod.isNull(strAccountDetailId)) {
-            jsonPrint("fail,参数strAccountDetailId不能为空");
-            return;
+            throw new BusinessException("fail,参数strAccountDetailId不能为空！", "");
         }
         ReceivableAccountDetails reAcDetail = receivableAcDetailsService.findById(strAccountDetailId);
         List<InvoiceDetailPage> iDetailPageList = receivableAcDetailsService.findinDetailPageList(reAcDetail);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(iDetailPageList, jsonConfig);
-        jsonPrint(jsonArr);
+        return iDetailPageList;
     }
 
     /**
      * 收款作废
      */
     @RequestMapping("receivablesInvalidation.action")
-    public void receivablesInvalidation() {
+    @ResponseBody
+    public String receivablesInvalidation(String strAccountDetailId, String receivableState) {
         if (CommonMethod.isNull(strAccountDetailId)) {
-            jsonPrint("fail,参数strAccountDetailId不能为空");
-            return;
+            throw new BusinessException("fail,参数strAccountDetailId不能为空！", "");
         }
         if (CommonMethod.isNull(receivableState)) {
-            jsonPrint("fail,参数receivableState不能为空");
-            return;
+            throw new BusinessException("fail,参数strAccountDetailId不能为空！", "");
         }
         ReceivableAccountDetails reAcDetail = receivableAcDetailsService.findById(strAccountDetailId);
         if ("00".equals(receivableState)) {
@@ -147,27 +143,26 @@ public class ReceivableAcDetailController extends QueryAction<ReceivableInvoiceD
             reAcDetail.setReceivableState("作废");
         }
         receivableAcDetailsService.update(reAcDetail);
-        jsonPrint("true");
+        return "true";
     }
 
     /**
      * 根据条件查找对应的收款记录(作废)
      */
     @RequestMapping("findReAcDetailInvalidation.action")
-    public void findReAcDetailInvalidation() {
+    @ResponseBody
+    public List<ReAccountDetailPage> findReAcDetailInvalidation(String strReAcDetail, String strEntrustId) {
         ReAccountDetailPage reAcPage = new ReAccountDetailPage();
         if (!CommonMethod.isNull(strReAcDetail)) {
             reAcPage = (ReAccountDetailPage) toBean(strReAcDetail, ReAccountDetailPage.class);
         }
 
         List<ReAccountDetailPage> reAcPageList = receivableAcDetailsService.findReAcDetailInvalidation(reAcPage, strEntrustId);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(reAcPageList, jsonConfig);
-        jsonPrint(jsonArr);
+        return reAcPageList;
     }
 
 
-    public String getStrReAcDetail() {
+    /*public String getStrReAcDetail() {
         return strReAcDetail;
     }
 
@@ -197,5 +192,5 @@ public class ReceivableAcDetailController extends QueryAction<ReceivableInvoiceD
 
     public void setReceivableState(String receivableState) {
         this.receivableState = receivableState;
-    }
+    }*/
 }

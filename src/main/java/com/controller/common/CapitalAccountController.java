@@ -3,7 +3,6 @@ package com.controller.common;
 import com.common.BusinessException;
 import com.common.CommonMethod;
 import com.common.QueryAction;
-import com.common.jsonProcessor.CommonJsonConfig;
 import com.common.jsonProcessor.TimestampMorpher;
 import com.dao.page.CapitalAccountLinkmpPage;
 import com.dao.page.CapitalAccountPage;
@@ -14,6 +13,7 @@ import net.sf.json.util.JSONUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Collection;
 import java.util.List;
@@ -27,9 +27,9 @@ public class CapitalAccountController extends QueryAction<CapitalAccount> {
      */
     private static final long serialVersionUID = 1L;
 
-    private String strCapitalAccount = "";
+    /*private String strCapitalAccount = "";
 
-    private String capitalAccountId;
+    private String capitalAccountId;*/
     @Autowired
     private CapitalAccountService capitalAccountService;
 
@@ -45,77 +45,80 @@ public class CapitalAccountController extends QueryAction<CapitalAccount> {
 
     @SuppressWarnings("unchecked")
     @RequestMapping("saveCapitalAccount.action")
-    public void saveCapitalAccount() {
+    @ResponseBody
+    public String saveCapitalAccount(String strCapitalAccount, String userId) {
+        String capitalAccountId = null;
         try {
             if (CommonMethod.isNull(strCapitalAccount)) {
-                jsonPrint("fail,参数strCapitalAccount不能为空");
-                return;
+                throw new BusinessException("fail,参数strCapitalAccount不能为空");
             }
             strCapitalAccount = strCapitalAccount.replace("OO", "#");
             String[] formats = {"yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd"};
             JSONUtils.getMorpherRegistry().registerMorpher(new TimestampMorpher(formats));
             Collection<CapitalAccountPage> collPage = JSONArray.toCollection(JSONArray.fromObject(strCapitalAccount), CapitalAccountPage.class);
-            String capitalAccountId = capitalAccountService.saveCapitalAccount(collPage, getUserId());
-            jsonPrint("true:" + capitalAccountId);
+            capitalAccountId = capitalAccountService.saveCapitalAccount(collPage, userId);
+
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
             //logger.debug(e.getMessage());
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true" + capitalAccountId;
     }
 
     /**
      * 根据资金账号ID增加联系人和电话
      */
     @RequestMapping("saveCapitalAccountLinkmp.action")
-    public void saveCapitalAccountLinkmp() {
+    @ResponseBody
+    public String saveCapitalAccountLinkmp(String strCapitalAccount) {
         try {
             if (CommonMethod.isNull(strCapitalAccount)) {
-                jsonPrint("fail,参数strCapitalAccount不能为空");
-                return;
+                throw new BusinessException("fail,参数strCapitalAccount不能为空");
             }
             CapitalAccountLinkmpPage calPage = new CapitalAccountLinkmpPage();
             calPage = (CapitalAccountLinkmpPage) toBean(strCapitalAccount, CapitalAccountLinkmpPage.class);
             capitalAccountService.saveCapitalAccountLinkmp(calPage);
-            jsonPrint("true");
+
         } catch (BusinessException e) {
             e.printStackTrace();
             //logger.debug(e.getMessage());
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
             //logger.debug(e.getMessage());
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     @SuppressWarnings("unchecked")
     @RequestMapping("updateCapitalAccount.action")
-    public void updateCapitalAccount() {
+    @ResponseBody
+    public String updateCapitalAccount(String strCapitalAccount, String userId) {
         try {
             if (CommonMethod.isNull(strCapitalAccount)) {
-                jsonPrint("fail,参数strCapitalAccount不能为空");
-                return;
+                throw new BusinessException("fail,参数strCapitalAccount不能为空");
             }
             strCapitalAccount = strCapitalAccount.replace("OO", "#");
             String[] formats = {"yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd"};
             JSONUtils.getMorpherRegistry().registerMorpher(new TimestampMorpher(formats));
             //Collection<CapitalAccountPage> collPage = JSONArray.toCollection(JSONArray.fromObject(strCapitalAccount),CapitalAccountPage.class);
             CapitalAccountPage collPage = (CapitalAccountPage) toBean(strCapitalAccount, CapitalAccountPage.class);
-            capitalAccountService.updateCapitalAccount(collPage, getUserId());
-            jsonPrint("true");
+            capitalAccountService.updateCapitalAccount(collPage, userId);
         } catch (BusinessException e) {
             e.printStackTrace();
             //logger.debug(e.getMessage());
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
             //logger.debug(e.getMessage());
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
 
@@ -124,93 +127,90 @@ public class CapitalAccountController extends QueryAction<CapitalAccount> {
      */
     @SuppressWarnings("unchecked")
     @RequestMapping("saveCapitalAccountTable.action")
-    public void saveCapitalAccountTable() {
+    @ResponseBody
+    public String saveCapitalAccountTable(String strCapitalAccount, String userId) {
         try {
             if (CommonMethod.isNull(strCapitalAccount)) {
-                jsonPrint("fail,参数strCapitalAccount不能为空");
-                return;
+                throw new BusinessException("fail,参数strCapitalAccount不能为空");
             }
             strCapitalAccount = strCapitalAccount.replace("OO", "#");
             String[] formats = {"yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd"};
             JSONUtils.getMorpherRegistry().registerMorpher(new TimestampMorpher(formats));
             Collection<CapitalAccountPage> collPage = JSONArray.toCollection(JSONArray.fromObject(strCapitalAccount), CapitalAccountPage.class);
-            capitalAccountService.saveCapitalAccountTable(collPage, getUserId());
-            jsonPrint("true");
+            capitalAccountService.saveCapitalAccountTable(collPage, userId);
         } catch (BusinessException e) {
             e.printStackTrace();
             //logger.debug(e.getMessage());
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
             //logger.debug(e.getMessage());
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     @RequestMapping("findNewCaCode.action")
-    public void findNewCaCode() {
+    @ResponseBody
+    public String findNewCaCode() {
         String newCaCode = capitalAccountService.findNewCaCode();
-        jsonPrint(newCaCode);
+        return newCaCode;
     }
 
     @RequestMapping("findCapitalAccount.action")
-    public void findCapitalAccount() {
+    @ResponseBody
+    public List<CapitalAccountPage> findCapitalAccount(String strCapitalAccount) {
         CapitalAccountPage ca = new CapitalAccountPage();
         if (!CommonMethod.isNull(strCapitalAccount)) {
             ca = (CapitalAccountPage) toBean(strCapitalAccount, CapitalAccountPage.class);
         }
         List<CapitalAccountPage> capList = capitalAccountService.findCaList(ca);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(capList, jsonConfig);
-        jsonPrint(jsonArr);
+        return capList;
     }
 
     /**
      * 委托时，查找资金账号信息
      */
     @RequestMapping("findEntrustCapitalAccount.action")
-    public void findEntrustCapitalAccount() {
+    @ResponseBody
+    public List<CapitalAccountPage> findEntrustCapitalAccount(String strCapitalAccount) {
         CapitalAccountPage ca = new CapitalAccountPage();
         if (!CommonMethod.isNull(strCapitalAccount)) {
             strCapitalAccount = strCapitalAccount.replace("OO", "#");
             ca = (CapitalAccountPage) toBean(strCapitalAccount, CapitalAccountPage.class);
         }
         List<CapitalAccountPage> capList = capitalAccountService.findEntrustCaList(ca);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(capList, jsonConfig);
-        jsonPrint(jsonArr);
+        return capList;
     }
 
-    public String getStrCapitalAccount() {
+   /* public String getStrCapitalAccount() {
         return strCapitalAccount;
     }
 
     public void setStrCapitalAccount(String strCapitalAccount) {
         this.strCapitalAccount = strCapitalAccount;
-    }
+    }*/
 
 
     /**
      * 委托时
      */
     @RequestMapping("findEntrustLinkInfo.action")
-    public void findEntrustLinkInfo() {
+    @ResponseBody
+    public List<CapitalAccountLinkmpPage> findEntrustLinkInfo(String capitalAccountId) {
         if (CommonMethod.isNull(capitalAccountId)) {
-            jsonPrint("fail,参数capitalAccountId不能为空");
-            return;
+            throw new BusinessException("fail,参数strCapitalAccount不能为空");
         }
         List<CapitalAccountLinkmpPage> findEntrustCaListInfo = capitalAccountService.findEntrustCaListInfo(capitalAccountId);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(findEntrustCaListInfo, jsonConfig);
-        jsonPrint(jsonArr);
+        return findEntrustCaListInfo;
     }
 
-    public String getCapitalAccountId() {
+   /* public String getCapitalAccountId() {
         return capitalAccountId;
     }
 
     public void setCapitalAccountId(String capitalAccountId) {
         this.capitalAccountId = capitalAccountId;
-    }
+    }*/
 
 }

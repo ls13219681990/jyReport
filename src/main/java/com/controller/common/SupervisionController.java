@@ -3,13 +3,12 @@ package com.controller.common;
 import com.common.BusinessException;
 import com.common.CommonMethod;
 import com.common.QueryAction;
-import com.common.jsonProcessor.CommonJsonConfig;
 import com.model.SupervisionUnit;
 import com.service.common.SupervisionUnitService;
-import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
@@ -22,13 +21,13 @@ public class SupervisionController extends QueryAction<SupervisionUnit> {
      */
     private static final long serialVersionUID = 1L;
 
-    private String strSupervisionUnit = "";
+   /* private String strSupervisionUnit = "";
 
     private String strSupervisionUnitId = "";
 
     private String strSupervisionUnitName = "";
 
-    private String strWitnesses = "";//见证人
+    private String strWitnesses = "";//见证人*/
 
 
     @Autowired
@@ -41,62 +40,60 @@ public class SupervisionController extends QueryAction<SupervisionUnit> {
     }
 
     @RequestMapping("saveSupervisionUnit.action")
-    public void saveSupervisionUnit() {
+    @ResponseBody
+    public String saveSupervisionUnit(String strSupervisionUnit, String userId) {
+        String supervisionUnitId = null;
         try {
             if (CommonMethod.isNull(strSupervisionUnit)) {
-                jsonPrint("fail,参数strSupervisionUnit不能为空");
-                return;
+                throw new BusinessException("fail,参数strSupervisionUnit不能为空！", "");
             }
-            String supervisionUnitId = supervisionUnitService.saveSupervisionUnit(getColl(strSupervisionUnit), getUserId());
-            jsonPrint("true:" + supervisionUnitId);
+            supervisionUnitId = supervisionUnitService.saveSupervisionUnit(getColl(strSupervisionUnit), userId);
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true:" + supervisionUnitId;
     }
 
     @RequestMapping("updateSupervisionUnit.action")
-    public void updateSupervisionUnit() {
+    @ResponseBody
+    public String updateSupervisionUnit(String strSupervisionUnit, String userId) {
         try {
             if (CommonMethod.isNull(strSupervisionUnit)) {
-                jsonPrint("fail,参数strSupervisionUnit不能为空");
-                return;
+                throw new BusinessException("fail,参数strSupervisionUnit不能为空！", "");
             }
-            supervisionUnitService.updateSupervisionUnit(getColl(strSupervisionUnit), getUserId());
-            jsonPrint("true");
+            supervisionUnitService.updateSupervisionUnit(getColl(strSupervisionUnit), userId);
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     @RequestMapping("findSupervisionUnit.action")
-    public void findSupervisionUnit() {
+    @ResponseBody
+    public List<SupervisionUnit> findSupervisionUnit(String strSupervisionUnitId, String strSupervisionUnitName, String strWitnesses) {
         List<SupervisionUnit> suList = supervisionUnitService.findSupervisionUnit(strSupervisionUnitId, strSupervisionUnitName, strWitnesses);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(suList, jsonConfig);
-        jsonPrint(jsonArr);
+        return suList;
     }
 
     @RequestMapping("findSupervisionUnitName.action")
-    public void findSupervisionUnitName() {
+    @ResponseBody
+    public List<SupervisionUnit> findSupervisionUnitName(String strSupervisionUnitId) {
         if (CommonMethod.isNull(strSupervisionUnitId)) {
-            jsonPrint("fail,参数strSupervisionUnitId不能为空");
-            return;
+            throw new BusinessException("fail,参数strSupervisionUnitId不能为空！", "");
         }
         List<SupervisionUnit> suList = supervisionUnitService.findSupervisionUnitName(strSupervisionUnitId);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(suList, jsonConfig);
-        jsonPrint(jsonArr);
+        return suList;
     }
 
-    public String getStrSupervisionUnit() {
+    /*public String getStrSupervisionUnit() {
         return strSupervisionUnit;
     }
 
@@ -126,6 +123,6 @@ public class SupervisionController extends QueryAction<SupervisionUnit> {
 
     public void setStrWitnesses(String strWitnesses) {
         this.strWitnesses = strWitnesses;
-    }
+    }*/
 
 }

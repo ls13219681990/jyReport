@@ -4,7 +4,6 @@ import com.common.BusinessException;
 import com.common.CommonMethod;
 import com.common.QueryAction;
 import com.common.UuidUtil;
-import com.common.jsonProcessor.CommonJsonConfig;
 import com.common.jsonProcessor.TimestampMorpher;
 import com.dao.page.ReportTemplateInfoPage;
 import com.dao.page.SampleReportPage;
@@ -22,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,10 +29,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping("testReportInfoAction")
@@ -46,7 +43,7 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
     private HttpServletRequest request;
 
     private static final long serialVersionUID = 1L;
-    // 委托明细ID
+   /* // 委托明细ID
     private String strEDetailId = "";
     // 检测报告信息
     private String strTReportInfo = "";
@@ -66,7 +63,7 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
     private String distributeTime;// 打印时间
     private String reportStatus;// 报告状态
 
-    private String reportNumber;
+    private String reportNumber;*/
 
     @Autowired
     private TestReportInfoService testReportInfoService;
@@ -93,57 +90,53 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
     }
 
     @RequestMapping("findReportInfo.action")
-    public void findReportInfo() {
+    @ResponseBody
+    public List<TestReportInfoPage> findReportInfo(String strEDetailId, String strStatus) {
         List<TestReportInfoPage> triPageList = testReportInfoService
                 .findReportInfo(strEDetailId, strStatus);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(triPageList, jsonConfig);
-        jsonPrint(jsonArr);
+        return triPageList;
     }
 
     /***
      * 查询报告头部内容
      */
     @RequestMapping("findReportTitleInfo.action")
-    public void findReportTitleInfo() {
+    @ResponseBody
+    public List<ReportTemplateInfoPage> findReportTitleInfo(String strReportId) {
         if (CommonMethod.isNull(strReportId)) {
-            jsonPrint("fail,参数strReportId不能为空");
-            return;
+            throw new BusinessException("fail,参数strReportId不能为空！", "");
         }
         List<ReportTemplateInfoPage> rtInfoPageList = testReportInfoService
                 .findReportTitleInfo(strReportId);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(rtInfoPageList, jsonConfig);
-        jsonPrint(jsonArr);
+        return rtInfoPageList;
     }
 
     /***
      * 打回报告修改报告状态
      */
     @RequestMapping("updateTestReportInfoByStatus.action")
-    public void updateTestReportInfoByStatus() {
+    @ResponseBody
+    public String updateTestReportInfoByStatus(String userId, String backStatus, String strTReportInfo) {
 
         try {
             if (CommonMethod.isNull(strTReportInfo)) {
-                jsonPrint("fail,参数strTReportInfo不能为空");
-                return;
+                throw new BusinessException("fail,参数strTReportInfo不能为空！", "");
             }
             if (CommonMethod.isNull(backStatus)) {
-                jsonPrint("fail,参数backStatus不能为空");
-                return;
+                throw new BusinessException("fail,参数backStatus不能为空！", "");
             }
             TestReportInfoPage collPage = (TestReportInfoPage) toBean(
                     strTReportInfo, TestReportInfoPage.class);
             testReportInfoService.updateTestReportByReportStatus(collPage,
-                    getUserId(), backStatus);
-            jsonPrint("true");
+                    userId, backStatus);
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     /***
@@ -151,11 +144,11 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
      */
     @SuppressWarnings("rawtypes")
     @RequestMapping("saveSampleReportInfo.action")
-    public void saveSampleReportInfo() {
+    @ResponseBody
+    public String saveSampleReportInfo(String strTReportInfo, String userId) {
         try {
             if (CommonMethod.isNull(strTReportInfo)) {
-                jsonPrint("fail,参数strTReportInfo不能为空");
-                return;
+                throw new BusinessException("fail,参数strTReportInfo不能为空！", "");
             }
             strTReportInfo = strTReportInfo.replace("PERCENT", "%");
             Map<String, Class> classMap = new HashMap<String, Class>();
@@ -168,39 +161,39 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
             srrPage = (SampleReportRelationPage) JSONObject.toBean(pJsonObject,
                     SampleReportRelationPage.class, classMap);
 
-            testReportInfoService.saveSampleReportInfo(srrPage, getUserId());
-            jsonPrint("true");
+            testReportInfoService.saveSampleReportInfo(srrPage, userId);
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     /***
      * 修改报告数据
      */
     @RequestMapping("updateTestReportInfo.action")
-    public void updateTestReportInfo() {
+    @ResponseBody
+    public String updateTestReportInfo(String strTReportInfo, String userId) {
         try {
             if (CommonMethod.isNull(strTReportInfo)) {
-                jsonPrint("fail,参数strTReportInfo不能为空");
-                return;
+                throw new BusinessException("fail,参数strTReportInfo不能为空！", "");
             }
             strTReportInfo = strTReportInfo.replace("OO", "#");
             TestReportInfoPage collPage = (TestReportInfoPage) toBean(
                     strTReportInfo, TestReportInfoPage.class);
-            testReportInfoService.updateTestReport(collPage, getUserId());
-            jsonPrint("true");
+            testReportInfoService.updateTestReport(collPage, userId);
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     /***
@@ -208,11 +201,11 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
      */
     @SuppressWarnings("rawtypes")
     @RequestMapping("updateSampleReportByReportId.action")
-    public void updateSampleReportByReportId() {
+    @ResponseBody
+    public String updateSampleReportByReportId(String strTReportInfo, String userId) {
         try {
             if (CommonMethod.isNull(strTReportInfo)) {
-                jsonPrint("fail,参数strTReportInfo不能为空");
-                return;
+                throw new BusinessException("fail,参数strTReportInfo不能为空！", "");
             }
 
             Map<String, Class> classMap = new HashMap<String, Class>();
@@ -225,15 +218,15 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
                     SampleReportRelationPage.class, classMap);
 
             testReportInfoService.updateSampleReportByReportId(srrPage,
-                    getUserId());
-            jsonPrint("true");
+                    userId);
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     /***
@@ -241,11 +234,11 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
      */
     @SuppressWarnings("rawtypes")
     @RequestMapping("updateSampleReportInfo.action")
-    public void updateSampleReportInfo() {
+    @ResponseBody
+    public String updateSampleReportInfo(String strTReportInfo, String userId) {
         try {
             if (CommonMethod.isNull(strTReportInfo)) {
-                jsonPrint("fail,参数strTReportInfo不能为空");
-                return;
+                throw new BusinessException("fail,参数strTReportInfo不能为空！", "");
             }
 
             Map<String, Class> classMap = new HashMap<String, Class>();
@@ -257,257 +250,255 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
             srrPage = (SampleReportRelationPage) JSONObject.toBean(pJsonObject,
                     SampleReportRelationPage.class, classMap);
 
-            testReportInfoService.updateSampleReportInfo(srrPage, getUserId());
-            jsonPrint("true");
+            testReportInfoService.updateSampleReportInfo(srrPage, userId);
+
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     @RequestMapping("saveTReportInfo.action")
-    public void saveTReportInfo(@RequestParam MultipartFile[] template) {
+    @ResponseBody
+    public String saveTReportInfo(@RequestParam MultipartFile[] template, String strTReportInfo, String userId) {
         try {
-			if (CommonMethod.isNull(strTReportInfo)) {
-				jsonPrint("fail,参数strTReportInfo不能为空");
-				return;
-			}
-			strTReportInfo = strTReportInfo.replace("OO", "#");
-			strTReportInfo = strTReportInfo.replace("PLUS", "+");
-			TestReportInfoPage triPage = (TestReportInfoPage) toBean(
-					strTReportInfo, TestReportInfoPage.class);
+            if (CommonMethod.isNull(strTReportInfo)) {
+                throw new BusinessException("fail,参数strTReportInfo不能为空！", "");
+            }
+            strTReportInfo = strTReportInfo.replace("OO", "#");
+            strTReportInfo = strTReportInfo.replace("PLUS", "+");
+            TestReportInfoPage triPage = (TestReportInfoPage) toBean(
+                    strTReportInfo, TestReportInfoPage.class);
 
-			if (CommonMethod.isNull(triPage.getReportId())) {
-				jsonPrint("fail,报告ID不能为空");
-				return;
-			}
-			if (CommonMethod.isNull(triPage.getEntrustDetailId())) {
-				jsonPrint("fail,委托报告明细ID不能为空");
-				return;
-			}
-			if ("03".equals(triPage.getReportStatus())
-					|| "06".equals(triPage.getReportStatus())
-					|| "07".equals(triPage.getReportStatus())) {// 报告未批准或者审核不通过或者发放报告时，不用操作报告文件
-				testReportInfoService.saveTReportInfo(triPage, getUserId());
-				jsonPrint("true");
-				return;
-			}
-			// 报告数据
-			TestReportInfo tri = testReportInfoService.findById(triPage
-					.getReportId());
-			// 报告样品关系
-			List<SampleReport> srList = sampleReportService.findByProperty(
-					"reportId", tri.getReportId());
-			String entrustDetailId = srList.get(0).getEntrustDetailId();
-			// 上委托明细
-			EntrustDetails ed = entrustDetailService.findById(entrustDetailId);
-			// 样品数据
-			BaseSample bs = baseSampleService.findById(ed.getSampleId());
+            if (CommonMethod.isNull(triPage.getReportId())) {
+                throw new BusinessException("fail,报告ID不能为空");
+            }
+            if (CommonMethod.isNull(triPage.getEntrustDetailId())) {
+                throw new BusinessException("fail,委托报告明细ID不能为空");
+            }
+            if ("03".equals(triPage.getReportStatus())
+                    || "06".equals(triPage.getReportStatus())
+                    || "07".equals(triPage.getReportStatus())) {// 报告未批准或者审核不通过或者发放报告时，不用操作报告文件
+                testReportInfoService.saveTReportInfo(triPage, userId);
+				/*jsonPrint("true");
+				return;*/
+            }
+            // 报告数据
+            TestReportInfo tri = testReportInfoService.findById(triPage
+                    .getReportId());
+            // 报告样品关系
+            List<SampleReport> srList = sampleReportService.findByProperty(
+                    "reportId", tri.getReportId());
+            String entrustDetailId = srList.get(0).getEntrustDetailId();
+            // 上委托明细
+            EntrustDetails ed = entrustDetailService.findById(entrustDetailId);
+            // 样品数据
+            BaseSample bs = baseSampleService.findById(ed.getSampleId());
 
             for (MultipartFile sample : template) {
                 File reportFile = (File) sample;
                 String[] names = sample.getName().split("\\.");
 
-				boolean gs = false;
-				String hz = "";
-				if (names.length > 1) {
-					hz = names[names.length - 1];
-					if (!"xls".equalsIgnoreCase(hz)
-							&& !"xlsx".equalsIgnoreCase(hz)) {
-						gs = true;
-					}
-				} else {
-					gs = true;
-				}
-				if (gs) {// 文件必须为xls、xlsx格式
-					throw new BusinessException("报告格式不对，不能上传！", "");
-				}
-				FileInputStream fis = null;
-				FileOutputStream out = null;
-				try {
-					fis = new FileInputStream(reportFile);
-					String realAdd = "report" + "/" + bs.getDepartmentId()
-							+ "/" + ed.getSampleId() + "/"
-							+ CommonMethod.getCurrentDate();
+                boolean gs = false;
+                String hz = "";
+                if (names.length > 1) {
+                    hz = names[names.length - 1];
+                    if (!"xls".equalsIgnoreCase(hz)
+                            && !"xlsx".equalsIgnoreCase(hz)) {
+                        gs = true;
+                    }
+                } else {
+                    gs = true;
+                }
+                if (gs) {// 文件必须为xls、xlsx格式
+                    throw new BusinessException("报告格式不对，不能上传！", "");
+                }
+                FileInputStream fis = null;
+                FileOutputStream out = null;
+                try {
+                    fis = new FileInputStream(reportFile);
+                    String realAdd = "report" + "/" + bs.getDepartmentId()
+                            + "/" + ed.getSampleId() + "/"
+                            + CommonMethod.getCurrentDate();
                     String savePath = request.getSession().getServletContext().getRealPath("/") + realAdd;
-					File newFile = new File(savePath.toString());
-					if ((!newFile.exists()) && (!newFile.isDirectory())) {
-						newFile.mkdirs();
-					}
-					if (!CommonMethod.isNull(tri.getReportPath())) {
-						boolean isSuccess = true;
-						File oldFile = new File(tri.getReportPath());
-						if (oldFile.exists()) {
-							isSuccess = oldFile.delete();
-						}
-						if (!isSuccess) {
-							throw new BusinessException("文件上传失败！", "");
-						}
-					}
-					String newFileName = CommonMethod.getNewKey();
-					out = new FileOutputStream(savePath.toString() + "\\"
-							+ newFileName + "." + hz);
-					byte buffer[] = new byte[new Long(reportFile.length())
-							.intValue()];
-					int len = 0;
+                    File newFile = new File(savePath.toString());
+                    if ((!newFile.exists()) && (!newFile.isDirectory())) {
+                        newFile.mkdirs();
+                    }
+                    if (!CommonMethod.isNull(tri.getReportPath())) {
+                        boolean isSuccess = true;
+                        File oldFile = new File(tri.getReportPath());
+                        if (oldFile.exists()) {
+                            isSuccess = oldFile.delete();
+                        }
+                        if (!isSuccess) {
+                            throw new BusinessException("文件上传失败！", "");
+                        }
+                    }
+                    String newFileName = CommonMethod.getNewKey();
+                    out = new FileOutputStream(savePath.toString() + "\\"
+                            + newFileName + "." + hz);
+                    byte buffer[] = new byte[new Long(reportFile.length())
+                            .intValue()];
+                    int len = 0;
 
-					while ((len = fis.read(buffer)) > 0) {
-						out.write(buffer, 0, len);
-					}
-					fis.close();
-					// 关闭输出流
-					out.close();
-					triPage.setReportPath(realAdd + "\\" + newFileName + "."
-							+ hz);
-				} catch (Exception e) {
-					if (null != fis) {
-						fis.close();
-					}
-					if (null != out) {
-						out.close();
-					}
-					e.printStackTrace();
-				} finally {
-					if (null != fis) {
-						fis.close();
-					}
-					if (null != out) {
-						out.close();
-					}
-				}
-			}
+                    while ((len = fis.read(buffer)) > 0) {
+                        out.write(buffer, 0, len);
+                    }
+                    fis.close();
+                    // 关闭输出流
+                    out.close();
+                    triPage.setReportPath(realAdd + "\\" + newFileName + "."
+                            + hz);
+                } catch (Exception e) {
+                    if (null != fis) {
+                        fis.close();
+                    }
+                    if (null != out) {
+                        out.close();
+                    }
+                    e.printStackTrace();
+                } finally {
+                    if (null != fis) {
+                        fis.close();
+                    }
+                    if (null != out) {
+                        out.close();
+                    }
+                }
+            }
 
-			testReportInfoService.saveTReportInfo(triPage, getUserId());
-			jsonPrint("true");
-		} catch (BusinessException e) {
-			e.printStackTrace();
-			jsonPrint("fail:异常：" + e.getMessage());
-		} catch (Exception e) {
-			e.printStackTrace();
-			jsonPrint("error:异常：" + e.getMessage());
+            testReportInfoService.saveTReportInfo(triPage, userId);
+
+        } catch (BusinessException e) {
+            e.printStackTrace();
+            e.getMessage();
+        } catch (Exception e) {
+            e.printStackTrace();
+            e.getMessage();
         }
+        return "true";
     }
 
     @RequestMapping("updateTReportInfo.action")
-    public void updateTReportInfo(@RequestParam MultipartFile[] template) {
+    @ResponseBody
+    public String updateTReportInfo(@RequestParam MultipartFile[] template, String strTReportInfo, String userId) {
         try {
-			if (CommonMethod.isNull(strTReportInfo)) {
-				jsonPrint("fail,参数strTReportInfo不能为空");
-				return;
-			}
-			TestReportInfoPage triPage = (TestReportInfoPage) toBean(
-					strTReportInfo, TestReportInfoPage.class);
-
-			if (CommonMethod.isNull(triPage.getReportId())) {
-				jsonPrint("fail,报告ID不能为空");
-				return;
-			}
-            if (CommonMethod.isNull(triPage.getEntrustDetailId())) {
-                jsonPrint("fail,委托报告明细ID不能为空");
-                return;
+            if (CommonMethod.isNull(strTReportInfo)) {
+                throw new BusinessException("fail,参数strTReportInfo不能为空！", "");
             }
-			// 报告数据
-			TestReportInfo tri = testReportInfoService.findById(triPage
-					.getReportId());
-			// 报告样品关系
-			List<SampleReport> srList = sampleReportService.findByProperty(
-					"reportId", tri.getReportId());
-			String entrustDetailId = srList.get(0).getEntrustDetailId();
-			// 上委托明细
-			EntrustDetails ed = entrustDetailService.findById(entrustDetailId);
-			// 样品数据
-			BaseSample bs = baseSampleService.findById(ed.getSampleId());
+            TestReportInfoPage triPage = (TestReportInfoPage) toBean(
+                    strTReportInfo, TestReportInfoPage.class);
+
+            if (CommonMethod.isNull(triPage.getReportId())) {
+                throw new BusinessException("fail,报告ID不能为空");
+            }
+            if (CommonMethod.isNull(triPage.getEntrustDetailId())) {
+                throw new BusinessException("fail,委托报告明细ID不能为空");
+            }
+            // 报告数据
+            TestReportInfo tri = testReportInfoService.findById(triPage
+                    .getReportId());
+            // 报告样品关系
+            List<SampleReport> srList = sampleReportService.findByProperty(
+                    "reportId", tri.getReportId());
+            String entrustDetailId = srList.get(0).getEntrustDetailId();
+            // 上委托明细
+            EntrustDetails ed = entrustDetailService.findById(entrustDetailId);
+            // 样品数据
+            BaseSample bs = baseSampleService.findById(ed.getSampleId());
 
             for (MultipartFile sample : template) {
                 File reportFile = (File) sample;
                 String[] names = sample.getName().split("\\.");
 
-				boolean gs = false;
-				String hz = "";
-				if (names.length > 1) {
-					hz = names[names.length - 1];
-					if (!"xls".equalsIgnoreCase(hz)
-							&& !"xlsx".equalsIgnoreCase(hz)) {
-						gs = true;
-					}
-				} else {
-					gs = true;
-				}
-				if (gs) {// 文件必须为xls、xlsx格式
-					throw new BusinessException("报告格式不对，不能上传！", "");
-				}
-				FileInputStream fis = null;
-				FileOutputStream out = null;
-				try {
-					fis = new FileInputStream(reportFile);
+                boolean gs = false;
+                String hz = "";
+                if (names.length > 1) {
+                    hz = names[names.length - 1];
+                    if (!"xls".equalsIgnoreCase(hz)
+                            && !"xlsx".equalsIgnoreCase(hz)) {
+                        gs = true;
+                    }
+                } else {
+                    gs = true;
+                }
+                if (gs) {// 文件必须为xls、xlsx格式
+                    throw new BusinessException("报告格式不对，不能上传！", "");
+                }
+                FileInputStream fis = null;
+                FileOutputStream out = null;
+                try {
+                    fis = new FileInputStream(reportFile);
 
-					String realAdd = "report" + "/" + bs.getDepartmentId()
-							+ "/" + ed.getSampleId() + "/"
-							+ CommonMethod.getCurrentDate();
+                    String realAdd = "report" + "/" + bs.getDepartmentId()
+                            + "/" + ed.getSampleId() + "/"
+                            + CommonMethod.getCurrentDate();
                     String savePath = request.getSession().getServletContext().getRealPath("/") + realAdd;
-					File newFile = new File(savePath.toString());
-					if ((!newFile.exists()) && (!newFile.isDirectory())) {
-						newFile.mkdirs();
-					}
-					if (!CommonMethod.isNull(tri.getReportPath())) {
-						boolean isSuccess = true;
-						File oldFile = new File(tri.getReportPath());
-						if (oldFile.exists()) {
-							isSuccess = oldFile.delete();
-						}
-						if (!isSuccess) {
-							throw new BusinessException("文件上传失败！", "");
-						}
-					}
-					String newFileName = CommonMethod.getNewKey();
-					out = new FileOutputStream(savePath.toString() + "\\"
-							+ newFileName + "." + hz);
-					// out = new FileOutputStream(savePath.toString() + "\\" +
-					// "test123" + "." +hz);
-					byte buffer[] = new byte[new Long(reportFile.length())
-							.intValue()];
-					int len = 0;
+                    File newFile = new File(savePath.toString());
+                    if ((!newFile.exists()) && (!newFile.isDirectory())) {
+                        newFile.mkdirs();
+                    }
+                    if (!CommonMethod.isNull(tri.getReportPath())) {
+                        boolean isSuccess = true;
+                        File oldFile = new File(tri.getReportPath());
+                        if (oldFile.exists()) {
+                            isSuccess = oldFile.delete();
+                        }
+                        if (!isSuccess) {
+                            throw new BusinessException("文件上传失败！", "");
+                        }
+                    }
+                    String newFileName = CommonMethod.getNewKey();
+                    out = new FileOutputStream(savePath.toString() + "\\"
+                            + newFileName + "." + hz);
+                    // out = new FileOutputStream(savePath.toString() + "\\" +
+                    // "test123" + "." +hz);
+                    byte buffer[] = new byte[new Long(reportFile.length())
+                            .intValue()];
+                    int len = 0;
 
-					while ((len = fis.read(buffer)) > 0) {
-						out.write(buffer, 0, len);
-					}
-					fis.close();
-					// 关闭输出流
-					out.close();
-					triPage.setReportPath(realAdd + "\\" + newFileName + "."
-							+ hz);
-				} catch (Exception e) {
-					if (null != fis) {
-						fis.close();
-					}
-					if (null != out) {
-						out.close();
-					}
-					e.printStackTrace();
-				} finally {
-					if (null != fis) {
-						fis.close();
-					}
-					if (null != out) {
-						out.close();
-					}
-				}
-			}
-			tri.setReportPath(triPage.getReportPath());
-			tri.setUpdater(getUserId());
-			tri.setUpdateTime(CommonMethod.getDate());
-			testReportInfoService.update(tri);
-			jsonPrint("true");
-		} catch (BusinessException e) {
-			e.printStackTrace();
-			jsonPrint("fail:" + e.getMessage());
-		} catch (Exception e) {
-			e.printStackTrace();
-			jsonPrint("error:" + e.getMessage());
+                    while ((len = fis.read(buffer)) > 0) {
+                        out.write(buffer, 0, len);
+                    }
+                    fis.close();
+                    // 关闭输出流
+                    out.close();
+                    triPage.setReportPath(realAdd + "\\" + newFileName + "."
+                            + hz);
+                } catch (Exception e) {
+                    if (null != fis) {
+                        fis.close();
+                    }
+                    if (null != out) {
+                        out.close();
+                    }
+                    e.printStackTrace();
+                } finally {
+                    if (null != fis) {
+                        fis.close();
+                    }
+                    if (null != out) {
+                        out.close();
+                    }
+                }
+            }
+            tri.setReportPath(triPage.getReportPath());
+            tri.setUpdater(userId);
+            tri.setUpdateTime(CommonMethod.getDate());
+            testReportInfoService.update(tri);
+        } catch (BusinessException e) {
+            e.printStackTrace();
+            e.getMessage();
+        } catch (Exception e) {
+            e.printStackTrace();
+            e.getMessage();
         }
+        return "true";
     }
 
     /**
@@ -515,11 +506,11 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
      */
     @SuppressWarnings("unchecked")
     @RequestMapping("saveAllReportApAndAu.action")
-    public void saveAllReportApAndAu() {
+    @ResponseBody
+    public String saveAllReportApAndAu(String strTReportInfo, String userId) {
         try {
             if (CommonMethod.isNull(strTReportInfo)) {
-                jsonPrint("fail,参数strTReportInfo不能为空");
-                return;
+                throw new BusinessException("fail,参数strTReportInfo不能为空！", "");
             }
             String[] formats = {"yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd"};
             JSONUtils.getMorpherRegistry().registerMorpher(
@@ -528,15 +519,15 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
                     JSONArray.fromObject(strTReportInfo),
                     TestReportInfoPage.class);
 
-            testReportInfoService.saveAllReportApAndAu(collPage, getUserId());
-            jsonPrint("true");
+            testReportInfoService.saveAllReportApAndAu(collPage, userId);
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     /**
@@ -544,34 +535,31 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
      */
     @SuppressWarnings("unchecked")
     @RequestMapping("saveReportPrintInfo.action")
-    public void saveReportPrintInfo() {
+    @ResponseBody
+    public String saveReportPrintInfo(String reportId, String printNum, String distributeTime, String reportStatus, String userId) {
         try {
             if (CommonMethod.isNull(reportId)) {
-                jsonPrint("fail,参数reportId不能为空");
-                return;
+                throw new BusinessException("fail,参数reportId不能为空！", "");
             }
             if (CommonMethod.isNull(printNum)) {
-                jsonPrint("fail,参数printNum不能为空");
-                return;
+                throw new BusinessException("fail,参数printNum不能为空！", "");
             }
             if (CommonMethod.isNull(distributeTime)) {
-                jsonPrint("fail,参数distributeTime不能为空");
-                return;
+                throw new BusinessException("fail,参数distributeTime不能为空！", "");
             }
             if (CommonMethod.isNull(reportStatus)) {
-                jsonPrint("fail,参数reportStatus不能为空");
-                return;
+                throw new BusinessException("fail,参数reportStatus不能为空！", "");
             }
             testReportInfoService.saveReportPrintInfo(reportId, printNum,
-                    distributeTime, reportStatus, getUserId());
-            jsonPrint("true");
+                    distributeTime, reportStatus, userId);
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     /**
@@ -579,11 +567,11 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
      */
     @SuppressWarnings("unchecked")
     @RequestMapping("saveReportPrintNum.action")
-    public void saveReportPrintNum() {
+    @ResponseBody
+    public String saveReportPrintNum(String strTReportInfo, String userId) {
         try {
             if (CommonMethod.isNull(strTReportInfo)) {
-                jsonPrint("fail,参数strTReportInfo不能为空");
-                return;
+                throw new BusinessException("fail,参数strTReportInfo不能为空！", "");
             }
 
             String[] formats = {"yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd"};
@@ -593,21 +581,24 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
                     JSONArray.fromObject(strTReportInfo),
                     TestReportInfoPage.class);
 
-            testReportInfoService.saveReportPrintNum(collPage, getUserId());
-            jsonPrint("true");
+            testReportInfoService.saveReportPrintNum(collPage, userId);
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     @RequestMapping("findByTwoDInfoId.action")
-    public void findByTwoDInfoId() {
+    @ResponseBody
+    public TwoDInfo findByTwoDInfoId(String strTwoDInfoId) {
+
+        TwoDInfo tdInfo = twoDInfoService.findById(strTwoDInfoId);
         try {
-            TwoDInfo tdInfo = twoDInfoService.findById(strTwoDInfoId);
+
 
             // 报告信息
             TestReportInfo tri = testReportInfoService.findById(tdInfo
@@ -674,159 +665,160 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
              */
             str = ei.getWitnessMan();
             tdInfo.setWitnessMan(str);
-            jsonPrintOnlyProperty(tdInfo);
+            //jsonPrintOnlyProperty(tdInfo);
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
-
+        return tdInfo;
     }
 
     /**
      * 查询报告编号是否重复
      */
     @RequestMapping("findReportNumber.action")
-    public void findReportNumber() {
+    @ResponseBody
+    public String findReportNumber(String reportNumber) {
         if (CommonMethod.isNull(reportNumber)) {
-            jsonPrint("fail,参数reportNumber不能为空");
-            return;
+            throw new BusinessException("fail,参数reportNumber不能为空！", "");
         }
         List<TestReportInfo> number = testReportInfoService.findByProperty(
                 "reportNo", reportNumber);
+        List<String> result = new ArrayList<String>();
         if (number.size() > 0) {
-            jsonPrint("true");
+            result.add("true");
         } else {
-            jsonPrint("false");
+            result.add("false");
         }
+        return result.get(0).toString();
     }
 
     /**
      * 报告列表样品报告关系表数据
      */
     @RequestMapping("sampleReportList.action")
-    public void sampleReportList() {
+    @ResponseBody
+    public List<TestReportInfoPage> sampleReportList(String strTReportInfo) {
         TestReportInfoPage tesPage = (TestReportInfoPage) toBean(
                 strTReportInfo, TestReportInfoPage.class);
 
         List<TestReportInfoPage> sampleReportList = testReportInfoService
                 .sampleReportList(tesPage);
-
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(sampleReportList, jsonConfig);
-        jsonPrint(jsonArr);
+        return sampleReportList;
     }
 
     /**
      * 快速发报告
      */
     @RequestMapping("fastReleaseReport.action")
-    public void fastReleaseReport(@RequestParam MultipartFile[] template) {
+    @ResponseBody
+    public void fastReleaseReport(@RequestParam MultipartFile[] template, String strTReportInfo) {
 
-		TestReportInfoPage triPage = (TestReportInfoPage) toBean(
-				strTReportInfo, TestReportInfoPage.class);
+        TestReportInfoPage triPage = (TestReportInfoPage) toBean(
+                strTReportInfo, TestReportInfoPage.class);
 
-		// 报告数据
-		TestReportInfo tri = testReportInfoService.findById(triPage
-				.getReportId());
-		// 报告样品关系
-		List<SampleReport> srList = sampleReportService.findByProperty(
-				"reportId", tri.getReportId());
-		String entrustDetailId = srList.get(0).getEntrustDetailId();
-		// 上委托明细
-		EntrustDetails ed = entrustDetailService.findById(entrustDetailId);
-		// 样品数据
-		BaseSample bs = baseSampleService.findById(ed.getSampleId());
+        // 报告数据
+        TestReportInfo tri = testReportInfoService.findById(triPage
+                .getReportId());
+        // 报告样品关系
+        List<SampleReport> srList = sampleReportService.findByProperty(
+                "reportId", tri.getReportId());
+        String entrustDetailId = srList.get(0).getEntrustDetailId();
+        // 上委托明细
+        EntrustDetails ed = entrustDetailService.findById(entrustDetailId);
+        // 样品数据
+        BaseSample bs = baseSampleService.findById(ed.getSampleId());
 
 
         for (MultipartFile sample : template) {
 
             File reportFile = (File) sample;
             String[] names = sample.getName().split("\\.");
-			boolean gs = false;
-			String hz = "";
-			if (names.length > 1) {
-				hz = names[names.length - 1];
-				if (!"xls".equalsIgnoreCase(hz) && !"xlsx".equalsIgnoreCase(hz)) {
-					gs = true;
-				}
-			} else {
-				gs = true;
-			}
-			if (gs) {// 文件必须为xls、xlsx格式
-				throw new BusinessException("报告格式不对，不能上传！", "");
-			}
-			FileInputStream fis = null;
-			FileOutputStream out = null;
-			try {
-				fis = new FileInputStream(reportFile);
+            boolean gs = false;
+            String hz = "";
+            if (names.length > 1) {
+                hz = names[names.length - 1];
+                if (!"xls".equalsIgnoreCase(hz) && !"xlsx".equalsIgnoreCase(hz)) {
+                    gs = true;
+                }
+            } else {
+                gs = true;
+            }
+            if (gs) {// 文件必须为xls、xlsx格式
+                throw new BusinessException("报告格式不对，不能上传！", "");
+            }
+            FileInputStream fis = null;
+            FileOutputStream out = null;
+            try {
+                fis = new FileInputStream(reportFile);
 
-				String realAdd = "report" + "/" + bs.getDepartmentId() + "/"
-						+ ed.getSampleId() + "/"
-						+ CommonMethod.getCurrentDate();
+                String realAdd = "report" + "/" + bs.getDepartmentId() + "/"
+                        + ed.getSampleId() + "/"
+                        + CommonMethod.getCurrentDate();
                 String savePath = request.getSession().getServletContext().getRealPath("/") + realAdd;
-				File newFile = new File(savePath.toString());
-				if ((!newFile.exists()) && (!newFile.isDirectory())) {
-					newFile.mkdirs();
-				}
-				if (!CommonMethod.isNull(tri.getReportPath())) {
-					boolean isSuccess = true;
-					File oldFile = new File(tri.getReportPath());
-					if (oldFile.exists()) {
-						isSuccess = oldFile.delete();
-					}
-					if (!isSuccess) {
-						throw new BusinessException("文件上传失败！", "");
-					}
-				}
-				String newFileName = CommonMethod.getNewKey();
-				out = new FileOutputStream(savePath.toString() + "\\"
-						+ newFileName + "." + hz);
-				// out = new FileOutputStream(savePath.toString() + "\\" +
-				// "test123" + "." +hz);
-				byte buffer[] = new byte[new Long(reportFile.length())
-						.intValue()];
-				int len = 0;
+                File newFile = new File(savePath.toString());
+                if ((!newFile.exists()) && (!newFile.isDirectory())) {
+                    newFile.mkdirs();
+                }
+                if (!CommonMethod.isNull(tri.getReportPath())) {
+                    boolean isSuccess = true;
+                    File oldFile = new File(tri.getReportPath());
+                    if (oldFile.exists()) {
+                        isSuccess = oldFile.delete();
+                    }
+                    if (!isSuccess) {
+                        throw new BusinessException("文件上传失败！", "");
+                    }
+                }
+                String newFileName = CommonMethod.getNewKey();
+                out = new FileOutputStream(savePath.toString() + "\\"
+                        + newFileName + "." + hz);
+                // out = new FileOutputStream(savePath.toString() + "\\" +
+                // "test123" + "." +hz);
+                byte buffer[] = new byte[new Long(reportFile.length())
+                        .intValue()];
+                int len = 0;
 
-				while ((len = fis.read(buffer)) > 0) {
-					out.write(buffer, 0, len);
-				}
-				fis.close();
-				// 关闭输出流
-				out.close();
-				triPage.setReportPath(realAdd + "\\" + newFileName + "." + hz);
-			} catch (Exception e) {
-				if (null != fis) {
-					try {
-						fis.close();
-					} catch (IOException e1) {
-						e1.printStackTrace();
-					}
-				}
-				if (null != out) {
-					try {
-						out.close();
-					} catch (IOException e1) {
-						e1.printStackTrace();
-					}
-				}
-				e.printStackTrace();
-			} finally {
-				if (null != fis) {
-					try {
-						fis.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-				if (null != out) {
-					try {
-						out.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}
+                while ((len = fis.read(buffer)) > 0) {
+                    out.write(buffer, 0, len);
+                }
+                fis.close();
+                // 关闭输出流
+                out.close();
+                triPage.setReportPath(realAdd + "\\" + newFileName + "." + hz);
+            } catch (Exception e) {
+                if (null != fis) {
+                    try {
+                        fis.close();
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+                if (null != out) {
+                    try {
+                        out.close();
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+                e.printStackTrace();
+            } finally {
+                if (null != fis) {
+                    try {
+                        fis.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (null != out) {
+                    try {
+                        out.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
         testReportInfoService.update(tri);
     }
 
@@ -834,58 +826,59 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
      * 修改报告
      */
     @RequestMapping("updateReport.action")
-    public void updateReport(@RequestParam MultipartFile[] template) {
-		TestReportInfoPage triPage = (TestReportInfoPage) toBean(
-				strTReportInfo, TestReportInfoPage.class);
-		// 报告数据
-		TestReportInfo tri1 = testReportInfoService.findById(triPage
-				.getReportId());
-		tri1.setReportStatus("08");
-		testReportInfoService.update(tri1);
+    @ResponseBody
+    public void updateReport(@RequestParam MultipartFile[] template, String userId, String strTReportInfo) {
+        TestReportInfoPage triPage = (TestReportInfoPage) toBean(
+                strTReportInfo, TestReportInfoPage.class);
+        // 报告数据
+        TestReportInfo tri1 = testReportInfoService.findById(triPage
+                .getReportId());
+        tri1.setReportStatus("08");
+        testReportInfoService.update(tri1);
 
-		// 报告数据
-		TestReportInfo tri = testReportInfoService.findById(triPage
-				.getReportId());
-		// 报告样品关系
-		List<SampleReport> srList = sampleReportService.findByProperty(
-				"reportId", tri.getReportId());
-		String entrustDetailId = srList.get(0).getEntrustDetailId();
-		// 上委托明细
-		EntrustDetails ed = entrustDetailService.findById(entrustDetailId);
-		// 样品数据
-		BaseSample bs = baseSampleService.findById(ed.getSampleId());
+        // 报告数据
+        TestReportInfo tri = testReportInfoService.findById(triPage
+                .getReportId());
+        // 报告样品关系
+        List<SampleReport> srList = sampleReportService.findByProperty(
+                "reportId", tri.getReportId());
+        String entrustDetailId = srList.get(0).getEntrustDetailId();
+        // 上委托明细
+        EntrustDetails ed = entrustDetailService.findById(entrustDetailId);
+        // 样品数据
+        BaseSample bs = baseSampleService.findById(ed.getSampleId());
 
 
         for (MultipartFile sample : template) {
             File reportFile = (File) sample;
             String[] names = sample.getName().split("\\.");
 
-			boolean gs = false;
-			String hz = "";
-			if (names.length > 1) {
-				hz = names[names.length - 1];
-				if (!"xls".equalsIgnoreCase(hz) && !"xlsx".equalsIgnoreCase(hz)) {
-					gs = true;
-				}
-			} else {
-				gs = true;
-			}
-			if (gs) {// 文件必须为xls、xlsx格式
-				throw new BusinessException("报告格式不对，不能上传！", "");
-			}
-			FileInputStream fis = null;
-			FileOutputStream out = null;
-			try {
-				fis = new FileInputStream(reportFile);
+            boolean gs = false;
+            String hz = "";
+            if (names.length > 1) {
+                hz = names[names.length - 1];
+                if (!"xls".equalsIgnoreCase(hz) && !"xlsx".equalsIgnoreCase(hz)) {
+                    gs = true;
+                }
+            } else {
+                gs = true;
+            }
+            if (gs) {// 文件必须为xls、xlsx格式
+                throw new BusinessException("报告格式不对，不能上传！", "");
+            }
+            FileInputStream fis = null;
+            FileOutputStream out = null;
+            try {
+                fis = new FileInputStream(reportFile);
 
-				String realAdd = "report" + "/" + bs.getDepartmentId() + "/"
-						+ ed.getSampleId() + "/"
-						+ CommonMethod.getCurrentDate();
+                String realAdd = "report" + "/" + bs.getDepartmentId() + "/"
+                        + ed.getSampleId() + "/"
+                        + CommonMethod.getCurrentDate();
                 String savePath = request.getSession().getServletContext().getRealPath("/") + realAdd;
-				File newFile = new File(savePath.toString());
-				if ((!newFile.exists()) && (!newFile.isDirectory())) {
-					newFile.mkdirs();
-				}
+                File newFile = new File(savePath.toString());
+                if ((!newFile.exists()) && (!newFile.isDirectory())) {
+                    newFile.mkdirs();
+                }
 
                 if (!CommonMethod.isNull(tri.getReportPath())) {
                     boolean
@@ -902,73 +895,73 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
                     }
                 }
                 //*
-				String newFileName = CommonMethod.getNewKey();
-				out = new FileOutputStream(savePath.toString() + "\\"
-						+ newFileName + "." + hz);
-				// out = new FileOutputStream(savePath.toString() + "\\" +
-				// "test123" + "." +hz);
-				byte buffer[] = new byte[new Long(reportFile.length())
-						.intValue()];
-				int len = 0;
+                String newFileName = CommonMethod.getNewKey();
+                out = new FileOutputStream(savePath.toString() + "\\"
+                        + newFileName + "." + hz);
+                // out = new FileOutputStream(savePath.toString() + "\\" +
+                // "test123" + "." +hz);
+                byte buffer[] = new byte[new Long(reportFile.length())
+                        .intValue()];
+                int len = 0;
 
-				while ((len = fis.read(buffer)) > 0) {
-					out.write(buffer, 0, len);
-				}
-				fis.close();
-				// 关闭输出流
-				out.close();
-				triPage.setReportPath(realAdd + "\\" + newFileName + "." + hz);
+                while ((len = fis.read(buffer)) > 0) {
+                    out.write(buffer, 0, len);
+                }
+                fis.close();
+                // 关闭输出流
+                out.close();
+                triPage.setReportPath(realAdd + "\\" + newFileName + "." + hz);
 
-			} catch (Exception e) {
-				if (null != fis) {
-					try {
-						fis.close();
-					} catch (IOException e1) {
-						e1.printStackTrace();
-					}
-				}
-				if (null != out) {
-					try {
-						out.close();
-					} catch (IOException e1) {
-						e1.printStackTrace();
-					}
-				}
-				e.printStackTrace();
-			} finally {
-				if (null != fis) {
-					try {
-						fis.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-				if (null != out) {
-					try {
-						out.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-			tri.setReportId(UuidUtil.getUUID());
-			tri.setReportPath(triPage.getReportPath());
-			tri.setUpdater(getUserId());
-			tri.setUpdateTime(CommonMethod.getDate());
-			tri.setReportStatus(triPage.getReportStatus());
-			tri.setSourcesReportId(triPage.getReportId());
-			testReportInfoService.save(tri);
-			// 更改报告编号
-			TestReportInfo tri2 = testReportInfoService.findById(tri
-					.getReportId());
-			List<TestReportInfo> info = testReportInfoService.findByProperty(
-					"sourcesReportId", triPage.getReportId());
-			for (Integer i1 = 1; i1 <= info.size() + 1; i1++) {
-				tri.setReportNo(triPage.getReportNo() + "-0" + i1);
-			}
-			List<TestReportInfo> report = testReportInfoService.findByProperty(
-					"sourcesReportId", triPage.getReportId());
-			testReportInfoService.update(tri2);
+            } catch (Exception e) {
+                if (null != fis) {
+                    try {
+                        fis.close();
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+                if (null != out) {
+                    try {
+                        out.close();
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+                e.printStackTrace();
+            } finally {
+                if (null != fis) {
+                    try {
+                        fis.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (null != out) {
+                    try {
+                        out.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            tri.setReportId(UuidUtil.getUUID());
+            tri.setReportPath(triPage.getReportPath());
+            tri.setUpdater(userId);
+            tri.setUpdateTime(CommonMethod.getDate());
+            tri.setReportStatus(triPage.getReportStatus());
+            tri.setSourcesReportId(triPage.getReportId());
+            testReportInfoService.save(tri);
+            // 更改报告编号
+            TestReportInfo tri2 = testReportInfoService.findById(tri
+                    .getReportId());
+            List<TestReportInfo> info = testReportInfoService.findByProperty(
+                    "sourcesReportId", triPage.getReportId());
+            for (Integer i1 = 1; i1 <= info.size() + 1; i1++) {
+                tri.setReportNo(triPage.getReportNo() + "-0" + i1);
+            }
+            List<TestReportInfo> report = testReportInfoService.findByProperty(
+                    "sourcesReportId", triPage.getReportId());
+            testReportInfoService.update(tri2);
         }
     }
 
@@ -976,20 +969,19 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
      * 修改报告
      */
     @RequestMapping("twoInfo.action")
-    public void twoInfo() {
+    @ResponseBody
+    public List<TestReportInfoPage> twoInfo(String strTReportInfo) {
 
         TestReportInfoPage triPage = (TestReportInfoPage) toBean(
                 strTReportInfo, TestReportInfoPage.class);
 
         List<TestReportInfoPage> saveTwoReportList = testReportInfoService.saveTwoReportList(triPage);
 
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(saveTwoReportList, jsonConfig);
-        jsonPrint(jsonArr);
+        return saveTwoReportList;
     }
 
 
-    public String getStrEDetailId() {
+    /*public String getStrEDetailId() {
         return strEDetailId;
     }
 
@@ -1083,6 +1075,6 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
 
     public void setReportNumber(String reportNumber) {
         this.reportNumber = reportNumber;
-    }
+    }*/
 
 }

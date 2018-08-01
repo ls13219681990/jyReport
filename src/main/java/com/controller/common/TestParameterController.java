@@ -3,16 +3,15 @@ package com.controller.common;
 import com.common.BusinessException;
 import com.common.CommonMethod;
 import com.common.QueryAction;
-import com.common.jsonProcessor.CommonJsonConfig;
 import com.model.BaseSample;
 import com.model.TestParameter;
 import com.service.common.BaseSampleService;
 import com.service.common.TestParameterService;
-import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,7 +33,7 @@ public class TestParameterController extends QueryAction<TestParameter> {
 
     private static final long serialVersionUID = 1L;
 
-    private String strTestParameter = "";
+    /*private String strTestParameter = "";
 
     private String strTestParameterId = "";
 
@@ -42,7 +41,7 @@ public class TestParameterController extends QueryAction<TestParameter> {
 
     private String strDepartmentId = "";
 
-    private String strReportSn = "";//编号规则
+    private String strReportSn = "";//编号规则*/
 
     @Autowired
     private TestParameterService testParameterService;
@@ -55,61 +54,63 @@ public class TestParameterController extends QueryAction<TestParameter> {
         return "/jsp/sys/sysCode";
     }
 
-    public void saveTeParameter() {
+    @RequestMapping("saveTeParameter.action")
+    @ResponseBody
+    public String saveTeParameter(String strTestParameter, String userId) {
         try {
             if (CommonMethod.isNull(strTestParameter)) {
-                jsonPrint("fail,参数strTestParameter不能为空");
-                return;
+                throw new BusinessException("fail,参数strTestParameter不能为空！", "");
             }
-            testParameterService.saveTeParameter(getColl(strTestParameter), getUserId());
-            jsonPrint("true");
+            testParameterService.saveTeParameter(getColl(strTestParameter), userId);
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     @RequestMapping("updateTeParameter.action")
-    public void updateTeParameter() {
+    @ResponseBody
+    public String updateTeParameter(String strTestParameter, String userId) {
         try {
             if (CommonMethod.isNull(strTestParameter)) {
-                jsonPrint("fail,参数strTestParameter不能为空");
-                return;
+                throw new BusinessException("fail,参数strTestParameter不能为空！", "");
             }
-            testParameterService.updateTeParameter(getColl(strTestParameter), getUserId());
-            jsonPrint("true");
+            testParameterService.updateTeParameter(getColl(strTestParameter), userId);
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     @RequestMapping("updateReportSn.action")
-    public void updateReportSn() {
+    @ResponseBody
+    public String updateReportSn(String strBaseSampleId, String userId, String strReportSn) {
         try {
             if (CommonMethod.isNull(strBaseSampleId) || CommonMethod.isNull(strReportSn)) {
-                jsonPrint("fail,参数strBaseSampleId或者strReportSn不能为空");
-                return;
+                throw new BusinessException("fail,参数strBaseSampleId不能为空！", "");
             }
-            testParameterService.updateReportSn(strBaseSampleId, strReportSn, getUserId());
-            jsonPrint("true");
+            testParameterService.updateReportSn(strBaseSampleId, strReportSn, userId);
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     @RequestMapping("uploadReport.action")
-    public void uploadReport(@RequestParam MultipartFile[] template) {
+    @ResponseBody
+    public String uploadReport(@RequestParam MultipartFile[] template, String strTestParameterId, String userId) {
         System.out.println("------------------------------文件上传开始");
         try {
 			response.setContentType("text/plain");
@@ -181,7 +182,7 @@ public class TestParameterController extends QueryAction<TestParameter> {
 					//模板名称
 					tp.setTemplateName(strTestParameterId + "." +hz);
 					//更新人
-					tp.setUpdater(getUserId());
+                    tp.setUpdater(userId);
 					//更新时间
 					tp.setUpdateTime(CommonMethod.getDate());
 					testParameterService.update(tp);
@@ -202,8 +203,6 @@ public class TestParameterController extends QueryAction<TestParameter> {
 						out.close();
 					}
 				}
-
-
 		    }
 			jsonPrint("true");
         } catch (BusinessException e) {
@@ -213,30 +212,28 @@ public class TestParameterController extends QueryAction<TestParameter> {
 			e.printStackTrace();
 			jsonPrint("error:"+e.getMessage());
         }
+        return "true";
     }
 
     @RequestMapping("findTeParameter.action")
-    public void findTeParameter() {
+    @ResponseBody
+    public List<TestParameter> findTeParameter(String strBaseSampleId) {
         List<TestParameter> teParameterList = testParameterService.findTeParameter(strBaseSampleId);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(teParameterList, jsonConfig);
-        jsonPrint(jsonArr);
+        return teParameterList;
     }
 
     @RequestMapping("findAllParameter.action")
-    public void findAllParameter() {
+    @ResponseBody
+    public List<TestParameter> findAllParameter(String strDepartmentId) {
 
         if (CommonMethod.isNull(strDepartmentId) || CommonMethod.isNull(strDepartmentId)) {
-            jsonPrint("fail,参数strDepartmentId不能为空");
-            return;
+            throw new BusinessException("fail,参数strDepartmentId不能为空！", "");
         }
         List<TestParameter> teParameterList = testParameterService.findAllParameter(strDepartmentId);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(teParameterList, jsonConfig);
-        jsonPrint(jsonArr);
+        return teParameterList;
     }
 
-    public String getStrDepartmentId() {
+    /*public String getStrDepartmentId() {
         return strDepartmentId;
     }
 
@@ -274,5 +271,5 @@ public class TestParameterController extends QueryAction<TestParameter> {
 
     public void setStrReportSn(String strReportSn) {
         this.strReportSn = strReportSn;
-    }
+    }*/
 }

@@ -3,18 +3,18 @@ package com.controller.sys;
 import com.common.BusinessException;
 import com.common.CommonMethod;
 import com.common.QueryAction;
-import com.common.jsonProcessor.CommonJsonConfig;
 import com.model.SysRoleFunction;
 import com.service.sys.SysRoleFunctionService;
-import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-@RequestMapping("SysRoleFunctionAction")
+@RequestMapping("sysRoleFunctionAction")
 public class SysRoleFunctionController extends QueryAction<SysRoleFunction> {
 
     /**
@@ -22,11 +22,11 @@ public class SysRoleFunctionController extends QueryAction<SysRoleFunction> {
      */
     private static final long serialVersionUID = 1L;
 
-    private String strRoleFunction = "";
+   /* private String strRoleFunction = "";
     //角色ID
     private String strRoleId = "";
     //功能ID
-    private String strFunctionId = "";
+    private String strFunctionId = "";*/
 
     @Autowired
     private SysRoleFunctionService sysRoleFunctionService;
@@ -39,50 +39,50 @@ public class SysRoleFunctionController extends QueryAction<SysRoleFunction> {
     }
 
     @RequestMapping("saveSysRoleFunction.action")
-    public void saveSysRoleFunction() {
+    @ResponseBody
+    public String saveSysRoleFunction(String strRoleFunction, String strRoleId) {
         try {
             if (CommonMethod.isNull(strRoleFunction) || CommonMethod.isNull(strRoleId)) {
-                jsonPrint("fail,参数不能为空");
-                return;
+                throw new BusinessException("fail,参数不能为空");
             }
             sysRoleFunctionService.saveSysRoleFunction(getColl(strRoleFunction), strRoleId);
-            jsonPrint("true");
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     @RequestMapping("findFunctionByRole.action")
-    public void findFunctionByRole() {
+    @ResponseBody
+    public List<SysRoleFunction> findFunctionByRole(String strRoleId) {
         if (CommonMethod.isNull(strRoleId)) {
-            jsonPrint("fail,参数strRoleId不能为空");
-            return;
+            throw new BusinessException("fail,参数strRoleId不能为空！", "");
         }
         List<SysRoleFunction> sysRoleFunctionList = sysRoleFunctionService.findFunctionByRole(strRoleId);
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(sysRoleFunctionList, jsonConfig);
-        jsonPrint(jsonArr);
+        return sysRoleFunctionList;
     }
 
     @RequestMapping("findFuncitonUsed.action")
-    public void findFuncitonUsed() {
+    @ResponseBody
+    public String findFuncitonUsed(String strFunctionId) {
         if (CommonMethod.isNull(strFunctionId)) {
-            jsonPrint("fail,参数strFunctionId不能为空");
-            return;
+            throw new BusinessException("fail,参数strFunctionId不能为空！", "");
         }
         List<SysRoleFunction> sysRoleFunctionList = sysRoleFunctionService.findFuncitonUsed(strFunctionId);
+        List<String> re = new ArrayList<String>();
         if (sysRoleFunctionList != null && sysRoleFunctionList.size() > 0) {
-            jsonPrint("true");
+            re.add("true");
         } else {
-            jsonPrint("fail");
+            re.add("fail");
         }
+        return re.get(0).toString();
     }
 
-    public String getStrRoleFunction() {
+ /*   public String getStrRoleFunction() {
         return strRoleFunction;
     }
 
@@ -104,5 +104,5 @@ public class SysRoleFunctionController extends QueryAction<SysRoleFunction> {
 
     public void setStrFunctionId(String strFunctionId) {
         this.strFunctionId = strFunctionId;
-    }
+    }*/
 }

@@ -3,13 +3,12 @@ package com.controller.sys;
 import com.common.BusinessException;
 import com.common.CommonMethod;
 import com.common.QueryAction;
-import com.common.jsonProcessor.CommonJsonConfig;
 import com.model.SysFunction;
 import com.service.sys.SysFunctionService;
-import net.sf.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
@@ -35,58 +34,56 @@ public class SysFunctionController extends QueryAction<SysFunction> {
     }
 
     @RequestMapping("saveFunction.action")
-    public void saveFunction() {
+    @ResponseBody
+    public String saveFunction(String strFunction) {
         try {
             if (CommonMethod.isNull(strFunction)) {
-                jsonPrint("fail,参数strFunction不能为空");
-                return;
+                throw new BusinessException("fail,参数strFunction不能为空！", "");
             }
             sysFunctionService.saveFunction(getColl(strFunction));
-            jsonPrint("true");
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     @RequestMapping("updateFunction.action")
-    public void updateFunction() {
+    @ResponseBody
+    public String updateFunction(String strFunction) {
         try {
             if (CommonMethod.isNull(strFunction)) {
-                jsonPrint("fail,参数strFunction不能为空");
-                return;
+                throw new BusinessException("fail,参数strFunction不能为空！", "");
             }
             sysFunctionService.updateFunction(getColl(strFunction));
-            jsonPrint("true");
         } catch (BusinessException e) {
             e.printStackTrace();
-            jsonPrint("fail:" + e.getMessage());
+            e.getMessage();
         } catch (Exception e) {
             e.printStackTrace();
-            jsonPrint("error:" + e.getMessage());
+            e.getMessage();
         }
+        return "true";
     }
 
     @RequestMapping("findFunction.action")
-    public void findFunction() {
+    @ResponseBody
+    public List<SysFunction> findFunction() {
         List<SysFunction> sysFunctionList = sysFunctionService.findFunction();
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(sysFunctionList, jsonConfig);
-        jsonPrint(jsonArr);
+        return sysFunctionList;
     }
 
     /**
      * 获取有效的功能数据
      */
     @RequestMapping("findFunctionValid.action")
-    public void findFunctionValid() {
+    @ResponseBody
+    public List<SysFunction> findFunctionValid() {
         List<SysFunction> sysFunctionList = sysFunctionService.findFunctionValid();
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        JSONArray jsonArr = JSONArray.fromObject(sysFunctionList, jsonConfig);
-        jsonPrint(jsonArr);
+        return sysFunctionList;
     }
 
     public String getStrFunction() {
