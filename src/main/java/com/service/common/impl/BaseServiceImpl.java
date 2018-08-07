@@ -5,7 +5,7 @@ import com.controller.common.PaginationSupport;
 import com.dao.common.BaseDao;
 import com.service.common.BaseService;
 import org.hibernate.criterion.DetachedCriteria;
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -14,8 +14,8 @@ import java.util.List;
  * @param <T>
  * @author Administrator
  */
-@Service("BaseService")
 public abstract class BaseServiceImpl<T> implements BaseService<T> {
+    @Autowired
     private BaseDao<T> baseDao;
 
     private final static HttpServletRequest REQUEST = null;

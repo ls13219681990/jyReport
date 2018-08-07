@@ -132,6 +132,17 @@ public class SysUserController extends QueryAction<SysUser> {
         return sysUserList;
     }
 
+    @RequestMapping("test")
+    @ResponseBody
+    public List<SysUser> find() {
+        List<SysUser> all = sysUserService.findAll();
+        return all;
+    }
+
+
+
+
+
 /*    public String getStrUser() {
         return strUser;
     }
