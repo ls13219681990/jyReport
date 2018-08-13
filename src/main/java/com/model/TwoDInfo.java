@@ -1,7 +1,12 @@
 package com.model;
 
 
-import javax.persistence.*;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 
 /**
@@ -10,6 +15,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "TWO_D_INFO")
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class TwoDInfo extends BaseBean implements java.io.Serializable {
 
 

@@ -10,10 +10,8 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
-import org.springframework.orm.hibernate3.HibernateCallback;
+import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.stereotype.Repository;
-
-import java.sql.SQLException;
 
 @Repository("receivableInDetailsDao")
 public class ReceivableInDetailsDaoImpl extends BaseDaoImpl<ReceivableInvoiceDetails> implements ReceivableInDetailsDao {
@@ -22,8 +20,7 @@ public class ReceivableInDetailsDaoImpl extends BaseDaoImpl<ReceivableInvoiceDet
     public void deleteByInDetailId(final String strInvoiceDetailId) {
         getHibernateTemplate().execute(new HibernateCallback() {
             @Override
-            public Object doInHibernate(Session session) throws HibernateException,
-                    SQLException {
+            public Object doInHibernate(Session session) throws HibernateException {
                 String hql = "delete ReceivableInvoiceDetails s where s.invoiceDetailId = :invoiceDetailId";
                 return session.createQuery(hql)
                         .setString("invoiceDetailId", strInvoiceDetailId)
@@ -36,8 +33,7 @@ public class ReceivableInDetailsDaoImpl extends BaseDaoImpl<ReceivableInvoiceDet
     public void deleteByAcDetailId(final String strAccountDetailId) {
         getHibernateTemplate().execute(new HibernateCallback() {
             @Override
-            public Object doInHibernate(Session session) throws HibernateException,
-                    SQLException {
+            public Object doInHibernate(Session session) throws HibernateException {
                 String hql = "delete ReceivableInvoiceDetails s where s.accountDetailId = :accountDetailId";
                 return session.createQuery(hql)
                         .setString("accountDetailId", strAccountDetailId)

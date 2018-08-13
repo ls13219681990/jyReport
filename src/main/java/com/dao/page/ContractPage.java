@@ -1,5 +1,6 @@
 package com.dao.page;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.model.EntrustCompany;
 
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.List;
 /**
  * CapitalAccount entity. @author MyEclipse Persistence Tools
  */
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class ContractPage implements java.io.Serializable {
 
     /**

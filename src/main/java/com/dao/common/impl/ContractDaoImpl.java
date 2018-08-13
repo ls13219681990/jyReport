@@ -5,18 +5,17 @@ import com.controller.common.EasyPager;
 import com.controller.common.JsonPager;
 import com.controller.common.PaginationSupport;
 import com.dao.common.ContractDao;
-import com.model.Agreement;
 import com.dao.page.ContractPage;
+import com.model.Agreement;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.transform.Transformers;
-import org.springframework.orm.hibernate3.HibernateCallback;
+import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.stereotype.Repository;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -30,8 +29,7 @@ public class ContractDaoImpl extends BaseDaoImpl<Agreement> implements ContractD
         return (List<ContractPage>) getHibernateTemplate().execute(new HibernateCallback() {
             @SuppressWarnings("rawtypes")
             @Override
-            public List<ContractPage> doInHibernate(Session session) throws HibernateException,
-                    SQLException {
+            public List<ContractPage> doInHibernate(Session session) throws HibernateException {
 
                 StringBuffer querySQLCount = new StringBuffer();
                 querySQLCount.append(" select count(distinct ca.CONTRACT_ID) as total ");
@@ -192,8 +190,7 @@ public class ContractDaoImpl extends BaseDaoImpl<Agreement> implements ContractD
         return (List<ContractPage>) getHibernateTemplate().execute(new HibernateCallback() {
             @SuppressWarnings("rawtypes")
             @Override
-            public List<ContractPage> doInHibernate(Session session) throws HibernateException,
-                    SQLException {
+            public List<ContractPage> doInHibernate(Session session) throws HibernateException {
                 //查询数据
                 StringBuffer sql = new StringBuffer();
                 sql.append(" select ca.CONTRACT_ID,ca.CONTRACT_CODE,ca.CHECK_AREA,ca.PAYMENT_NODE,ca.CONTRACT_CHAPTER, ");

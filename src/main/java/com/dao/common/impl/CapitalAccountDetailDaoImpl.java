@@ -12,10 +12,9 @@ import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.transform.Transformers;
-import org.springframework.orm.hibernate3.HibernateCallback;
+import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.stereotype.Repository;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,8 +26,7 @@ public class CapitalAccountDetailDaoImpl extends BaseDaoImpl<CapitalAccountDetai
     public void deleteByCAId(final String caId) {
         getHibernateTemplate().execute(new HibernateCallback() {
             @Override
-            public Object doInHibernate(Session session) throws HibernateException,
-                    SQLException {
+            public Object doInHibernate(Session session) throws HibernateException {
                 String hql = "delete CapitalAccountDetail s where s.contractId = :contractId";
                 return session.createQuery(hql)
                         .setString("contractId", caId)
@@ -45,7 +43,7 @@ public class CapitalAccountDetailDaoImpl extends BaseDaoImpl<CapitalAccountDetai
 
                     @Override
                     public Object doInHibernate(Session session)
-                            throws HibernateException, SQLException {
+                            throws HibernateException {
 
                         StringBuffer sql = new StringBuffer();
                         sql.append(" select bd.DEPARTMENT_NAME,bs.SAMPLE_NAME,tp.UNIT,bs.SAMPLE_ID,tp.TEST_PARAMETER_NAME,tp.TEST_PARAMETER_ID, ");

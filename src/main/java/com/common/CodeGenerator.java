@@ -326,7 +326,7 @@ public class CodeGenerator {
 
         actionContent.append("import common.QueryAction;" + "\n");
 
-        actionContent.append("import dao.generated." + fileJavaName + ";" + "\n");
+        actionContent.append("import com.model." + fileJavaName + ";" + "\n");
         actionContent.append("@ParentPackage(\"action\")" + "\n");
         actionContent.append("public class " + fileJavaName + "Action extends QueryAction<" + fileJavaName + "> {" + "\n");
         actionContent.append("private static final long serialVersionUID = 1L;" + "\n");
@@ -430,7 +430,7 @@ public class CodeGenerator {
         StringBuffer serviceContent = new StringBuffer();
         serviceContent.append("package service." + packageName + ";\n");
         serviceContent.append("import common.service.BaseService;\n");
-        serviceContent.append("import dao.generated." + fileJavaName + ";\n");
+        serviceContent.append("import com.model." + fileJavaName + ";\n");
         serviceContent.append("public interface " + fileJavaName + "Service extends BaseService<" + fileJavaName + "> {" + "\n");
         serviceContent.append("\n");
         serviceContent.append("}");
@@ -451,7 +451,7 @@ public class CodeGenerator {
         serviceImplContent.append("import common.action.PaginationSupport;" + "\n");
         serviceImplContent.append("import common.dao.BaseDao;\n");
         serviceImplContent.append("import common.service.BaseServiceImpl;\n");
-        serviceImplContent.append("import dao.generated." + fileJavaName + ";\n");
+        serviceImplContent.append("import com.model." + fileJavaName + ";\n");
         serviceImplContent.append("import dao." + packageName + "." + fileJavaName + "Dao;" + "\n");
         serviceImplContent.append("@Service(\"" + packageName + "Service\")\n");
         serviceImplContent.append("public class " + fileJavaName + "ServiceImpl extends BaseServiceImpl<" + fileJavaName + "> implements " + fileJavaName + "Service {");
@@ -486,7 +486,7 @@ public class CodeGenerator {
         StringBuffer daoContent = new StringBuffer();
         daoContent.append("package dao." + packageName + ";\n");
         daoContent.append("import common.dao.BaseDao;\n");
-        daoContent.append("import dao.generated." + fileJavaName + ";\n");
+        daoContent.append("import com.model." + fileJavaName + ";\n");
         daoContent.append("public interface " + fileJavaName + "Dao extends BaseDao<" + fileJavaName + "> {" + "\n");
         daoContent.append("\n");
         daoContent.append("}");
@@ -501,7 +501,7 @@ public class CodeGenerator {
         daoImplContent.append("package dao." + packageName + ";\n");
         daoImplContent.append("import org.springframework.stereotype.Repository;\n");
         daoImplContent.append("import common.dao.BaseDaoImpl;\n");
-        daoImplContent.append("import dao.generated." + fileJavaName + ";\n");
+        daoImplContent.append("import com.model." + fileJavaName + ";\n");
         daoImplContent.append("@Repository(\"" + packageName + "Dao\")\n");
         daoImplContent.append("public class " + fileJavaName + "DaoImpl extends BaseDaoImpl<" + fileJavaName + "> implements " + fileJavaName + "Dao {");
         daoImplContent.append("\n");

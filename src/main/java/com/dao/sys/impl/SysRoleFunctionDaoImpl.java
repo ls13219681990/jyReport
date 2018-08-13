@@ -10,10 +10,8 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
-import org.springframework.orm.hibernate3.HibernateCallback;
+import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.stereotype.Repository;
-
-import java.sql.SQLException;
 
 @Repository("sysRoleFunctionDao")
 public class SysRoleFunctionDaoImpl extends BaseDaoImpl<SysRoleFunction> implements SysRoleFunctionDao {
@@ -22,8 +20,7 @@ public class SysRoleFunctionDaoImpl extends BaseDaoImpl<SysRoleFunction> impleme
     public void deleteByRole(final String roleId) {
         getHibernateTemplate().execute(new HibernateCallback() {
             @Override
-            public Object doInHibernate(Session session) throws HibernateException,
-                    SQLException {
+            public Object doInHibernate(Session session) throws HibernateException {
                 String hql = "delete SysRoleFunction s where s.roleId = :roleId";
                 return session.createQuery(hql)
                         .setString("roleId", roleId)

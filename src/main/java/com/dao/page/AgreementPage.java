@@ -1,6 +1,8 @@
 package com.dao.page;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class AgreementPage implements java.io.Serializable {
 
     private static final long serialVersionUID = 1L;

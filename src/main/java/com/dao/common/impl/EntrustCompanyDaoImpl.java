@@ -4,18 +4,17 @@ import com.controller.common.EasyPager;
 import com.controller.common.JsonPager;
 import com.controller.common.PaginationSupport;
 import com.dao.common.EntrustCompanyDao;
-import com.model.EntrustCompany;
 import com.dao.page.AdvanceMoneyPage;
+import com.model.EntrustCompany;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.transform.Transformers;
-import org.springframework.orm.hibernate3.HibernateCallback;
+import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.stereotype.Repository;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -29,8 +28,7 @@ public class EntrustCompanyDaoImpl extends BaseDaoImpl<EntrustCompany> implement
         return (List<AdvanceMoneyPage>) getHibernateTemplate().execute(new HibernateCallback() {
             @SuppressWarnings("rawtypes")
             @Override
-            public List<AdvanceMoneyPage> doInHibernate(Session session) throws HibernateException,
-                    SQLException {
+            public List<AdvanceMoneyPage> doInHibernate(Session session) throws HibernateException {
                 StringBuffer sql = new StringBuffer();
                 sql.append(" select ea.ENTRUST_ADVANCE_ID,ea.ENTRUST_COMPANY_ID,ec.ENTRUST_COMPANY_NAME,ec.ENTRUST_COMPANY_NO, ");
                 sql.append(" pInfo.PROJECT_ID,pInfo.PROJECT_NAME,ea.ADVANCE_MONEY,ea.ADVANCE_STATUS,sCode.CODE_NAME as ADVANCE_STATUS_NAME, ");
@@ -83,8 +81,7 @@ public class EntrustCompanyDaoImpl extends BaseDaoImpl<EntrustCompany> implement
         return (String) getHibernateTemplate().execute(new HibernateCallback() {
             @SuppressWarnings("rawtypes")
             @Override
-            public String doInHibernate(Session session) throws HibernateException,
-                    SQLException {
+            public String doInHibernate(Session session) throws HibernateException {
                 StringBuffer sql = new StringBuffer();
                 sql.append("select MAX(cast(ec.ENTRUST_COMPANY_NO as int)) as maxEntrustCompanyNo from ENTRUST_COMPANY ec ");
 

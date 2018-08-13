@@ -15,11 +15,12 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Property;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.*;
 
-
+@Transactional
 @Service("capitalAccountService")
 public class CapitalAccountServiceImpl extends BaseServiceImpl<CapitalAccount>
         implements CapitalAccountService {

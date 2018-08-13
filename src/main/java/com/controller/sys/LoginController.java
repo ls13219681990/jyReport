@@ -8,6 +8,7 @@ import com.common.CommonMethod;
 import com.common.MD5;
 import com.common.QueryAction;
 import com.dao.page.UserRolePage;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.model.SysUser;
 import com.service.sys.SysUserService;
 import org.springframework.beans.factory.annotation.Autowired;

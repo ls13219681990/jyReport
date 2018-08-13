@@ -6,18 +6,17 @@ import com.controller.common.JsonPager;
 import com.controller.common.PaginationSupport;
 import com.dao.common.impl.BaseDaoImpl;
 import com.dao.finance.AmountReceivableDao;
-import com.model.AmountReceivable;
 import com.dao.page.AmReceivablePage;
+import com.model.AmountReceivable;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.transform.Transformers;
-import org.springframework.orm.hibernate3.HibernateCallback;
+import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.stereotype.Repository;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,8 +30,7 @@ public class AmountReceivableDaoImpl extends BaseDaoImpl<AmountReceivable> imple
         return (List<AmReceivablePage>) getHibernateTemplate().execute(new HibernateCallback() {
             @SuppressWarnings("rawtypes")
             @Override
-            public List<AmReceivablePage> doInHibernate(Session session) throws HibernateException,
-                    SQLException {
+            public List<AmReceivablePage> doInHibernate(Session session) throws HibernateException {
                 StringBuffer sql = new StringBuffer();
                 sql.append(" select ar.AMOUNT_RECEIVABLE_ID,ar.ENTRUST_COMPANY_ID,ar.PROJECT_ID, ");
                 sql.append(" ar.INPUTER,ar.INPUTE_TIME,ar.UPDATER,ar.UPDATE_TIME,ar.REMARK,ec.ENTRUST_COMPANY_NAME,project.PROJECT_NAME ");

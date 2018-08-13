@@ -11,10 +11,8 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
-import org.springframework.orm.hibernate3.HibernateCallback;
+import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.stereotype.Repository;
-
-import java.sql.SQLException;
 
 @Repository("sysUserDao")
 public class SysUserDaoImpl extends BaseDaoImpl<SysUser> implements SysUserDao {
@@ -23,8 +21,7 @@ public class SysUserDaoImpl extends BaseDaoImpl<SysUser> implements SysUserDao {
     public void updatePword(final SysUser sysUser) {
         getHibernateTemplate().execute(new HibernateCallback() {
             @Override
-            public Object doInHibernate(Session session) throws HibernateException,
-                    SQLException {
+            public Object doInHibernate(Session session) throws HibernateException {
                 String sql = "update SYS_USER set USER_PASSWORD = '" + sysUser.getUserPassword() + "',updater = '" + sysUser.getUpdater() + "',update_time = '" + sysUser.getUpdateTime() + "' where SYS_USER_ID = '" + sysUser.getSysUserId() + "'";
                 Query query = session.createQuery(sql);
                 return query.executeUpdate();

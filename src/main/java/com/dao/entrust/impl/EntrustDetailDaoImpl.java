@@ -11,10 +11,8 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
-import org.springframework.orm.hibernate3.HibernateCallback;
+import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.stereotype.Repository;
-
-import java.sql.SQLException;
 
 @Repository("entrustDetailDao")
 public class EntrustDetailDaoImpl extends BaseDaoImpl<EntrustDetails> implements EntrustDetailDao {
@@ -23,8 +21,7 @@ public class EntrustDetailDaoImpl extends BaseDaoImpl<EntrustDetails> implements
     public void deleteByEntrustDetailId(final String entrustDetailId) {
         getHibernateTemplate().execute(new HibernateCallback() {
             @Override
-            public Object doInHibernate(Session session) throws HibernateException,
-                    SQLException {
+            public Object doInHibernate(Session session) throws HibernateException {
                 String sql = "delete EntrustDetails s where s.entrustDetailId = :entrustDetailId";
                 Query query = session.createQuery(sql).setString("entrustDetailId", entrustDetailId);
                 return query.executeUpdate();

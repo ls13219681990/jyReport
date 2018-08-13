@@ -1,6 +1,7 @@
 package com.model;
 
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,6 +14,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "BASE_DEPARTMENT")
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class BaseDepartment extends BaseBean implements java.io.Serializable {
 
 

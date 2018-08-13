@@ -16,7 +16,7 @@ import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.transform.Transformers;
-import org.springframework.orm.hibernate3.HibernateCallback;
+import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.stereotype.Repository;
 
 import java.sql.SQLException;
@@ -38,7 +38,7 @@ public class EntrustInfoDaoImpl extends BaseDaoImpl<EntrustInfo> implements
                     @SuppressWarnings("rawtypes")
                     @Override
                     public List<EntrustSavePage> doInHibernate(Session session)
-                            throws HibernateException, SQLException {
+                            throws HibernateException {
 
                         StringBuffer querySQLCount = new StringBuffer();
                         querySQLCount
@@ -307,7 +307,7 @@ public class EntrustInfoDaoImpl extends BaseDaoImpl<EntrustInfo> implements
                     @SuppressWarnings("rawtypes")
                     @Override
                     public List<EntrustSavePage> doInHibernate(Session session)
-                            throws HibernateException, SQLException {
+                            throws HibernateException {
 
                         int totalCount = 0;
 
@@ -450,7 +450,7 @@ public class EntrustInfoDaoImpl extends BaseDaoImpl<EntrustInfo> implements
                     @SuppressWarnings("rawtypes")
                     @Override
                     public List<EntrustSavePage> doInHibernate(Session session)
-                            throws HibernateException, SQLException {
+                            throws HibernateException {
                         StringBuffer sql = new StringBuffer();
                         sql.append(" select ed.ENTRUST_DETAIL_ID,ed.ENTRUST_ID,ed.DEPARTMENT_ID,bd.DEPARTMENT_NAME,ed.SAMPLE_ID,bs.SAMPLE_NAME,bs.TEST_RESULT, ");
                         sql.append(" ed.STANDARDS,ed.REPORT_NUM,ed.PROCESS_STATUS,ed.WITNESS_MAN,ed.REMARK,ed.INPUTER,ed.INPUTE_TIME,ed.UPDATER,ed.UPDATE_TIME, ");
@@ -549,7 +549,7 @@ public class EntrustInfoDaoImpl extends BaseDaoImpl<EntrustInfo> implements
                     @SuppressWarnings("rawtypes")
                     @Override
                     public List<EntrustSavePage> doInHibernate(Session session)
-                            throws HibernateException, SQLException {
+                            throws HibernateException {
                         StringBuffer sql = new StringBuffer();
                         sql.append(" select ed.ENTRUST_DETAIL_ID,ed.DEPARTMENT_ID,bd.DEPARTMENT_NAME,ed.SAMPLE_ID,bs.SAMPLE_NAME,ei.ENTRUST_SN, ");
                         sql.append(" ed.TEST_PARAMETER_ID,ed.SAMPLE_NO,ed.SAMPLE_SOURCE,ed.PROJECT_PART,ed.MOLDING_DATE, ");
@@ -642,7 +642,7 @@ public class EntrustInfoDaoImpl extends BaseDaoImpl<EntrustInfo> implements
                     @SuppressWarnings("rawtypes")
                     @Override
                     public List<EntrustReportPage> doInHibernate(Session session)
-                            throws HibernateException, SQLException {
+                            throws HibernateException {
                         StringBuffer sql = new StringBuffer();
                         sql.append("select ed.ENTRUST_DETAIL_ID,ei.ENTRUST_SN,ei.ENTRUST_DATE,bs.SAMPLE_NAME,ei.INPUTER as registrant, ");
                         sql.append("su.USER_NAME as registrantName,ei.INPUTE_TIME as registeredTime,ed.INPUTER,sUser.USER_NAME as inputeName, ");
@@ -777,7 +777,7 @@ public class EntrustInfoDaoImpl extends BaseDaoImpl<EntrustInfo> implements
                     @SuppressWarnings("rawtypes")
                     @Override
                     public List<ProjectMoneyPage> doInHibernate(Session session)
-                            throws HibernateException, SQLException {
+                            throws HibernateException {
                         StringBuffer sql = new StringBuffer();
                         sql.append(" select testRecord.ENTRUST_COMPANY_ID,testRecord.PROJECT_ID,testRecord.testMoney,agRecord.agMoney, ");
                         sql.append(" arRecord.arMoney,eCompany.ENTRUST_COMPANY_NAME,projectInfo.PROJECT_NAME,eCompany.ENTRUST_COMPANY_NO ");
@@ -886,7 +886,7 @@ public class EntrustInfoDaoImpl extends BaseDaoImpl<EntrustInfo> implements
                     @SuppressWarnings("rawtypes")
                     @Override
                     public List<String> doInHibernate(Session session)
-                            throws HibernateException, SQLException {
+                            throws HibernateException {
                         StringBuffer sql = new StringBuffer();
                         sql.append(" select sr.SAMPLE_NO as SAMPLE_NO from SAMPLE_REPORT sr ");
                         sql.append(" where sr.ENTRUST_ID = '");
@@ -918,7 +918,7 @@ public class EntrustInfoDaoImpl extends BaseDaoImpl<EntrustInfo> implements
                     @SuppressWarnings("rawtypes")
                     @Override
                     public ProjectTestMoneyPage doInHibernate(Session session)
-                            throws HibernateException, SQLException {
+                            throws HibernateException {
                         StringBuffer sql = new StringBuffer();
                         sql.append("select testRecord.PROJECT_ID,(case when pInfo.AMOUNT_RECEIVABLE<0 then 0 else pInfo.AMOUNT_RECEIVABLE end) amount,pInfo.PROJECT_NAME,testRecord.testMoney,invoiceRecord.invoiceMoney,receiptRecord.receiptMoney, ");
                         sql.append("raDetailRecord.accountMoney,(testRecord.testMoney-raDetailRecord.accountMoney) as uncollectedMoney ");
@@ -997,8 +997,7 @@ public class EntrustInfoDaoImpl extends BaseDaoImpl<EntrustInfo> implements
                     @SuppressWarnings("rawtypes")
                     @Override
                     public List<ProjectTestMoneyDetailPage> doInHibernate(
-                            Session session) throws HibernateException,
-                            SQLException {
+                            Session session) throws HibernateException {
                         StringBuffer sql = new StringBuffer();
                         sql.append("select ei.ENTRUST_COMPANY_ID,ec.ENTRUST_COMPANY_NAME,YEAR(ei.ENTRUST_DATE) as eYear,MONTH(ei.ENTRUST_DATE) as eMonth,SUM(ei.ACCOUNT_VALUE) as testMoney ");
                         sql.append("from ENTRUST_INFO ei,ENTRUST_COMPANY ec where ei.IS_COMPLEMENTALLY = '00' and ei.ENTRUST_COMPANY_ID=ec.ENTRUST_COMPANY_ID and ei.ACCOUNT_KINDS <>'05' and ei.PROJECT_ID = '");
@@ -1186,7 +1185,7 @@ public class EntrustInfoDaoImpl extends BaseDaoImpl<EntrustInfo> implements
                     @SuppressWarnings("rawtypes")
                     @Override
                     public List<EntrustReportPage> doInHibernate(Session session)
-                            throws HibernateException, SQLException {
+                            throws HibernateException {
                         StringBuffer sql = new StringBuffer();
                         /*
                          * sql.append(
@@ -1546,7 +1545,7 @@ public class EntrustInfoDaoImpl extends BaseDaoImpl<EntrustInfo> implements
                     @SuppressWarnings("rawtypes")
                     @Override
                     public List<EntrustReportPage> doInHibernate(Session session)
-                            throws HibernateException, SQLException {
+                            throws HibernateException {
                         StringBuffer sql = new StringBuffer();
                         sql.append(" select distinct ed.ENTRUST_DETAIL_ID,ei.ENTRUST_SN,ei.ENTRUST_DATE,bs.SAMPLE_NAME,ei.INPUTER as registrant, ");
                         sql.append(" su.USER_NAME as registrantName,ei.INPUTE_TIME as registeredTime,ed.INPUTER,sUser.USER_NAME as inputeName, ");
@@ -1731,8 +1730,7 @@ public class EntrustInfoDaoImpl extends BaseDaoImpl<EntrustInfo> implements
                     @SuppressWarnings("rawtypes")
                     @Override
                     public List<OutputValueCountPage> doInHibernate(
-                            Session session) throws HibernateException,
-                            SQLException {
+                            Session session) throws HibernateException {
                         StringBuffer sql = new StringBuffer();
                         sql.append("select ed.DEPARTMENT_ID,bd.DEPARTMENT_NAME,MONTH(ei.ENTRUST_DATE) as eMonth,SUM(ed.REAL_TOTAL_PRICE) as testMoney ");
                         sql.append("from ENTRUST_MONEY_DETAILS emd ");
@@ -1906,7 +1904,7 @@ public class EntrustInfoDaoImpl extends BaseDaoImpl<EntrustInfo> implements
 
                     @Override
                     public Object doInHibernate(Session session)
-                            throws HibernateException, SQLException {
+                            throws HibernateException {
                         StringBuffer sql = new StringBuffer();
                         sql.append(" SELECT DISTINCT tri.*, bb.ENTRUST_STATUS,bb.IS_COMPLEMENTALLY,sc.CODE_NAME entrustStatusName ,APPROVER.USER_NAME approverName,");
                         sql.append(" AUDITOR.USER_NAME auditorName,INPUTER.USER_NAME inputeName,DISTRIBUTE.USER_NAME distributeName,bb.ENTRUST_SN entrustNumber");
@@ -2182,7 +2180,7 @@ public class EntrustInfoDaoImpl extends BaseDaoImpl<EntrustInfo> implements
                     @SuppressWarnings("rawtypes")
                     @Override
                     public List<AgreementPage> doInHibernate(Session session)
-                            throws HibernateException, SQLException {
+                            throws HibernateException {
 
                         StringBuffer sql = new StringBuffer();
                         sql.append(" select ag.CONTRACT_TYPE,ag.CONTRACT_MONEY money,ec.ENTRUST_COMPANY_NAME,ag.CONTRACT_CODE,pi.PROJECT_NAME ,(case when ag.RECEIVED_MONEY = '0' then ag.CONTRACT_MONEY END) receivable  ");
@@ -2284,8 +2282,7 @@ public class EntrustInfoDaoImpl extends BaseDaoImpl<EntrustInfo> implements
                     @SuppressWarnings("rawtypes")
                     @Override
                     public List<WaterAccountStatisticsPage> doInHibernate(
-                            Session session) throws HibernateException,
-                            SQLException {
+                            Session session) throws HibernateException {
                         StringBuffer sql = new StringBuffer();
                         /*
                          * sql.append(

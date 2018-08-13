@@ -33,6 +33,7 @@ public class RunningNumServiceImpl extends BaseServiceImpl<RunningNum> implement
 
 
     public Long getNextNum(String item, int count) {
+
         RunningNum runingNum = new RunningNum();
         Long returnstr = Long.valueOf(0L);
         runingNum = runningNumDao.findById(item);

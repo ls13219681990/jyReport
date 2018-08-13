@@ -1,6 +1,8 @@
 package com.model;
 
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -12,6 +14,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "RUNNING_NUM")
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class RunningNum extends BaseBean implements java.io.Serializable {
 
 

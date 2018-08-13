@@ -1,12 +1,12 @@
 package com.dao.page;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 
 /**
  * CapitalAccount entity. @author MyEclipse Persistence Tools
  */
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class TestDataInfoPage implements java.io.Serializable {
 
     /**

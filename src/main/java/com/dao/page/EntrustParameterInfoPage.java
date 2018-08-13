@@ -1,9 +1,12 @@
 package com.dao.page;
 
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 /**
  * 用户画面用实体类
  */
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class EntrustParameterInfoPage implements java.io.Serializable {
 
     /**

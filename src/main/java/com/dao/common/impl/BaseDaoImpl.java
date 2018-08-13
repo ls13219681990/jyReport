@@ -11,13 +11,14 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.*;
 import org.hibernate.internal.CriteriaImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate3.HibernateCallback;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.orm.hibernate4.HibernateCallback;
+import org.springframework.orm.hibernate4.support.HibernateDaoSupport;
 
 import java.lang.reflect.ParameterizedType;
-import java.sql.SQLException;
 import java.util.List;
 public class BaseDaoImpl<T> extends HibernateDaoSupport implements BaseDao<T> {
+
+
     private Class<T> persistentClass;
 
     @SuppressWarnings("unchecked")
@@ -46,7 +47,7 @@ public class BaseDaoImpl<T> extends HibernateDaoSupport implements BaseDao<T> {
         return (PaginationSupport<T>) this.getHibernateTemplate().execute(
                 new HibernateCallback() {
                     public Object doInHibernate(Session session)
-                            throws HibernateException, SQLException {
+                            throws HibernateException {
                         try {
                             Criteria criteria = detachedCriteria.getExecutableCriteria(session);
                             //查询条件
@@ -113,7 +114,7 @@ public class BaseDaoImpl<T> extends HibernateDaoSupport implements BaseDao<T> {
         return (JsonPager<T>) this.getHibernateTemplate().execute(
                 new HibernateCallback() {
                     public Object doInHibernate(Session session)
-                            throws HibernateException, SQLException {
+                            throws HibernateException {
                         try {
                             Criteria criteria = detachedCriteria.getExecutableCriteria(session);
                             //查询条件
@@ -147,7 +148,7 @@ public class BaseDaoImpl<T> extends HibernateDaoSupport implements BaseDao<T> {
         return (EasyPager<T>) this.getHibernateTemplate().execute(
                 new HibernateCallback() {
                     public Object doInHibernate(Session session)
-                            throws HibernateException, SQLException {
+                            throws HibernateException {
                         try {
                             Criteria criteria = detachedCriteria.getExecutableCriteria(session);
                             //查询条件

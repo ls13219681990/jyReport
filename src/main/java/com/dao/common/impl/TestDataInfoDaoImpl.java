@@ -10,10 +10,8 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
-import org.springframework.orm.hibernate3.HibernateCallback;
+import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.stereotype.Repository;
-
-import java.sql.SQLException;
 
 @Repository("testDataInfoDao")
 public class TestDataInfoDaoImpl extends BaseDaoImpl<TestDataInfo> implements TestDataInfoDao {
@@ -22,8 +20,7 @@ public class TestDataInfoDaoImpl extends BaseDaoImpl<TestDataInfo> implements Te
     public void deleteByLocationId(final String locationId) {
         getHibernateTemplate().execute(new HibernateCallback() {
             @Override
-            public Object doInHibernate(Session session) throws HibernateException,
-                    SQLException {
+            public Object doInHibernate(Session session) throws HibernateException {
                 String sql = "delete TestDataInfo s where s.locationId = :locationId";
                 Query query = session.createQuery(sql).setString("locationId", locationId);
                 return query.executeUpdate();

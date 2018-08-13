@@ -13,10 +13,9 @@ import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.transform.Transformers;
-import org.springframework.orm.hibernate3.HibernateCallback;
+import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.stereotype.Repository;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -30,8 +29,7 @@ public class CapitalAccountDaoImpl extends BaseDaoImpl<CapitalAccount> implement
         return (List<CapitalAccountPage>) getHibernateTemplate().execute(new HibernateCallback() {
             @SuppressWarnings("rawtypes")
             @Override
-            public List<CapitalAccountPage> doInHibernate(Session session) throws HibernateException,
-                    SQLException {
+            public List<CapitalAccountPage> doInHibernate(Session session) throws HibernateException {
 
                 StringBuffer querySQLCount = new StringBuffer();
                 querySQLCount.append(" select count(distinct ca.CAPITAL_ACCOUNT_ID) as total ");
@@ -224,8 +222,7 @@ public class CapitalAccountDaoImpl extends BaseDaoImpl<CapitalAccount> implement
         return (List<CapitalAccountPage>) getHibernateTemplate().execute(new HibernateCallback() {
             @SuppressWarnings("rawtypes")
             @Override
-            public List<CapitalAccountPage> doInHibernate(Session session) throws HibernateException,
-                    SQLException {
+            public List<CapitalAccountPage> doInHibernate(Session session) throws HibernateException {
                 StringBuffer sql = new StringBuffer();
                 sql.append(" select ca.CAPITAL_ACCOUNT_ID,ca.CAPITAL_ACCOUNT_CODE,ca.ACCOUNT_TYPE2,ca.ACCOUNT_KINDS,ca.CONTRACT_CODE,ca.CONTRACT_ID, ");
                 sql.append(" ca.REMARK,ca.INPUTER,ca.INPUTE_TIME,ca.UPDATER,ca.UPDATE_TIME,ec.ENTRUST_COMPANY_ID,ec.ENTRUST_COMPANY_NAME, ");
@@ -331,8 +328,7 @@ public class CapitalAccountDaoImpl extends BaseDaoImpl<CapitalAccount> implement
         return (String) getHibernateTemplate().execute(new HibernateCallback() {
             @SuppressWarnings("rawtypes")
             @Override
-            public String doInHibernate(Session session) throws HibernateException,
-                    SQLException {
+            public String doInHibernate(Session session) throws HibernateException {
                 StringBuffer sql = new StringBuffer();
                 sql.append("select MAX(cast(ca.CAPITAL_ACCOUNT_CODE as int)) as maxCapitalAccountCode from CAPITAL_ACCOUNT ca ");
 

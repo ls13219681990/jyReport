@@ -1,5 +1,7 @@
 package com.dao.page;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +9,7 @@ import java.util.List;
 /**
  * 用户画面用实体类
  */
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class SampleReportRelationPage implements java.io.Serializable {
 
     /**

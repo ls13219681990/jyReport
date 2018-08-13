@@ -20,6 +20,7 @@ import net.sf.json.util.JSONUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
@@ -184,13 +185,14 @@ public class EntrustInfoController extends QueryAction<EntrustInfo> {
     @SuppressWarnings({"rawtypes", "unused"})
     @RequestMapping("saveEntrustInfo.action")
     @ResponseBody
-    public String saveEntrustInfo(String userId, String strEntrustInfo) {
+    public String saveEntrustInfo(String userId, String strEntrustInfo, HttpServletRequest request, @RequestParam Map<String, String> map) {
         String entrustId = null;
         try {
             //HttpServletRequest request = ServletActionContext.getRequest();
-            Map parMap = REQUEST.getParameterMap();
-            Object uerObj = parMap.get("userId");
-            Object eDetailsObj = parMap.get("strEntrustInfo");
+
+            //Map parMap = request.getParameterMap();
+            Object uerObj = map.get("userId");
+            Object eDetailsObj = map.get("strEntrustInfo");
 
             if (CommonMethod.isNull(strEntrustInfo)) {
                 throw new BusinessException("fail,参数strEntrustInfo不能为空！", "");
@@ -399,13 +401,23 @@ public class EntrustInfoController extends QueryAction<EntrustInfo> {
      */
     @RequestMapping("findEntrustDetailInfoById.action")
     @ResponseBody
+
     public List<EntrustSavePage> findEntrustDetailInfoById(String strEntrustId) {
         if (CommonMethod.isNull(strEntrustId)) {
             throw new BusinessException("fail,委托ID不能为空");
         }
         List<EntrustSavePage> esPageList = entrustInfoService
                 .findEntrustDetailInfoById(strEntrustId);
+        for (EntrustSavePage es : esPageList) {
+            if (es.getAccountValue() == null) {
+                es.setAccountValue(0.0d);
+            }
+            if (es.getInvolidMoney() == null) {
+                es.setInvolidMoney(0.0d);
+            }
+        }
         return esPageList;
+        //return JSON.toJSONString(esPageList,SerializerFeature.WriteNullStringAsEmpty,SerializerFeature.WriteNullNumberAsZero);
     }
 
     /**
@@ -555,12 +567,12 @@ public class EntrustInfoController extends QueryAction<EntrustInfo> {
     @SuppressWarnings({"unchecked", "unused", "rawtypes"})
     @RequestMapping("saveAllReportStatus.action")
     @ResponseBody
-    public String saveAllReportStatus(String userId, String strEntrustInfo) {
+    public String saveAllReportStatus(String userId, String strEntrustInfo, @RequestParam Map<String, String> map) {
         try {
             //HttpServletRequest request = ServletActionContext.getRequest();
-            Map parMap = REQUEST.getParameterMap();
-            Object uerObj = parMap.get("userId");
-            Object eDetailsObj = parMap.get("strEntrustInfo");
+            //Map parMap = REQUEST.getParameterMap();
+            Object uerObj = map.get("userId");
+            Object eDetailsObj = map.get("strEntrustInfo");
 
             if (CommonMethod.isNull(strEntrustInfo)) {
                 throw new BusinessException("fail,参数strEntrustInfo不能为空！", "");

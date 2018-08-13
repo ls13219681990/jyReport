@@ -1,5 +1,7 @@
 package com.dao.page;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.model.BaseBean;
 import com.model.SysRole;
 
 import javax.persistence.Column;
@@ -11,7 +13,9 @@ import java.util.List;
 /**
  * 用户画面用实体类
  */
-public class UserRolePage implements java.io.Serializable {
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+
+public class UserRolePage extends BaseBean implements java.io.Serializable {
 
     /**
      *

@@ -9,6 +9,7 @@ import com.dao.page.ReportTemplateInfoPage;
 import com.dao.page.SampleReportPage;
 import com.dao.page.SampleReportRelationPage;
 import com.dao.page.TestReportInfoPage;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.model.*;
 import com.service.common.BaseSampleService;
 import com.service.entrust.*;
@@ -91,9 +92,12 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
 
     @RequestMapping("findReportInfo.action")
     @ResponseBody
+
+    @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
     public List<TestReportInfoPage> findReportInfo(String strEDetailId, String strStatus) {
         List<TestReportInfoPage> triPageList = testReportInfoService
                 .findReportInfo(strEDetailId, strStatus);
+
         return triPageList;
     }
 
@@ -264,7 +268,7 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
 
     @RequestMapping("saveTReportInfo.action")
     @ResponseBody
-    public String saveTReportInfo(@RequestParam MultipartFile[] template, String strTReportInfo, String userId) {
+    public String saveTReportInfo(@RequestParam MultipartFile[] file, String strTReportInfo, String userId) {
         try {
             if (CommonMethod.isNull(strTReportInfo)) {
                 throw new BusinessException("fail,参数strTReportInfo不能为空！", "");
@@ -299,8 +303,9 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
             // 样品数据
             BaseSample bs = baseSampleService.findById(ed.getSampleId());
 
-            for (MultipartFile sample : template) {
+            for (MultipartFile sample : file) {
                 File reportFile = (File) sample;
+
                 String[] names = sample.getName().split("\\.");
 
                 boolean gs = false;

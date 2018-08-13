@@ -12,10 +12,9 @@ import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
-import org.springframework.orm.hibernate3.HibernateCallback;
+import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.stereotype.Repository;
 
-import java.sql.SQLException;
 import java.util.List;
 
 @Repository("sampleReportDao")
@@ -25,8 +24,7 @@ public class SampleReportDaoImpl extends BaseDaoImpl<SampleReport> implements Sa
     public void deleteByEntrustId(final String entrustId) {
         getHibernateTemplate().execute(new HibernateCallback() {
             @Override
-            public Object doInHibernate(Session session) throws HibernateException,
-                    SQLException {
+            public Object doInHibernate(Session session) throws HibernateException {
                 String sql = "delete SampleReport s where s.entrustId = :entrustId";
                 Query query = session.createQuery(sql).setString("entrustId", entrustId);
                 return query.executeUpdate();
@@ -44,8 +42,7 @@ public class SampleReportDaoImpl extends BaseDaoImpl<SampleReport> implements Sa
     public List<SampleReport> showEntrustIdByOrder(final List<String> entrustIdList) {
         return (List<SampleReport>) getHibernateTemplate().execute(new HibernateCallback() {
             @Override
-            public List<SampleReport> doInHibernate(Session session) throws HibernateException,
-                    SQLException {
+            public List<SampleReport> doInHibernate(Session session) throws HibernateException {
                 StringBuffer sql = new StringBuffer();
                 sql.append(" select sr.* from Sample_Report sr  inner join ");
                 sql.append(" (select * from Entrust_Info t  ");
