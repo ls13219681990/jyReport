@@ -321,12 +321,12 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
                     if (gs) {// 文件必须为xls、xlsx格式
                         throw new BusinessException("报告格式不对，不能上传！", "");
                     }
-
+                    String newFileName = CommonMethod.getNewKey() + "." + hz;
                     String realAdd = "report" + "/" + bs.getDepartmentId() + "/"
                             + ed.getSampleId() + "/"
                             + CommonMethod.getCurrentDate();
                     String savePath = request.getSession().getServletContext().getRealPath("/") + realAdd;
-                    File newFile = new File(savePath.toString(), fileName);
+                    File newFile = new File(savePath.toString(), newFileName);
                     if ((!newFile.exists()) && (!newFile.isDirectory())) {
                         newFile.mkdirs();
                     }
@@ -340,7 +340,6 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
                             throw new BusinessException("文件上传失败！", "");
                         }
                     }
-                    String newFileName = CommonMethod.getNewKey();
                     //完成文件上传
                     try {
                         file[i].transferTo(newFile);
@@ -349,8 +348,7 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
                     } catch (IllegalStateException e) {
                         e.printStackTrace();
                     }
-                    triPage.setReportPath(realAdd + "\\" + newFileName + "."
-                            + hz);
+                    triPage.setReportPath(realAdd + "\\" + newFileName);
                 }
             }
         } catch (BusinessException e) {
@@ -410,11 +408,12 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
                     if (gs) {// 文件必须为xls、xlsx格式
                         throw new BusinessException("报告格式不对，不能上传！", "");
                     }
+                    String newFileName = CommonMethod.getNewKey() + "." + hz;
                     String realAdd = "report" + "/" + bs.getDepartmentId()
                             + "/" + ed.getSampleId() + "/"
                             + CommonMethod.getCurrentDate();
                     String savePath = request.getSession().getServletContext().getRealPath("/") + realAdd;
-                    File newFile = new File(savePath.toString());
+                    File newFile = new File(savePath.toString(), newFileName);
                     if ((!newFile.exists()) && (!newFile.isDirectory())) {
                         newFile.mkdirs();
                     }
@@ -428,11 +427,10 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
                             throw new BusinessException("文件上传失败！", "");
                         }
                     }
-                    String newFileName = CommonMethod.getNewKey();
+
                     //完成文件上传
                     file[i].transferTo(newFile);
-                    triPage.setReportPath(realAdd + "\\" + newFileName + "."
-                            + hz);
+                    triPage.setReportPath(realAdd + "\\" + newFileName);
                 }
             }
             tri.setReportPath(triPage.getReportPath());
@@ -696,12 +694,12 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
                 if (gs) {// 文件必须为xls、xlsx格式
                     throw new BusinessException("报告格式不对，不能上传！", "");
                 }
-
+                String newFileName = CommonMethod.getNewKey() + "." + hz;
                 String realAdd = "report" + "/" + bs.getDepartmentId() + "/"
                         + ed.getSampleId() + "/"
                         + CommonMethod.getCurrentDate();
                 String savePath = request.getSession().getServletContext().getRealPath("/") + realAdd;
-                File newFile = new File(savePath.toString(), fileName);
+                File newFile = new File(savePath.toString(), newFileName);
                 if ((!newFile.exists()) && (!newFile.isDirectory())) {
                     newFile.mkdirs();
                 }
@@ -715,7 +713,7 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
                         throw new BusinessException("文件上传失败！", "");
                     }
                 }
-                String newFileName = CommonMethod.getNewKey();
+
                 //完成文件上传
                 try {
                     file[i].transferTo(newFile);
@@ -724,8 +722,7 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
                 } catch (IllegalStateException e) {
                     e.printStackTrace();
                 }
-                triPage.setReportPath(realAdd + "\\" + newFileName + "."
-                        + hz);
+                triPage.setReportPath(realAdd + "\\" + newFileName);
             }
         }
         testReportInfoService.update(tri);
@@ -776,12 +773,12 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
                 if (gs) {// 文件必须为xls、xlsx格式
                     throw new BusinessException("报告格式不对，不能上传！", "");
                 }
-
+                String newFileName = CommonMethod.getNewKey() + "." + hz;
                 String realAdd = "report" + "/" + bs.getDepartmentId() + "/"
                         + ed.getSampleId() + "/"
                         + CommonMethod.getCurrentDate();
                 String savePath = request.getSession().getServletContext().getRealPath("/") + realAdd;
-                File newFile = new File(savePath.toString(), fileName);
+                File newFile = new File(savePath.toString(), newFileName);
                 if ((!newFile.exists()) && (!newFile.isDirectory())) {
                     newFile.mkdirs();
                 }
@@ -795,17 +792,15 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
                         throw new BusinessException("文件上传失败！", "");
                     }
                 }
-                String newFileName = CommonMethod.getNewKey();
-                //完成文件上传
                 try {
+                    //完成文件上传
                     file[i].transferTo(newFile);
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (IllegalStateException e) {
                     e.printStackTrace();
                 }
-                triPage.setReportPath(realAdd + "\\" + newFileName + "."
-                        + hz);
+                triPage.setReportPath(realAdd + "\\" + newFileName);
             }
         }
         tri.setReportId(UuidUtil.getUUID());
