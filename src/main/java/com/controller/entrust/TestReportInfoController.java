@@ -20,6 +20,7 @@ import net.sf.json.JSONObject;
 import net.sf.json.util.JSONUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -27,11 +28,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
 
+@Transactional
 @Controller
 @RequestMapping("testReportInfoAction")
 public class TestReportInfoController extends QueryAction<TestReportInfo> {
@@ -40,8 +40,6 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
      *
      */
 
-    @Autowired
-    private HttpServletRequest request;
 
     private static final long serialVersionUID = 1L;
    /* // 委托明细ID
@@ -268,14 +266,16 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
 
     @RequestMapping("saveTReportInfo.action")
     @ResponseBody
-    public String saveTReportInfo(@RequestParam MultipartFile[] file, String strTReportInfo, String userId) {
+    public String saveTReportInfo(@RequestParam MultipartFile[] file, String strTReportInfo, String userId, HttpServletRequest request) {
+        TestReportInfoPage triPage = new TestReportInfoPage();
         try {
+
             if (CommonMethod.isNull(strTReportInfo)) {
                 throw new BusinessException("fail,参数strTReportInfo不能为空！", "");
             }
             strTReportInfo = strTReportInfo.replace("OO", "#");
             strTReportInfo = strTReportInfo.replace("PLUS", "+");
-            TestReportInfoPage triPage = (TestReportInfoPage) toBean(
+            triPage = (TestReportInfoPage) toBean(
                     strTReportInfo, TestReportInfoPage.class);
 
             if (CommonMethod.isNull(triPage.getReportId())) {
@@ -303,34 +303,30 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
             // 样品数据
             BaseSample bs = baseSampleService.findById(ed.getSampleId());
 
-            for (MultipartFile sample : file) {
-                File reportFile = (File) sample;
+            for (int i = 0; i < file.length; i++) {
+                if (!file[i].isEmpty()) {
+                    String fileName = file[i].getOriginalFilename();
 
-                String[] names = sample.getName().split("\\.");
-
-                boolean gs = false;
-                String hz = "";
-                if (names.length > 1) {
-                    hz = names[names.length - 1];
-                    if (!"xls".equalsIgnoreCase(hz)
-                            && !"xlsx".equalsIgnoreCase(hz)) {
+                    String[] names = fileName.split("\\.");
+                    boolean gs = false;
+                    String hz = "";
+                    if (names.length > 1) {
+                        hz = names[names.length - 1];
+                        if (!"xls".equalsIgnoreCase(hz) && !"xlsx".equalsIgnoreCase(hz)) {
+                            gs = true;
+                        }
+                    } else {
                         gs = true;
                     }
-                } else {
-                    gs = true;
-                }
-                if (gs) {// 文件必须为xls、xlsx格式
-                    throw new BusinessException("报告格式不对，不能上传！", "");
-                }
-                FileInputStream fis = null;
-                FileOutputStream out = null;
-                try {
-                    fis = new FileInputStream(reportFile);
-                    String realAdd = "report" + "/" + bs.getDepartmentId()
-                            + "/" + ed.getSampleId() + "/"
+                    if (gs) {// 文件必须为xls、xlsx格式
+                        throw new BusinessException("报告格式不对，不能上传！", "");
+                    }
+
+                    String realAdd = "report" + "/" + bs.getDepartmentId() + "/"
+                            + ed.getSampleId() + "/"
                             + CommonMethod.getCurrentDate();
                     String savePath = request.getSession().getServletContext().getRealPath("/") + realAdd;
-                    File newFile = new File(savePath.toString());
+                    File newFile = new File(savePath.toString(), fileName);
                     if ((!newFile.exists()) && (!newFile.isDirectory())) {
                         newFile.mkdirs();
                     }
@@ -345,40 +341,18 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
                         }
                     }
                     String newFileName = CommonMethod.getNewKey();
-                    out = new FileOutputStream(savePath.toString() + "\\"
-                            + newFileName + "." + hz);
-                    byte buffer[] = new byte[new Long(reportFile.length())
-                            .intValue()];
-                    int len = 0;
-
-                    while ((len = fis.read(buffer)) > 0) {
-                        out.write(buffer, 0, len);
+                    //完成文件上传
+                    try {
+                        file[i].transferTo(newFile);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (IllegalStateException e) {
+                        e.printStackTrace();
                     }
-                    fis.close();
-                    // 关闭输出流
-                    out.close();
                     triPage.setReportPath(realAdd + "\\" + newFileName + "."
                             + hz);
-                } catch (Exception e) {
-                    if (null != fis) {
-                        fis.close();
-                    }
-                    if (null != out) {
-                        out.close();
-                    }
-                    e.printStackTrace();
-                } finally {
-                    if (null != fis) {
-                        fis.close();
-                    }
-                    if (null != out) {
-                        out.close();
-                    }
                 }
             }
-
-            testReportInfoService.saveTReportInfo(triPage, userId);
-
         } catch (BusinessException e) {
             e.printStackTrace();
             e.getMessage();
@@ -386,12 +360,13 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
             e.printStackTrace();
             e.getMessage();
         }
+        testReportInfoService.saveTReportInfo(triPage, userId);
         return "true";
     }
 
     @RequestMapping("updateTReportInfo.action")
     @ResponseBody
-    public String updateTReportInfo(@RequestParam MultipartFile[] template, String strTReportInfo, String userId) {
+    public String updateTReportInfo(@RequestParam MultipartFile[] file, String strTReportInfo, String userId, HttpServletRequest request) {
         try {
             if (CommonMethod.isNull(strTReportInfo)) {
                 throw new BusinessException("fail,参数strTReportInfo不能为空！", "");
@@ -417,29 +392,24 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
             // 样品数据
             BaseSample bs = baseSampleService.findById(ed.getSampleId());
 
-            for (MultipartFile sample : template) {
-                File reportFile = (File) sample;
-                String[] names = sample.getName().split("\\.");
-
-                boolean gs = false;
-                String hz = "";
-                if (names.length > 1) {
-                    hz = names[names.length - 1];
-                    if (!"xls".equalsIgnoreCase(hz)
-                            && !"xlsx".equalsIgnoreCase(hz)) {
+            for (int i = 0; i < file.length; i++) {
+                if (!file[i].isEmpty()) {
+                    String fileName = file[i].getOriginalFilename();
+                    String[] names = fileName.split("\\.");
+                    boolean gs = false;
+                    String hz = "";
+                    if (names.length > 1) {
+                        hz = names[names.length - 1];
+                        if (!"xls".equalsIgnoreCase(hz)
+                                && !"xlsx".equalsIgnoreCase(hz)) {
+                            gs = true;
+                        }
+                    } else {
                         gs = true;
                     }
-                } else {
-                    gs = true;
-                }
-                if (gs) {// 文件必须为xls、xlsx格式
-                    throw new BusinessException("报告格式不对，不能上传！", "");
-                }
-                FileInputStream fis = null;
-                FileOutputStream out = null;
-                try {
-                    fis = new FileInputStream(reportFile);
-
+                    if (gs) {// 文件必须为xls、xlsx格式
+                        throw new BusinessException("报告格式不对，不能上传！", "");
+                    }
                     String realAdd = "report" + "/" + bs.getDepartmentId()
                             + "/" + ed.getSampleId() + "/"
                             + CommonMethod.getCurrentDate();
@@ -459,37 +429,10 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
                         }
                     }
                     String newFileName = CommonMethod.getNewKey();
-                    out = new FileOutputStream(savePath.toString() + "\\"
-                            + newFileName + "." + hz);
-                    // out = new FileOutputStream(savePath.toString() + "\\" +
-                    // "test123" + "." +hz);
-                    byte buffer[] = new byte[new Long(reportFile.length())
-                            .intValue()];
-                    int len = 0;
-
-                    while ((len = fis.read(buffer)) > 0) {
-                        out.write(buffer, 0, len);
-                    }
-                    fis.close();
-                    // 关闭输出流
-                    out.close();
+                    //完成文件上传
+                    file[i].transferTo(newFile);
                     triPage.setReportPath(realAdd + "\\" + newFileName + "."
                             + hz);
-                } catch (Exception e) {
-                    if (null != fis) {
-                        fis.close();
-                    }
-                    if (null != out) {
-                        out.close();
-                    }
-                    e.printStackTrace();
-                } finally {
-                    if (null != fis) {
-                        fis.close();
-                    }
-                    if (null != out) {
-                        out.close();
-                    }
                 }
             }
             tri.setReportPath(triPage.getReportPath());
@@ -717,7 +660,7 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
      */
     @RequestMapping("fastReleaseReport.action")
     @ResponseBody
-    public void fastReleaseReport(@RequestParam MultipartFile[] template, String strTReportInfo) {
+    public void fastReleaseReport(@RequestParam MultipartFile[] file, String strTReportInfo, HttpServletRequest request) throws IOException {
 
         TestReportInfoPage triPage = (TestReportInfoPage) toBean(
                 strTReportInfo, TestReportInfoPage.class);
@@ -735,33 +678,30 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
         BaseSample bs = baseSampleService.findById(ed.getSampleId());
 
 
-        for (MultipartFile sample : template) {
+        for (int i = 0; i < file.length; i++) {
+            if (!file[i].isEmpty()) {
+                String fileName = file[i].getOriginalFilename();
 
-            File reportFile = (File) sample;
-            String[] names = sample.getName().split("\\.");
-            boolean gs = false;
-            String hz = "";
-            if (names.length > 1) {
-                hz = names[names.length - 1];
-                if (!"xls".equalsIgnoreCase(hz) && !"xlsx".equalsIgnoreCase(hz)) {
+                String[] names = fileName.split("\\.");
+                boolean gs = false;
+                String hz = "";
+                if (names.length > 1) {
+                    hz = names[names.length - 1];
+                    if (!"xls".equalsIgnoreCase(hz) && !"xlsx".equalsIgnoreCase(hz)) {
+                        gs = true;
+                    }
+                } else {
                     gs = true;
                 }
-            } else {
-                gs = true;
-            }
-            if (gs) {// 文件必须为xls、xlsx格式
-                throw new BusinessException("报告格式不对，不能上传！", "");
-            }
-            FileInputStream fis = null;
-            FileOutputStream out = null;
-            try {
-                fis = new FileInputStream(reportFile);
+                if (gs) {// 文件必须为xls、xlsx格式
+                    throw new BusinessException("报告格式不对，不能上传！", "");
+                }
 
                 String realAdd = "report" + "/" + bs.getDepartmentId() + "/"
                         + ed.getSampleId() + "/"
                         + CommonMethod.getCurrentDate();
                 String savePath = request.getSession().getServletContext().getRealPath("/") + realAdd;
-                File newFile = new File(savePath.toString());
+                File newFile = new File(savePath.toString(), fileName);
                 if ((!newFile.exists()) && (!newFile.isDirectory())) {
                     newFile.mkdirs();
                 }
@@ -776,52 +716,16 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
                     }
                 }
                 String newFileName = CommonMethod.getNewKey();
-                out = new FileOutputStream(savePath.toString() + "\\"
-                        + newFileName + "." + hz);
-                // out = new FileOutputStream(savePath.toString() + "\\" +
-                // "test123" + "." +hz);
-                byte buffer[] = new byte[new Long(reportFile.length())
-                        .intValue()];
-                int len = 0;
-
-                while ((len = fis.read(buffer)) > 0) {
-                    out.write(buffer, 0, len);
+                //完成文件上传
+                try {
+                    file[i].transferTo(newFile);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (IllegalStateException e) {
+                    e.printStackTrace();
                 }
-                fis.close();
-                // 关闭输出流
-                out.close();
-                triPage.setReportPath(realAdd + "\\" + newFileName + "." + hz);
-            } catch (Exception e) {
-                if (null != fis) {
-                    try {
-                        fis.close();
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
-                }
-                if (null != out) {
-                    try {
-                        out.close();
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
-                }
-                e.printStackTrace();
-            } finally {
-                if (null != fis) {
-                    try {
-                        fis.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                if (null != out) {
-                    try {
-                        out.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
+                triPage.setReportPath(realAdd + "\\" + newFileName + "."
+                        + hz);
             }
         }
         testReportInfoService.update(tri);
@@ -832,7 +736,7 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
      */
     @RequestMapping("updateReport.action")
     @ResponseBody
-    public void updateReport(@RequestParam MultipartFile[] template, String userId, String strTReportInfo) {
+    public void updateReport(@RequestParam MultipartFile[] file, String userId, String strTReportInfo, HttpServletRequest request) {
         TestReportInfoPage triPage = (TestReportInfoPage) toBean(
                 strTReportInfo, TestReportInfoPage.class);
         // 报告数据
@@ -854,120 +758,74 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
         BaseSample bs = baseSampleService.findById(ed.getSampleId());
 
 
-        for (MultipartFile sample : template) {
-            File reportFile = (File) sample;
-            String[] names = sample.getName().split("\\.");
+        for (int i = 0; i < file.length; i++) {
+            if (!file[i].isEmpty()) {
+                String fileName = file[i].getOriginalFilename();
 
-            boolean gs = false;
-            String hz = "";
-            if (names.length > 1) {
-                hz = names[names.length - 1];
-                if (!"xls".equalsIgnoreCase(hz) && !"xlsx".equalsIgnoreCase(hz)) {
+                String[] names = fileName.split("\\.");
+                boolean gs = false;
+                String hz = "";
+                if (names.length > 1) {
+                    hz = names[names.length - 1];
+                    if (!"xls".equalsIgnoreCase(hz) && !"xlsx".equalsIgnoreCase(hz)) {
+                        gs = true;
+                    }
+                } else {
                     gs = true;
                 }
-            } else {
-                gs = true;
-            }
-            if (gs) {// 文件必须为xls、xlsx格式
-                throw new BusinessException("报告格式不对，不能上传！", "");
-            }
-            FileInputStream fis = null;
-            FileOutputStream out = null;
-            try {
-                fis = new FileInputStream(reportFile);
+                if (gs) {// 文件必须为xls、xlsx格式
+                    throw new BusinessException("报告格式不对，不能上传！", "");
+                }
 
                 String realAdd = "report" + "/" + bs.getDepartmentId() + "/"
                         + ed.getSampleId() + "/"
                         + CommonMethod.getCurrentDate();
                 String savePath = request.getSession().getServletContext().getRealPath("/") + realAdd;
-                File newFile = new File(savePath.toString());
+                File newFile = new File(savePath.toString(), fileName);
                 if ((!newFile.exists()) && (!newFile.isDirectory())) {
                     newFile.mkdirs();
                 }
-
                 if (!CommonMethod.isNull(tri.getReportPath())) {
-                    boolean
-                            isSuccess = true;
-                    File oldFile = new
-                            File(tri.getReportPath());
+                    boolean isSuccess = true;
+                    File oldFile = new File(tri.getReportPath());
                     if (oldFile.exists()) {
-                        isSuccess =
-                                oldFile.delete();
+                        isSuccess = oldFile.delete();
                     }
                     if (!isSuccess) {
-                        throw new
-                                BusinessException("文件上传失败！", "");
+                        throw new BusinessException("文件上传失败！", "");
                     }
                 }
-                //*
                 String newFileName = CommonMethod.getNewKey();
-                out = new FileOutputStream(savePath.toString() + "\\"
-                        + newFileName + "." + hz);
-                // out = new FileOutputStream(savePath.toString() + "\\" +
-                // "test123" + "." +hz);
-                byte buffer[] = new byte[new Long(reportFile.length())
-                        .intValue()];
-                int len = 0;
-
-                while ((len = fis.read(buffer)) > 0) {
-                    out.write(buffer, 0, len);
+                //完成文件上传
+                try {
+                    file[i].transferTo(newFile);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (IllegalStateException e) {
+                    e.printStackTrace();
                 }
-                fis.close();
-                // 关闭输出流
-                out.close();
-                triPage.setReportPath(realAdd + "\\" + newFileName + "." + hz);
-
-            } catch (Exception e) {
-                if (null != fis) {
-                    try {
-                        fis.close();
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
-                }
-                if (null != out) {
-                    try {
-                        out.close();
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
-                }
-                e.printStackTrace();
-            } finally {
-                if (null != fis) {
-                    try {
-                        fis.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                if (null != out) {
-                    try {
-                        out.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
+                triPage.setReportPath(realAdd + "\\" + newFileName + "."
+                        + hz);
             }
-            tri.setReportId(UuidUtil.getUUID());
-            tri.setReportPath(triPage.getReportPath());
-            tri.setUpdater(userId);
-            tri.setUpdateTime(CommonMethod.getDate());
-            tri.setReportStatus(triPage.getReportStatus());
-            tri.setSourcesReportId(triPage.getReportId());
-            testReportInfoService.save(tri);
-            // 更改报告编号
-            TestReportInfo tri2 = testReportInfoService.findById(tri
-                    .getReportId());
-            List<TestReportInfo> info = testReportInfoService.findByProperty(
-                    "sourcesReportId", triPage.getReportId());
-            for (Integer i1 = 1; i1 <= info.size() + 1; i1++) {
-                tri.setReportNo(triPage.getReportNo() + "-0" + i1);
-            }
-            List<TestReportInfo> report = testReportInfoService.findByProperty(
-                    "sourcesReportId", triPage.getReportId());
-            testReportInfoService.update(tri2);
         }
+        tri.setReportId(UuidUtil.getUUID());
+        tri.setReportPath(triPage.getReportPath());
+        tri.setUpdater(userId);
+        tri.setUpdateTime(CommonMethod.getDate());
+        tri.setReportStatus(triPage.getReportStatus());
+        tri.setSourcesReportId(triPage.getReportId());
+        testReportInfoService.save(tri);
+        // 更改报告编号
+        TestReportInfo tri2 = testReportInfoService.findById(tri
+                .getReportId());
+        List<TestReportInfo> info = testReportInfoService.findByProperty(
+                "sourcesReportId", triPage.getReportId());
+        for (Integer i1 = 1; i1 <= info.size() + 1; i1++) {
+            tri.setReportNo(triPage.getReportNo() + "-0" + i1);
+        }
+        List<TestReportInfo> report = testReportInfoService.findByProperty(
+                "sourcesReportId", triPage.getReportId());
+        testReportInfoService.update(tri2);
     }
 
     /**
