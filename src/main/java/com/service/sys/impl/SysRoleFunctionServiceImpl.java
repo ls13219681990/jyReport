@@ -3,14 +3,15 @@ package com.service.sys.impl;
 import com.common.CommonMethod;
 import com.controller.common.JsonPager;
 import com.dao.common.BaseDao;
-import com.service.common.impl.BaseServiceImpl;
 import com.dao.sys.SysRoleFunctionDao;
 import com.model.SysRoleFunction;
+import com.service.common.impl.BaseServiceImpl;
 import com.service.sys.SysRoleFunctionService;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Property;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.List;
 /**
  * @author Administrator
  */
+@Transactional
 @Service("sysRoleFunctionService")
 public class SysRoleFunctionServiceImpl extends
         BaseServiceImpl<SysRoleFunction> implements SysRoleFunctionService {

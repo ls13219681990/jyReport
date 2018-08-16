@@ -4,7 +4,6 @@ import com.common.BusinessException;
 import com.common.CommonMethod;
 import com.controller.common.JsonPager;
 import com.dao.common.BaseDao;
-import com.service.common.impl.BaseServiceImpl;
 import com.dao.common.BaseSampleDao;
 import com.dao.common.TestParameterDao;
 import com.dao.entrust.*;
@@ -12,14 +11,17 @@ import com.dao.page.EntrustDetailReportPage;
 import com.dao.page.EntrustSavePage;
 import com.model.*;
 import com.service.common.RunningNumService;
+import com.service.common.impl.BaseServiceImpl;
 import com.service.entrust.EntrustDetailService;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Property;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Transactional
 @Service("entrustDetailService")
 public class EntrustDetailServiceImpl extends BaseServiceImpl<EntrustDetails> implements
         EntrustDetailService {

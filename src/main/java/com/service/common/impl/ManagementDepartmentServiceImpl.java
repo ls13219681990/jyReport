@@ -5,8 +5,9 @@ import com.dao.common.BaseDao;
 import com.model.ManagementDepartment;
 import com.service.common.ManagementDepartmentService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-
+@Transactional
 @Service("managementDepartmentService")
 public class ManagementDepartmentServiceImpl extends BaseServiceImpl<ManagementDepartment> implements
         ManagementDepartmentService {

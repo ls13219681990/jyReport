@@ -462,7 +462,7 @@ public class TestReportInfoServiceImpl extends BaseServiceImpl<TestReportInfo>
             // 拿到项目的绝对路径
             String as = CopyFile.class.getResource("").getPath()
                     .replaceAll("%20", " ");
-            String path = as.substring(1, as.indexOf("reportManage") + 12);
+            String path = as.substring(1, as.indexOf("jyReport") + 19);
             String file1 = path + "/"
                     + triPage.getReportPath().replace("\\", "/");// 源文件
             String reportIdPath = null;
@@ -1242,20 +1242,22 @@ public class TestReportInfoServiceImpl extends BaseServiceImpl<TestReportInfo>
 
     @SuppressWarnings("unused")
     @Override
-    public List<TestReportInfoPage> saveTwoReportList(TestReportInfoPage triPage) {
+    public List<TestReportInfoPage> saveTwoReportList(String reportId) {
+        List<TestReportInfoPage> ti = new ArrayList<TestReportInfoPage>();
+        List<TwoDInfo> twoDInfo = twoDInfoDao.findByProperty("reportId", reportId);
+        List<TestReportInfo> testReportInfo = testReportInfoDao.findByProperty("reportId", reportId);
 
-        List<TwoDInfo> twoDInfo = twoDInfoDao.findByProperty("reportId", triPage.getReportId());
         if (twoDInfo.size() <= 0) {
-            List<SampleReportPage> sampleReportList = triPage.getSampleReportList();
+            //List<SampleReportPage> sampleReportList = triPage.getSampleReportList();
             // 报告录入时，生成二维码数据
             // 委托报告明细信息
-            TestReportInfo tri = testReportInfoDao.findById(triPage.getReportId());
+            TestReportInfo tri = testReportInfoDao.findById(reportId);
             TwoDInfo td = new TwoDInfo();
             td.setReportId(tri.getReportId());
-            td.setReportDate(triPage.getReportDate());
-            td.setTestResult(triPage.getTestResult());
-            td.setReportConclusion(triPage.getReportConclusion());
-            List<SampleReport> findByProperty = sampleReportDao.findByProperty("reportId", triPage.getReportId());
+            td.setReportDate(tri.getReportDate());
+            td.setTestResult(tri.getTestResult());
+            td.setReportConclusion(tri.getReportConclusion());
+            List<SampleReport> findByProperty = sampleReportDao.findByProperty("reportId", reportId);
             EntrustDetails eDetails = entrustDetailDao.findById(findByProperty.get(0)
                     .getEntrustDetailId());
             EntrustSavePage esPage = new EntrustSavePage();
@@ -1264,11 +1266,11 @@ public class TestReportInfoServiceImpl extends BaseServiceImpl<TestReportInfo>
             // entrustInfoDao.findEntrustInfoListSQL(esPage);
             // EntrustSavePage esp = esPageList.get(0);
             td.setTwodInfoId(CommonMethod.getNewKey());
-            td.setReportId(triPage.getReportId());
+            td.setReportId(reportId);
             //超过。。。。时间之后就更改
             String thisDate = "2018-06-21 00:00";
             String entrustDate = null;
-            List<SampleReport> sampleList = sampleReportDao.findByProperty("reportId", triPage.getReportId());
+            List<SampleReport> sampleList = sampleReportDao.findByProperty("reportId", reportId);
             for (SampleReport sampleReport : sampleList) {
                 EntrustInfo entrustInfo = entrustInfoDao.findById(sampleReport.getEntrustId());
                 entrustDate = entrustInfo.getEntrustDate();
@@ -1293,8 +1295,7 @@ public class TestReportInfoServiceImpl extends BaseServiceImpl<TestReportInfo>
             // td.setWitnessMan(esp.getWitnessMan());
             td.setIsNew("01");// 新系统
             twoDInfoDao.save(td);
-            List<TwoDInfo> tdList = twoDInfoDao.findByProperty("reportId",
-                    triPage.getReportId());
+            List<TwoDInfo> tdList = twoDInfoDao.findByProperty("reportId", reportId);
             String twodInfoId = "";
             if (tdList != null && tdList.size() > 0) {
                 twodInfoId = tdList.get(0).getTwodInfoId();
@@ -1308,10 +1309,9 @@ public class TestReportInfoServiceImpl extends BaseServiceImpl<TestReportInfo>
             // String twoDInfoUrl = this.getTwoDInfoUrl(twodInfoId);
             String twoDInfoUrl = BookingConfig.getInstance().getValue(
                     "twoDInfoUrl");
-            triPage.setTwoDInfoUrl(twoDInfoUrl + twodInfoId);
+            ti.get(0).setTwoDInfoUrl(twoDInfoUrl + twodInfoId);
         }
-        List<TestReportInfoPage> ti = new ArrayList<TestReportInfoPage>();
-        ti.add(triPage);
+
         return ti;
     }
 

@@ -16,12 +16,13 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Property;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Collection;
 import java.util.List;
 
-
+@Transactional
 @Service("entrustCompanyService")
 public class EntrustCompanyServiceImpl extends BaseServiceImpl<EntrustCompany> implements
         EntrustCompanyService {

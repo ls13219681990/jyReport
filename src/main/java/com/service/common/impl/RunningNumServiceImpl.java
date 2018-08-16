@@ -8,10 +8,11 @@ import com.model.RunningNum;
 import com.service.common.RunningNumService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
-
+@Transactional
 @Service("runningNumService")
 public class RunningNumServiceImpl extends BaseServiceImpl<RunningNum> implements
         RunningNumService {

@@ -3,19 +3,21 @@ package com.service.sys.impl;
 import com.common.CommonMethod;
 import com.controller.common.JsonPager;
 import com.dao.common.BaseDao;
-import com.service.common.impl.BaseServiceImpl;
 import com.dao.sys.SysUserRoleDao;
 import com.model.SysRoleFunction;
 import com.model.SysUserRole;
+import com.service.common.impl.BaseServiceImpl;
 import com.service.sys.SysUserRoleService;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Property;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
 
+@Transactional
 @Service("sysUserRoleService")
 public class SysUserRoleServiceImpl extends BaseServiceImpl<SysUserRole>
         implements SysUserRoleService {

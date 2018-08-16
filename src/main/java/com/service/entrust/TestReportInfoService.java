@@ -37,5 +37,5 @@ public interface TestReportInfoService extends BaseService<TestReportInfo> {
 
     void updTestReport(TestReportInfoPage triPage, String userId);
 
-    List<TestReportInfoPage> saveTwoReportList(TestReportInfoPage triPage);
+    List<TestReportInfoPage> saveTwoReportList(String reportId);
 }

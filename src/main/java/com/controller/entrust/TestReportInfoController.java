@@ -722,7 +722,7 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
                 } catch (IllegalStateException e) {
                     e.printStackTrace();
                 }
-                triPage.setReportPath(realAdd + "\\" + newFileName);
+                tri.setReportPath(realAdd + "\\" + newFileName);
             }
         }
         testReportInfoService.update(tri);
@@ -828,12 +828,12 @@ public class TestReportInfoController extends QueryAction<TestReportInfo> {
      */
     @RequestMapping("twoInfo.action")
     @ResponseBody
-    public List<TestReportInfoPage> twoInfo(String strTReportInfo) {
+    public List<TestReportInfoPage> twoInfo(String reportId) {
 
-        TestReportInfoPage triPage = (TestReportInfoPage) toBean(
-                strTReportInfo, TestReportInfoPage.class);
+        /*TestReportInfoPage triPage = (TestReportInfoPage) toBean(
+                strTReportInfo, TestReportInfoPage.class);*/
 
-        List<TestReportInfoPage> saveTwoReportList = testReportInfoService.saveTwoReportList(triPage);
+        List<TestReportInfoPage> saveTwoReportList = testReportInfoService.saveTwoReportList(reportId);
 
         return saveTwoReportList;
     }

@@ -4,7 +4,6 @@ import com.common.BusinessException;
 import com.common.CommonMethod;
 import com.controller.common.JsonPager;
 import com.dao.common.BaseDao;
-import com.service.common.impl.BaseServiceImpl;
 import com.dao.common.EntrustCompanyDao;
 import com.dao.common.ProjectInfoDao;
 import com.dao.finance.AmountReceivableDao;
@@ -12,13 +11,16 @@ import com.dao.page.AmReceivablePage;
 import com.model.AmountReceivable;
 import com.model.EntrustCompany;
 import com.model.ProjectInfo;
+import com.service.common.impl.BaseServiceImpl;
 import com.service.finance.AmountReceivableService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
 
+@Transactional
 @Service("amountReceivableService")
 public class AmountReceivableServiceImpl extends BaseServiceImpl<AmountReceivable> implements
         AmountReceivableService {

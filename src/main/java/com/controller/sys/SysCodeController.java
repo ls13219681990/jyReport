@@ -3,7 +3,6 @@ package com.controller.sys;
 import com.common.BusinessException;
 import com.common.CommonMethod;
 import com.common.QueryAction;
-import com.common.jsonProcessor.CommonJsonConfig;
 import com.model.SysCode;
 import com.service.sys.SysCodeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,10 +74,10 @@ public class SysCodeController extends QueryAction<SysCode> {
 
     @RequestMapping("findcode.action")
     @ResponseBody
-    public CommonJsonConfig findcode() {
+    public List<SysCode> findcode() {
         List<SysCode> sysCodeList = sysCodeService.findSysCodes();
-        CommonJsonConfig jsonConfig = new CommonJsonConfig();
-        return jsonConfig;
+        //CommonJsonConfig jsonConfig = new CommonJsonConfig();
+        return sysCodeList;
     }
 
     @RequestMapping("findPitchOncode.action")

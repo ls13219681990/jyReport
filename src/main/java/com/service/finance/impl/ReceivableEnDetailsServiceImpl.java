@@ -3,7 +3,6 @@ package com.service.finance.impl;
 import com.common.CommonMethod;
 import com.controller.common.JsonPager;
 import com.dao.common.BaseDao;
-import com.service.common.impl.BaseServiceImpl;
 import com.dao.finance.InvoiceDetailsDao;
 import com.dao.finance.ReceivableAcDetailsDao;
 import com.dao.finance.ReceivableEnDetailsDao;
@@ -12,17 +11,20 @@ import com.dao.page.ReAccountDetailPage;
 import com.model.InvoiceDetails;
 import com.model.ReceivableAccountDetails;
 import com.model.ReceivableEntrustDetails;
+import com.service.common.impl.BaseServiceImpl;
 import com.service.finance.ReceivableEnDetailsService;
 import com.service.sys.SysCodeService;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Property;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@Transactional
 @Service("receivableEnDetailsService")
 public class ReceivableEnDetailsServiceImpl extends BaseServiceImpl<ReceivableEntrustDetails> implements
         ReceivableEnDetailsService {

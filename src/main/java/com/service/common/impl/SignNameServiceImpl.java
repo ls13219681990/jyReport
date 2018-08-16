@@ -5,10 +5,11 @@ import com.dao.common.BaseDao;
 import com.model.SignName;
 import com.service.common.SignNameService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
-
+@Transactional
 @Service("signNameService")
 public class SignNameServiceImpl extends BaseServiceImpl<SignName> implements
         SignNameService {

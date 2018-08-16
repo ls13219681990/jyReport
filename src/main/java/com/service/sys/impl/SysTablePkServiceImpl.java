@@ -4,7 +4,9 @@ import com.dao.sys.SysTablePkDao;
 import com.service.sys.SysTablePkService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 @Service("sysTablePkService")
 public class SysTablePkServiceImpl implements SysTablePkService {
     @Autowired

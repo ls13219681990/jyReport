@@ -5,7 +5,6 @@ import com.common.CommonMethod;
 import com.common.MD5;
 import com.controller.common.JsonPager;
 import com.dao.common.BaseDao;
-import com.service.common.impl.BaseServiceImpl;
 import com.dao.page.UserRolePage;
 import com.dao.sys.SysRoleDao;
 import com.dao.sys.SysUserDao;
@@ -13,16 +12,19 @@ import com.dao.sys.SysUserRoleDao;
 import com.model.SysRole;
 import com.model.SysUser;
 import com.model.SysUserRole;
+import com.service.common.impl.BaseServiceImpl;
 import com.service.sys.SysUserService;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Property;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+@Transactional
 @Service("sysUserService")
 public class SysUserServiceImpl extends BaseServiceImpl<SysUser> implements
         SysUserService {

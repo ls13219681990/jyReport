@@ -78,7 +78,7 @@ public class ContractDaoImpl extends BaseDaoImpl<Agreement> implements ContractD
 
                 StringBuffer sql = new StringBuffer();
                 sql.append(" select ca.CONTRACT_ID,ca.COPIES_COUNT,ca.CONTRACT_CODE,ca.ACCOUNT_TYPE,scode.CODE_NAME at,ca.CONTRACT_TYPE,sc.CODE_NAME ct,ca.CHECK_AREA,ca.PAYMENT_NODE,ca.CONTRACT_CHAPTER, ");
-                sql.append(" ca.LINK_MAN,ca.LINK_PHONE,ca.PROJECT_MANAGER,ca.CONTRACT_IS_RETURN,ca.CONTRACT_TYPE,ca.RECEIVED_MONEY,ca.COPIES_COUNT,ca.PROJECT_NAME_TAG, ");
+                sql.append(" ca.LINK_MAN,ca.LINK_PHONE,ca.PROJECT_MANAGER,ca.CONTRACT_IS_RETURN,ca.RECEIVED_MONEY,ca.PROJECT_NAME_TAG, ");
                 sql.append(" ca.CONTRACT_MONEY,ca.REMARK,ca.INPUTER,ca.INPUTE_TIME,ca.UPDATER,ca.UPDATE_TIME,ec.ENTRUST_COMPANY_ID,ec.ENTRUST_COMPANY_NAME, ");
                 sql.append(" project.PROJECT_ID,project.PROJECT_NAME,bd.DEPARTMENT_ID,bd.DEPARTMENT_NAME,sc.CODE_VALUE,sc.CODE_NAME,scode.CODE_NAME as CONTRACT_TYPE_NAME ");
                 sql.append(" from AGREEMENT ca inner join ENTRUST_COMPANY ec on ca.ENTRUST_COMPANY_ID = ec.ENTRUST_COMPANY_ID ");

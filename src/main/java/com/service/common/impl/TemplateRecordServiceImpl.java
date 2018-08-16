@@ -5,10 +5,11 @@ import com.dao.common.BaseDao;
 import com.model.TemplateRecord;
 import com.service.common.TemplateRecordService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 
-
+@Transactional
 @Service("templateRecordService")
 public class TemplateRecordServiceImpl extends BaseServiceImpl<TemplateRecord> implements
         TemplateRecordService {

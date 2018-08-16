@@ -4,7 +4,6 @@ import com.common.BusinessException;
 import com.common.CommonMethod;
 import com.controller.common.JsonPager;
 import com.dao.common.BaseDao;
-import com.service.common.impl.BaseServiceImpl;
 import com.dao.common.EntrustCompanyDao;
 import com.dao.finance.EntrustAdvanceDao;
 import com.dao.finance.InvoiceDetailsDao;
@@ -14,6 +13,7 @@ import com.dao.page.EntrustInfoPage;
 import com.dao.page.InvoiceDetailPage;
 import com.dao.page.ReAccountDetailPage;
 import com.model.*;
+import com.service.common.impl.BaseServiceImpl;
 import com.service.finance.ReceivableAcDetailsService;
 import com.service.finance.ReceivableInDetailsService;
 import com.service.sys.SysCodeService;
@@ -21,10 +21,12 @@ import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Property;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Transactional
 @Service("receivableAcDetailsService")
 public class ReceivableAcDetailsServiceImpl extends BaseServiceImpl<ReceivableAccountDetails> implements
         ReceivableAcDetailsService {

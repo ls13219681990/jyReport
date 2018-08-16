@@ -62,51 +62,51 @@
     </tr>
     <tr>
         <td class="tdStyle">工程名称：
-            <span id="projectName"></td>
+            <span id="projectName"/></td>
     </tr>
     <tr>
         <td class="tdStyle">报告编号：
-            <span id="reportNo"></td>
+            <span id="reportNo"/></td>
     </tr>
     <tr>
         <td class="tdStyle">报告日期：
-            <span id="reportDate"></td>
+            <span id="reportDate"/></td>
     </tr>
     <tr>
         <td class="tdStyle">检测资质类别：
-            <span id="testCategories"></td>
+            <span id="testCategories"/></td>
     </tr>
     <tr>
         <td class="tdStyle">检测结果：
-            <span id="testResult"></td>
+            <span id="testResult"/></td>
     </tr>
     <tr>
         <td class="tdStyle">委托单位：
-            <span id="entrustCompanyName"></td>
+            <span id="entrustCompanyName"/></td>
     </tr>
     <tr>
         <td class="tdStyle">见证送检人：
-            <span id="witnessMan"></td>
+            <span id="witnessMan"/></td>
     </tr>
     <tr>
         <td class="tdStyle">检测数据：
-            <span id="standards"></td>
+            <span id="standards"/></td>
     </tr>
     <tr>
         <td class="tdStyle">质量监督号：
-            <span id="qcNumber"></td>
+            <span id="qcNumber"/></td>
     </tr>
     <tr>
         <td class="tdStyle">工程部位：
-            <span id="projectParts"></td>
+            <span id="projectParts"/></td>
     </tr>
     <tr>
         <td class="tdStyle">检测项目：
-            <span id="testName"></td>
+            <span id="testName"/></td>
     </tr>
     <tr>
         <td class="tdStyle">描述：
-            <span id="description"></td>
+            <span id="description"/></td>
     </tr>
 </table>
 

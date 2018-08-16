@@ -11,12 +11,13 @@ import com.model.TestDataInfo;
 import com.service.common.TemplateLocationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@Transactional
 @Service("templateLocationService")
 public class TemplateLocationServiceImpl extends BaseServiceImpl<TemplateLocation> implements
         TemplateLocationService {

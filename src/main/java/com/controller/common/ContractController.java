@@ -60,7 +60,7 @@ public class ContractController extends QueryAction<Agreement> {
             e.printStackTrace();
             e.getMessage();
         }
-        return "ture";
+        return "true";
     }
 
     @SuppressWarnings("unchecked")

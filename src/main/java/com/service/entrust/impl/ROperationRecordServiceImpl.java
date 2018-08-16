@@ -2,11 +2,13 @@ package com.service.entrust.impl;
 
 import com.controller.common.JsonPager;
 import com.dao.common.BaseDao;
-import com.service.common.impl.BaseServiceImpl;
 import com.model.ReportOperationRecord;
+import com.service.common.impl.BaseServiceImpl;
 import com.service.entrust.ROperationRecordService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 @Service("rOperationRecordService")
 public class ROperationRecordServiceImpl extends BaseServiceImpl<ReportOperationRecord> implements
         ROperationRecordService {
